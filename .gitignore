@@ -396,3 +396,12 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Upload Folder
+cruzeiro_do_sul_db/uploads/
+
+# SQlite 3 database
+*.sqlite3
+
+# Database Migrations Folder
+cruzeiro_do_sul_db/database/migrations/
