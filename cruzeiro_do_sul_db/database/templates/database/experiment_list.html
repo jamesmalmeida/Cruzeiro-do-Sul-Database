@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+	<h2 class="initial_main_text">Experiments List:</h2>
+
+	{% if experiment_list %}
+		<div class="form_table" style="text-align: left;">
+			<ul>
+				{% for experiment in experiment_list %}
+					<li>
+						<strong>Experiment title: </strong><a href="{{ experiment.get_absolute_url }}">{{experiment.experiment_title}}</a><strong>, Stoichiometry (IUPAC): </strong>{{experiment.sample_stoichiometry_iupac}}<strong>, Experiment type: </strong>
+						{% if experiment.experiment_type == '1' %}
+							XAS
+						{% elif experiment.experiment_type == '2' %}
+							XANES
+						{% elif experiment.experiment_type == '3' %}
+							EXAFS
+						{% elif experiment.experiment_type == '4' %}
+							Powder diffraction
+						{% elif experiment.experiment_type == '5' %}
+							XAS + Powder diffraction
+						{% elif experiment.experiment_type == '6' %}
+							XANES + Powder diffraction
+						{% elif experiment.experiment_type == '7' %}
+							EXAFS + Powder diffraction
+						{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% else %}
+		<p>
+			There are no experiments in the Data Library.
+		</p>
+	{% endif %}
+
+{% endblock %}

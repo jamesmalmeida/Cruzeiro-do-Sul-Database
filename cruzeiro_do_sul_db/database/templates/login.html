@@ -1,0 +1,36 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  
+  <h2 class="initial_main_text">Login:</h2>
+        
+  <!-- Form to login: -->
+  <form action="" method="post">
+
+    <table class="form_table">
+      <tr>
+        <td>
+          <strong>E-mail:</strong>
+        </td>
+        <td>
+          <input type="text" class="form_text_field" maxlength="100" id="email" required/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Password:</strong>
+        </td>
+        <td>
+          <input type="password" class="form_text_field" maxlength="100" id="password" required/>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input style="width: 20%;" type="submit" value="Login"/>
+        </td>
+      </tr>
+    </table>
+  
+  </form>
+
+{% endblock %}

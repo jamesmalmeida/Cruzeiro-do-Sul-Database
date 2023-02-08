@@ -1,0 +1,92 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  
+  <h2 class="initial_main_text">Upload Data:</h2>
+        
+  <!-- Form for upload data: -->
+  <form action="" method="post">
+  
+    <p>Experiment:</p>
+
+    <table class="form_table">
+      <tr>
+        <td>
+          <strong>Experiment type:</strong>
+        </td>
+        <td>
+          <select id="experiment_type" name="experiment_type">
+            <option value="1" selected>XAS</option>
+            <option value="2">XANES</option>
+            <option value="3">EXAFS</option>
+            <option value="4">Powder diffraction</option>
+            <option value="5">XAS + Powder diffraction</option>
+            <option value="6">XANES + Powder diffraction</option>
+            <option value="7">EXAFS + Powder diffraction</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Experiment title</strong>
+        </td>
+        <td>
+          <input type="text" maxlength="150" class="form_text_field" id="experiment_title" name="experiment_title"/>
+        </td>
+      </tr>
+    </table>
+
+    <p>Absorbing element:</p>
+  
+    <table class="form_table">
+      <tr>
+        <td>
+          <strong>Absorbing element symbol:</strong>
+        </td>
+        <td>
+          <input type="text" maxlength="2" class="form_text_field" id="element_symbol" name="element_symbol"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Edge:</strong>
+        </td>
+        <td>
+          <select id="element_edge" name="element_edge">
+            <option value="K" selected>K</option>
+            <option value="L">L</option>
+            <option value="L1">L1</option>
+            <option value="L2">L2</option>
+            <option value="L3">L3</option>
+            <option value="M">M</option>
+            <option value="M1">M1</option>
+            <option value="M2">M2</option>
+            <option value="M3">M3</option>
+            <option value="M4">M4</option>
+            <option value="M5">M5</option>
+            <option value="N">N</option>
+            <option value="N1">N1</option>
+            <option value="N2">N2</option>
+            <option value="N3">N3</option>
+            <option value="N4">N4</option>
+            <option value="N5">N5</option>
+            <option value="N6">N6</option>
+            <option value="N7">N7</option>
+            <option value="O">O</option>
+            <option value="O1">O1</option>
+            <option value="O2">O2</option>
+            <option value="O3">O3</option>
+            <option value="O4">O4</option>
+            <option value="O5">O5</option>
+            <option value="P">P</option>
+            <option value="P1">P1</option>
+            <option value="P2">P2</option>
+            <option value="P3">P3</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+
+  </form>
+
+{% endblock %}

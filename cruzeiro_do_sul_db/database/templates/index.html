@@ -1,0 +1,106 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+	<h2 class="initial_main_text">Cruzeiro do Sul Data Library Home:</h2>
+  
+	<p>
+		Welcome to Cruzeiro do Sul Data Library! The Sirius XAS &amp; XRD Data Library.
+	</p>
+
+  <table class="form_table">
+		<tr>
+			<td colspan="2">
+				<h4>The Library has the following record counts:</h4>
+			</td>
+		</tr>
+    <tr>
+    	<td>
+        Number of experiments:
+      </td>
+      <td>
+        {{ num_experiments }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of XAS experiments:
+      </td>
+      <td>
+        {{ num_experiments_xas }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of XANES experiments:
+      </td>
+      <td>
+        {{ num_experiments_xanes }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of EXAFS experiments:
+      </td>
+      <td>
+        {{ num_experiments_exafs }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of XRD experiments:
+      </td>
+      <td>
+        {{ num_experiments_xrd }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of XAS + XRD experiments:
+      </td>
+      <td>
+        {{ num_experiments_xas_xrd }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of XANES + XRD experiments:
+      </td>
+      <td>
+        {{ num_experiments_xanes_xrd }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of EXAFS + XRD experiments:
+      </td>
+      <td>
+        {{ num_experiments_exafs_xrd }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of beamlines:
+      </td>
+      <td>
+        {{ num_beamlines }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of facilities:
+      </td>
+      <td>
+        {{ num_facilities }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Number of users:
+      </td>
+      <td>
+        {{ num_users }}
+      </td>
+    </tr>
+  </table>
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  
+  <h2 class="initial_main_text">Create Account:</h2>
+        
+  <!-- Form to create a account: -->
+  <form action="" method="post">
+
+    <table class="form_table">
+      <tr>
+        <td>
+          <strong>First Name:</strong>
+        </td>
+        <td>
+          <input type="text" class="form_text_field" maxlength="100" id="first_name" required/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Last Name:</strong>
+        </td>
+        <td>
+          <input type="text" class="form_text_field" maxlength="100" id="last_name" required/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Country:</strong>
+        </td>
+        <td>
+          <input type="text" class="form_text_field" maxlength="100" id="country" required/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>State/Province:</strong>
+        </td>
+        <td>
+          <input type="text" class="form_text_field" maxlength="100" id="state" required/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>City:</strong>
+        </td>
+        <td>
+          <input type="text" class="form_text_field" maxlength="100" id="city" required/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Academic Web Page link:</strong>
+        </td>
+        <td>
+          <input type="text" class="form_text_field" maxlength="100" id="web_page"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>E-mail:</strong>
+        </td>
+        <td>
+          <input type="text" class="form_text_field" maxlength="100" id="email" required/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Password:</strong>
+        </td>
+        <td>
+          <input type="password" class="form_text_field" maxlength="100" id="password" required/>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input style="width: 20%;" type="submit" value="Create Account"/>
+        </td>
+      </tr>
+    </table>
+  
+  </form>
+
+{% endblock %}

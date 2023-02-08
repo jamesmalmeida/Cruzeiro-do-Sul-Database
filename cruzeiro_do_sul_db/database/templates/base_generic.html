@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!-- Default language: english -->
+<html lang="en-US">
+  <head>
+    <!-- UTF-8 charset -->
+    <meta charset="utf-8" />
+    <!-- Other meta: -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Title of the page -->
+    <title>Cruzeiro do Sul Data Library for XAS &amp; XRD</title>
+    <!-- Favicon -->
+		{% load static %}
+    <link rel="icon" href="{% static 'images/ico.png' %}" type="image/x-icon" />
+    <!-- CSS Style: -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}" >
+    <!-- Include JavaScript File: -->
+    {% load static %}
+    <script src="{% static 'scripts/script.js' %}" defer></script>
+    <!-- Author: Anailson Santos Silva -->
+    <meta name="author" content="Anailson Santos Silva" />
+    <!-- Description of the page -->
+    <meta name="description" content="The Sirius XAS &amp; XRD Data Library." />
+    <!-- Open graph data: -->
+		{% load static %}
+    <meta property="og:image" content="{% static 'images/logo.png' %}" />
+    <meta property="og:description" content="The Sirius XAS &amp; XRD Data Library." />
+    <meta property="og:title" content="Cruzeiro do Sul Data Library" />
+    <!-- Twitter Cards -->
+    <meta name="twitter:title" content="Cruzeiro do Sul Data Library" />
+  </head>
+  <body>
+
+    <!-- Header Bar: -->
+    <header>
+      <table class="header_table">
+        
+        <!-- Logo of the database -->
+        <td style="width: 30%;">  
+          <figure>
+						{% load static %}
+            <img class="image" src="{% static 'images/logo.png' %}" alt="Cruzeiro do Sul Data Library logo" title="Cruzeiro do Sul Data Library logo" />
+          </figure>
+        </td>
+
+        <!-- Name of the database -->
+        <td style="width: 40%;">  
+          <h1>Cruzeiro do Sul Data Library for XAS &amp; XRD</h1>
+        </td>
+
+        <!-- Blank element -->
+        <td style="width: 30%;">
+        </td>
+
+      </table>
+    </header>
+
+    <!-- Navigation Bar: -->
+    <nav>
+      <!-- Options: -->
+      <ul class="topmenu">
+				<li style="float: left;" class="top_item"><a href="{% url 'index' %}">Home</a></li>
+				<li style="float: left;" class="top_item"><a href="{% url 'experiments' %}">All Experiments</a></li>
+        <li style="float: left;" class="top_item"><a href="{% url 'search-xas' %}">Search XAS</a></li>
+        <li style="float: left;" class="top_item"><a href="{% url 'search-xrd' %}">Search XRD</a></li>
+        <li style="float: left;" class="top_item"><a href="{% url 'upload-data' %}">Upload Data</a></li>
+        <li style="float: left;" class="top_item"><a href="{% url 'about' %}">About</a></li>
+        <li style="float: right;" class="top_item"><a href="{% url 'create-account' %}">Create Account</a></li>
+        <li class="float_text"> or </li>
+        <li style="float: right;" class="top_item"><a href="{% url 'login' %}">Log in</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Bar: -->
+    <main>
+      
+			{% block content %}
+			{% endblock %}
+        
+      <br>
+      <br>
+
+      {% block pagination %}
+        {% if is_paginated %}
+          <div class="pagination">
+            <span class="page-links">
+              <p>
+                {% if page_obj.has_previous %}
+                  <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>  
+                {% endif %}
+                <span class="page-current">
+                  Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                  <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+              </p>
+            </span>
+          </div>
+        {% endif %}
+      {% endblock %}
+
+    </main>
+
+    <!-- Footer Bar: -->
+    <footer>
+      <p class="footer_text">©Copyright 2023 QUATI Beamline, Sirius - CNPEM. All rights reversed.</p>
+    </footer>
+
+  </body>
+</html>

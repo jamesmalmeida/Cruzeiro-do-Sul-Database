@@ -1,0 +1,377 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+	<h2 class="initial_main_text">Select the Absorbing Element or the Sample Elements:</h2>
+        
+	<!-- Form to search spectras: -->
+	<form action="" method="post">
+	
+		<!-- Periodic Table: -->
+		<table style="margin-left: auto; margin-right: auto; border-collapse: separate;">
+			<tr>
+				<td>
+					<table class="periodic_table">
+						<tr>
+							<td><input class="other_nonmetals" type="button" value="H" onclick="AddElement('H')"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><input class="noble_gases" type="button" value="He" onclick="AddElement('He')"></td>
+						</tr>
+						<tr>
+							<td><input class="alkali_metals" type="button" value="Li" onclick="AddElement('Li')"></td>
+							<td><input class="alkali_earth_metals" type="button" value="Be" onclick="AddElement('Be')"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><input class="metalloids" type="button" value="B" onclick="AddElement('B')"></td>
+							<td><input class="other_nonmetals" type="button" value="C" onclick="AddElement('C')"></td>
+							<td><input class="other_nonmetals" type="button" value="N" onclick="AddElement('N')"></td>
+							<td><input class="other_nonmetals" type="button" value="O" onclick="AddElement('O')"></td>
+							<td><input class="halogens" type="button" value="F" onclick="AddElement('F')"></td>
+							<td><input class="noble_gases" type="button" value="Ne" onclick="AddElement('Ne')"></td>
+						</tr>
+						<tr>
+							<td><input class="alkali_metals" type="button" value="Na" onclick="AddElement('Na')"></td>
+							<td><input class="alkali_earth_metals" type="button" value="Mg" onclick="AddElement('Mg')"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><input class="other_metals" type="button" value="Al" onclick="AddElement('Al')"></td>
+							<td><input class="metalloids" type="button" value="Si" onclick="AddElement('Si')"></td>
+							<td><input class="other_nonmetals" type="button" value="P" onclick="AddElement('P')"></td>
+							<td><input class="other_nonmetals" type="button" value="S" onclick="AddElement('S')"></td>
+							<td><input class="halogens" type="button" value="Cl" onclick="AddElement('Cl')"></td>
+							<td><input class="noble_gases" type="button" value="Ar" onclick="AddElement('Ar')"></td>
+						</tr>
+						<tr>
+							<td><input class="alkali_metals" type="button" value="K" onclick="AddElement('K')"></td>
+							<td><input class="alkali_earth_metals" type="button" value="Ca" onclick="AddElement('Ca')"></td>
+							<td><input class="transition_metals" type="button" value="Sc" onclick="AddElement('Sc')"></td>
+							<td><input class="transition_metals" type="button" value="Ti" onclick="AddElement('Ti')"></td>
+							<td><input class="transition_metals" type="button" value="V" onclick="AddElement('V')"></td>
+							<td><input class="transition_metals" type="button" value="Cr" onclick="AddElement('Cr')"></td>
+							<td><input class="transition_metals" type="button" value="Mn" onclick="AddElement('Mn')"></td>
+							<td><input class="transition_metals" type="button" value="Fe" onclick="AddElement('Fe')"></td>
+							<td><input class="transition_metals" type="button" value="Co" onclick="AddElement('Co')"></td>
+							<td><input class="transition_metals" type="button" value="Ni" onclick="AddElement('Ni')"></td>
+							<td><input class="transition_metals" type="button" value="Cu" onclick="AddElement('Cu')"></td>
+							<td><input class="transition_metals" type="button" value="Zn" onclick="AddElement('Zn')"></td>
+							<td><input class="other_metals" type="button" value="Ga" onclick="AddElement('Ga')"></td>
+							<td><input class="metalloids" type="button" value="Ge" onclick="AddElement('Ge')"></td>
+							<td><input class="metalloids" type="button" value="As" onclick="AddElement('As')"></td>
+							<td><input class="other_nonmetals" type="button" value="Se" onclick="AddElement('Se')"></td>
+							<td><input class="halogens" type="button" value="Br" onclick="AddElement('Br')"></td>
+							<td><input class="noble_gases" type="button" value="Kr" onclick="AddElement('Kr')"></td>
+						</tr>
+						<tr>
+							<td><input class="alkali_metals" type="button" value="Rb" onclick="AddElement('Rb')"></td>
+							<td><input class="alkali_earth_metals" type="button" value="Sr" onclick="AddElement('Sr')"></td>
+							<td><input class="transition_metals" type="button" value="Y" onclick="AddElement('Y')"></td>
+							<td><input class="transition_metals" type="button" value="Zr" onclick="AddElement('Zr')"></td>
+							<td><input class="transition_metals" type="button" value="Nb" onclick="AddElement('Nb')"></td>
+							<td><input class="transition_metals" type="button" value="Mo" onclick="AddElement('Mo')"></td>
+							<td><input class="transition_metals" type="button" value="Tc" onclick="AddElement('Tc')"></td>
+							<td><input class="transition_metals" type="button" value="Ru" onclick="AddElement('Ru')"></td>
+							<td><input class="transition_metals" type="button" value="Rh" onclick="AddElement('Rh')"></td>
+							<td><input class="transition_metals" type="button" value="Pd" onclick="AddElement('Pd')"></td>
+							<td><input class="transition_metals" type="button" value="Ag" onclick="AddElement('Ag')"></td>
+							<td><input class="transition_metals" type="button" value="Cd" onclick="AddElement('Cd')"></td>
+							<td><input class="other_metals" type="button" value="In" onclick="AddElement('In')"></td>
+							<td><input class="other_metals" type="button" value="Sn" onclick="AddElement('Sn')"></td>
+							<td><input class="metalloids" type="button" value="Sb" onclick="AddElement('Sb')"></td>
+							<td><input class="metalloids" type="button" value="Te" onclick="AddElement('Te')"></td>
+							<td><input class="halogens" type="button" value="I" onclick="AddElement('I')"></td>
+							<td><input class="noble_gases" type="button" value="Xe" onclick="AddElement('Xe')"></td>
+						</tr>
+						<tr>
+							<td><input class="alkali_metals" type="button" value="Cs" onclick="AddElement('Cs')"></td>
+							<td><input class="alkali_earth_metals" type="button" value="Ba" onclick="AddElement('Ba')"></td>
+							<td class="lanthanides">La-Lu</td>
+							<td><input class="transition_metals" type="button" value="Hf" onclick="AddElement('Hf')"></td>
+							<td><input class="transition_metals" type="button" value="Ta" onclick="AddElement('Ta')"></td>
+							<td><input class="transition_metals" type="button" value="W" onclick="AddElement('W')"></td>
+							<td><input class="transition_metals" type="button" value="Re" onclick="AddElement('Re')"></td>
+							<td><input class="transition_metals" type="button" value="Os" onclick="AddElement('Os')"></td>
+							<td><input class="transition_metals" type="button" value="Ir" onclick="AddElement('Ir')"></td>
+							<td><input class="transition_metals" type="button" value="Pt" onclick="AddElement('Pt')"></td>
+							<td><input class="transition_metals" type="button" value="Au" onclick="AddElement('Au')"></td>
+							<td><input class="transition_metals" type="button" value="Hg" onclick="AddElement('Hg')"></td>
+							<td><input class="other_metals" type="button" value="Tl" onclick="AddElement('Tl')"></td>
+							<td><input class="other_metals" type="button" value="Pb" onclick="AddElement('Pb')"></td>
+							<td><input class="other_metals" type="button" value="Bi" onclick="AddElement('Bi')"></td>
+							<td><input class="other_metals" type="button" value="Po" onclick="AddElement('Po')"></td>
+							<td><input class="halogens" type="button" value="At" onclick="AddElement('At')"></td>
+							<td><input class="noble_gases" type="button" value="Rn" onclick="AddElement('Rn')"></td>
+						</tr>
+						<tr>
+							<td><input class="alkali_metals" type="button" value="Fr" onclick="AddElement('Fr')"></td>
+							<td><input class="alkali_earth_metals" type="button" value="Ra" onclick="AddElement('Ra')"></td>
+							<td class="actinides">Ac-Lr</td>
+							<td><input class="transition_metals" type="button" value="Rf" onclick="AddElement('Rf')"></td>
+							<td><input class="transition_metals" type="button" value="Db" onclick="AddElement('Db')"></td>
+							<td><input class="transition_metals" type="button" value="Sg" onclick="AddElement('Sg')"></td>
+							<td><input class="transition_metals" type="button" value="Bh" onclick="AddElement('Bh')"></td>
+							<td><input class="transition_metals" type="button" value="Hs" onclick="AddElement('Hs')"></td>
+							<td><input class="transition_metals" type="button" value="Mt" onclick="AddElement('Mt')"></td>
+							<td><input class="transition_metals" type="button" value="Ds" onclick="AddElement('Ds')"></td>
+							<td><input class="transition_metals" type="button" value="Rg" onclick="AddElement('Rg')"></td>
+							<td><input class="transition_metals" type="button" value="Cn" onclick="AddElement('Cn')"></td>
+							<td><input class="other_metals" type="button" value="Nh" onclick="AddElement('Nh')"></td>
+							<td><input class="other_metals" type="button" value="Fl" onclick="AddElement('Fl')"></td>
+							<td><input class="other_metals" type="button" value="Mc" onclick="AddElement('Mc')"></td>
+							<td><input class="other_metals" type="button" value="Lv" onclick="AddElement('Lv')"></td>
+							<td><input class="halogens" type="button" value="Ts" onclick="AddElement('Ts')"></td>
+							<td><input class="noble_gases" type="button" value="Og" onclick="AddElement('Og')"></td>
+						</tr>
+						<tr>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><input class="lanthanides" type="button" value="La" onclick="AddElement('La')"></td>
+							<td><input class="lanthanides" type="button" value="Ce" onclick="AddElement('Ce')"></td>
+							<td><input class="lanthanides" type="button" value="Pr" onclick="AddElement('Pr')"></td>
+							<td><input class="lanthanides" type="button" value="Nd" onclick="AddElement('Nd')"></td>
+							<td><input class="lanthanides" type="button" value="Pm" onclick="AddElement('Pm')"></td>
+							<td><input class="lanthanides" type="button" value="Sm" onclick="AddElement('Sm')"></td>
+							<td><input class="lanthanides" type="button" value="Eu" onclick="AddElement('Eu')"></td>
+							<td><input class="lanthanides" type="button" value="Gd" onclick="AddElement('Gd')"></td>
+							<td><input class="lanthanides" type="button" value="Tb" onclick="AddElement('Tb')"></td>
+							<td><input class="lanthanides" type="button" value="Dy" onclick="AddElement('Dy')"></td>
+							<td><input class="lanthanides" type="button" value="Ho" onclick="AddElement('Ho')"></td>
+							<td><input class="lanthanides" type="button" value="Er" onclick="AddElement('Er')"></td>
+							<td><input class="lanthanides" type="button" value="Tm" onclick="AddElement('Tm')"></td>
+							<td><input class="lanthanides" type="button" value="Yb" onclick="AddElement('Yb')"></td>
+							<td><input class="lanthanides" type="button" value="Lu" onclick="AddElement('Lu')"></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><input class="actinides" type="button" value="Ac" onclick="AddElement('Ac')"></td>
+							<td><input class="actinides" type="button" value="Th" onclick="AddElement('Th')"></td>
+							<td><input class="actinides" type="button" value="Pa" onclick="AddElement('Pa')"></td>
+							<td><input class="actinides" type="button" value="U" onclick="AddElement('U')"></td>
+							<td><input class="actinides" type="button" value="Np" onclick="AddElement('Np')"></td>
+							<td><input class="actinides" type="button" value="Pu" onclick="AddElement('Pu')"></td>
+							<td><input class="actinides" type="button" value="Am" onclick="AddElement('Am')"></td>
+							<td><input class="actinides" type="button" value="Cm" onclick="AddElement('Cm')"></td>
+							<td><input class="actinides" type="button" value="Bk" onclick="AddElement('Bk')"></td>
+							<td><input class="actinides" type="button" value="Cf" onclick="AddElement('Cf')"></td>
+							<td><input class="actinides" type="button" value="Es" onclick="AddElement('Es')"></td>
+							<td><input class="actinides" type="button" value="Fm" onclick="AddElement('Fm')"></td>
+							<td><input class="actinides" type="button" value="Md" onclick="AddElement('Md')"></td>
+							<td><input class="actinides" type="button" value="No" onclick="AddElement('No')"></td>
+							<td><input class="actinides" type="button" value="Lr" onclick="AddElement('Lr')"></td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td><input class="legend_other_nonmetals" type="button" value=""></td>
+							<td>Other Nonmetals</td>
+						</tr>
+						<tr>
+							<td><input class="legend_noble_gases" type="button" value=""></td>
+							<td>Noble Gases</td>
+						</tr>
+						<tr>
+							<td><input class="legend_alkali_metals" type="button" value=""></td>
+							<td>Alkali Metals</td>
+						</tr>
+						<tr>
+							<td><input class="legend_alkali_earth_metals" type="button" value=""></td>
+							<td>Alkali Earth Metals</td>
+						</tr>
+						<tr>
+							<td><input class="legend_metalloids" type="button" value=""></td>
+							<td>Metalloids</td>
+						</tr>
+						<tr>
+							<td><input class="legend_halogens" type="button" value=""></td>
+							<td>Halogens</td>
+						</tr>
+						<tr>
+							<td><input class="legend_other_metals" type="button" value=""></td>
+							<td>Other Metals</td>
+						</tr>
+						<tr>
+							<td><input class="legend_transition_metals" type="button" value=""></td>
+							<td>Transition Metals</td>
+						</tr>
+						<tr>
+							<td><input class="legend_lanthanides" type="button" value=""></td>
+							<td>Lanthanides</td>
+						</tr>
+						<tr>
+							<td><input class="legend_actinides" type="button" value=""></td>
+							<td>Actinides</td>
+						</tr>
+					</table>
+				</td>
+			</tr> 
+		</table>
+
+		</br>
+
+		<table class="form_table">
+			<tr>
+				<td>
+					<strong>Absorbing Element:</strong>
+				</td>
+				<td>
+					<input type="text" class="form_text_field" maxlength="2" id="absorbing_element"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<strong>Edge:</strong>
+				</td>
+				<td>
+					<select id="edge" name="edge">
+						<option value="Any" selected>Any</option>
+						<option value="K">  K</option>
+						<option value="L">  L</option>
+						<option value="L1">L1</option>
+						<option value="L2">L2</option>
+						<option value="L3">L3</option>
+						<option value="M">  M</option>
+						<option value="M1">M1</option>
+						<option value="M2">M2</option>
+						<option value="M3">M3</option>
+						<option value="M4">M4</option>
+						<option value="M5">M5</option>
+						<option value="N">  N</option>
+						<option value="N1">N1</option>
+						<option value="N2">N2</option>
+						<option value="N3">N3</option>
+						<option value="N4">N4</option>
+						<option value="N5">N5</option>
+						<option value="N6">N6</option>
+						<option value="N7">N7</option>
+						<option value="O">  O</option>
+						<option value="O1">O1</option>
+						<option value="O2">O2</option>
+						<option value="O3">O3</option>
+						<option value="O4">O4</option>
+						<option value="O5">O5</option>
+						<option value="P">  P</option>
+						<option value="P1">P1</option>
+						<option value="P2">P2</option>
+						<option value="P3">P3</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<strong>Spectrum Type:</strong>
+				</td>
+				<td>
+					<select id="spectrum_type" name="spectrum_type">
+						<option value="Any" selected>Any</option>
+						<option value="XAFS">XAS</option>
+						<option value="XANES">XANES</option>
+						<option value="EXAFS">EXAFS</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<strong>Measurement Mode:</strong>
+				</td>
+				<td>
+					<select id="measurement" name="measurement">
+						<option value="Any" selected>Any</option>
+						<option value="Transmission">Transmission</option>
+						<option value="Fluorescence">Fluorescence</option>
+						<option value="Herfd">Herfd</option>
+						<option value="Raman">Raman</option>
+						<option value="Xeol">Xeol</option>
+						<option value="Electron emission">Electron emission</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<strong>Elements of the Sample (Separated by spaces):</strong>
+				</td>
+				<td>
+					<input type="text" class="form_text_field" id="composition"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<strong>Search Type:</strong>
+				</td>
+				<td>
+					<select id="SelectSearch" onchange="SearchMethodCheck();">
+						<option value="Manual" selected="selected">Manual</option>
+						<option value="Comparation">Comparation</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div id="ComparationEnergyLegend" style="display: none;">
+						<strong>Energy Array (.txt File):</strong>
+					</div>
+				</td>
+				<td>
+					<div id="ComparationEnergyFile" style="display: none;">
+						<input type="file" style="width: 100%;" value="Choose Spectra File"/>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div id="ComparationMuLegend" style="display: none;">
+						<strong>μ Array (.txt File):</strong>
+					</div>
+				</td>
+				<td>
+					<div id="ComparationMuFile" style="display: none;">
+						<input type="file" style="width: 100%;" value="Choose Spectra File"/>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input style="width: 20%;" type="submit" value="Search"/>
+				</td>
+			</tr>
+		</table>
+	
+	</form>
+
+{% endblock %}

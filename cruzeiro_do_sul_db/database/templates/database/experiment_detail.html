@@ -1,0 +1,744 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+	<h2 class="initial_main_text">Experiment Title: {{ experiment.experiment_title }}</h2>
+
+  <table class="form_table">
+		<tr>
+			<td colspan="2">
+				<h4>Experiment:</h4>
+			</td>
+		</tr>
+    <tr>
+    	<td>
+        Experiment type:
+      </td>
+      <td>
+				{% if experiment.experiment_type == '1' %}
+					XAS
+				{% elif experiment.experiment_type == '2' %}
+					XANES
+				{% elif experiment.experiment_type == '3' %}
+					EXAFS
+				{% elif experiment.experiment_type == '4' %}
+					Powder diffraction
+				{% elif experiment.experiment_type == '5' %}
+					XAS + Powder diffraction
+				{% elif experiment.experiment_type == '6' %}
+					XANES + Powder diffraction
+				{% elif experiment.experiment_type == '7' %}
+					EXAFS + Powder diffraction
+				{% endif %}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Absorbing Element:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Absorbing element:
+      </td>
+      <td>
+        {{ experiment.element }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Sample:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Sample name:
+      </td>
+      <td>
+        {{ experiment.sample_name }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample stoichiometry (IUPAC):
+      </td>
+      <td>
+        {{ experiment.sample_stoichiometry_iupac }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample stoichiometry (Moiety):
+      </td>
+      <td>
+        {{ experiment.sample_stoichiometry_moiety }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample preparation:
+      </td>
+      <td>
+        {{ experiment.sample_prep }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample dimensions:
+      </td>
+      <td>
+        {{ experiment.sample_dimensions }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample ph:
+      </td>
+      <td>
+        {{ experiment.sample_ph }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample redox state (V):
+      </td>
+      <td>
+        {{ experiment.sample_eh }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample volume (mm<sup>2</sup>):
+      </td>
+      <td>
+        {{ experiment.sample_volume }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample porosity (%):
+      </td>
+      <td>
+        {{ experiment.sample_porosity }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample density (g/mm<sup>3</sup>):
+      </td>
+      <td>
+        {{ experiment.sample_density }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample concentration (g/L):
+      </td>
+      <td>
+        {{ experiment.sample_concentration }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample resistivity (Ω):
+      </td>
+      <td>
+        {{ experiment.sample_resistivity }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample viscosity (Pa·s):
+      </td>
+      <td>
+        {{ experiment.sample_viscosity }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample electric field (V/m):
+      </td>
+      <td>
+        {{ experiment.sample_electric_field }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample magnetic field (T):
+      </td>
+      <td>
+        {{ experiment.sample_magnetic_field }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample magnetic moment (J/T):
+      </td>
+      <td>
+        {{ experiment.sample_magnetic_moment }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample electrochemical potential (J/mol):
+      </td>
+      <td>
+        {{ experiment.sample_electrochemical_potential }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample opacity (A/mm):
+      </td>
+      <td>
+        {{ experiment.sample_opacity }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample purity (%):
+      </td>
+      <td>
+        {{ experiment.sample_purity }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Sample crystal system:
+      </td>
+      <td>
+        {% if experiment.sample_crystal_system == 'a' %}
+					Triclinic
+				{% elif experiment.sample_crystal_system == 'b' %}
+					Monoclinic
+				{% elif experiment.sample_crystal_system == 'c' %}
+					Orthorhombic
+				{% elif experiment.sample_crystal_system == 'd' %}
+					Tetragonal
+				{% elif experiment.sample_crystal_system == 'e' %}
+					Trigonal
+				{% elif experiment.sample_crystal_system == 'f' %}
+					Hexagonal
+				{% elif experiment.sample_crystal_system == 'g' %}
+					Cubic
+				{% endif %}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Crystalline Information:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Space group:
+      </td>
+      <td>
+        {{ experiment.space_group }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        z:
+      </td>
+      <td>
+        {{ experiment.z }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        a (Å):
+      </td>
+      <td>
+        {{ experiment.a }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        b (Å):
+      </td>
+      <td>
+        {{ experiment.b }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        c (Å):
+      </td>
+      <td>
+        {{ experiment.c }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        &alpha; (°):
+      </td>
+      <td>
+        {{ experiment.alpha }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        &beta; (°):
+      </td>
+      <td>
+        {{ experiment.beta }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        &gamma; (°):
+      </td>
+      <td>
+        {{ experiment.gama }}
+      </td>
+    </tr>
+		
+		<tr>
+			<td colspan="2">
+				<h4>Powder Parameters:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Min 2θ (°):
+      </td>
+      <td>
+        {{ experiment.min_2_theta }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Max 2θ (°):
+      </td>
+      <td>
+        {{ experiment.max_2_theta }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Step (°):
+      </td>
+      <td>
+        {{ experiment.step }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Measurement Conditions:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Measurement temperature (K):
+      </td>
+      <td>
+        {{ experiment.measurement_temperature }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Measurement pressure (Pa):
+      </td>
+      <td>
+        {{ experiment.measurement_pressure }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Measurement current (mA):
+      </td>
+      <td>
+        {{ experiment.measurement_current }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Measurement wavelength (nm):
+      </td>
+      <td>
+        {{ experiment.measurement_wavelength }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Diffraction radiation type:
+      </td>
+      <td>
+        {{ experiment.diffraction_radiation_type }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Scan Information:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Start time:
+      </td>
+      <td>
+        {{ experiment.start_time }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        End time:
+      </td>
+      <td>
+        {{ experiment.end_time }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Edge energy (eV) used in the data acquisition software:
+      </td>
+      <td>
+        {{ experiment.edge_energy }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Operational System used to acquire the data:
+      </td>
+      <td>
+        {{ experiment.os }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Softwares used to acquire and process the data:
+      </td>
+      <td>
+        {{ experiment.software }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Facility:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Facility name:
+      </td>
+      <td>
+        {{ experiment.beamline.facility.name }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Facility energy (GeV):
+      </td>
+      <td>
+        {{ experiment.beamline.facility.energy }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Facility x-rays source:
+      </td>
+      <td>
+        {{ experiment.beamline.facility.xray_source }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Facility address:
+      </td>
+      <td>
+        {{ experiment.beamline.facility.address }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Beamline:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Beamline name:
+      </td>
+      <td>
+        {{ experiment.beamline.name }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Collimation information:
+      </td>
+      <td>
+        {{ experiment.beamline.collimation }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Focusing information:
+      </td>
+      <td>
+        {{ experiment.beamline.focusing }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Harmonic rejection information:
+      </td>
+      <td>
+        {{ experiment.beamline.harmonic_rejection }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Monochromator:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Monochromator name:
+      </td>
+      <td>
+        {{ experiment.mono_name }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Monochromator d-spacing (Å):
+      </td>
+      <td>
+        {{ experiment.mono_d_spacing }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Detector:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        How the incident flux was measured:
+      </td>
+      <td>
+        {{ experiment.detector_i0 }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        How the transmitted flux was measured:
+      </td>
+      <td>
+        {{ experiment.detector_it }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>XAS Data:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Measurement mode:
+      </td>
+      <td>
+        {% if experiment.spectrum_measurement_mode == 't' %}
+					Transmission
+				{% elif experiment.spectrum_measurement_mode == 'f' %}
+					Fluorescence
+				{% elif experiment.spectrum_measurement_mode == 'h' %}
+					HERFD
+				{% elif experiment.spectrum_measurement_mode == 'r' %}
+					Raman
+				{% elif experiment.spectrum_measurement_mode == 'x' %}
+					XEOL
+				{% elif experiment.spectrum_measurement_mode == 'e' %}
+					Electron Emission
+				{% endif %}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Data type:
+      </td>
+      <td>
+        {% if experiment.spectrum_data_type == 'r' %}
+					Raw Data
+				{% elif experiment.spectrum_data_type == 'm' %}
+					&mu; Coefficients
+				{% elif experiment.spectrum_data_type == 'n' %}
+					Normalized &mu; Coefficients
+				{% endif %}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Monochromator energy file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=energy">{{ experiment.spectrum_energy }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Intensity of incident x-rays (i0) file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=i0">{{ experiment.spectrum_i0 }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Intensity of transmitted x-rays (itrans) file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=itrans">{{ experiment.spectrum_itrans }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Intensity of fluorescence x-rays (ifluor) file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=ifluor">{{ experiment.spectrum_fluor }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        &mu; coefficients of transmitted x-rays (mutrans) file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=mutrans">{{ experiment.spectrum_mutrans }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        &mu; coefficients of fluorescence x-rays (mufluor) file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=mufluor">{{ experiment.spectrum_mufluor }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Normalized &mu; coefficients of transmitted x-rays (normtrans) file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=normtrans">{{ experiment.spectrum_normtrans }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Normalized &mu; coefficients of fluorescence x-rays (normfluor) file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=normfluor">{{ experiment.spectrum_normfluor }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Normalization information:
+      </td>
+      <td>
+        {{ experiment.spectrum_norm_info }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Reference spectra:
+      </td>
+      <td>
+        {{ experiment.reference }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>XRD Data:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Diffraction 2&theta; file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=xrd_2_theta">{{ experiment.diffraction_2_theta }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Diffraction tntensity file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=xrd_intensity">{{ experiment.diffraction_intensity }}</a>
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Additional Data:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        CIF file:
+      </td>
+      <td>
+        <a href="{{request.path}}/file=cif">{{ experiment.cif_file }}</a>
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Data licence:
+      </td>
+      <td>
+        {{ experiment.data_licence }}
+      </td>
+    </tr>
+
+		<tr>
+			<td colspan="2">
+				<h4>Additional Information:</h4>
+			</td>
+		</tr>
+		<tr>
+    	<td>
+        Uploaded by:
+      </td>
+      <td>
+        {{ experiment.user.last_name }}, {{ experiment.user.first_name }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Citation:
+      </td>
+      <td>
+        {{ experiment.citation.citation }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Citation doi:
+      </td>
+      <td>
+        {{ experiment.citation.doi }}
+      </td>
+    </tr>
+		<tr>
+    	<td>
+        Additional information:
+      </td>
+      <td>
+        {{ experiment.additional_info }}
+      </td>
+    </tr>
+  </table>
+
+{% endblock %}

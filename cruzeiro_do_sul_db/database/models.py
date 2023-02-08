@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+import os
 
 class Address(models.Model):
     """Model representing addresses data."""
@@ -193,7 +195,7 @@ class Element(models.Model):
         ('Cf','Cf - Californium'),
     )
     # Absorbing element symbol:
-    symbol = models.CharField(max_length=2, choices=ELEMENTS, blank=False, help_text='Choose the absorbing element.')
+    symbol = models.CharField(max_length=2, choices=ELEMENTS, null=True, blank=True, help_text='Choose the absorbing element.')
     EDGES = (
         ('K','K'),
         ('L','L'),
@@ -1975,7 +1977,7 @@ class Element(models.Model):
         ('Cf','P3',17.0),
     )
     # Edge of absorbing element:
-    edge = models.CharField(max_length=2, choices=EDGES, blank=False, help_text='Choose the absorption edge. The generic edges <i>L, M, N,</i> and <i>O</i> should be used only for spectra spanning multiple edges.')
+    edge = models.CharField(max_length=2, choices=EDGES, blank=True, null=True, help_text='Choose the absorption edge. The generic edges <i>L, M, N,</i> and <i>O</i> should be used only for spectra spanning multiple edges.')
     # Meta class:
     class Meta:
         verbose_name = 'Element'
@@ -2027,9 +2029,9 @@ class Experiment(models.Model):
     # Name of the sample:
     sample_name = models.CharField('Sample name', max_length=300, blank=False, help_text='Enter a text identifying the measured sample.')
     # Stoichiometry of the sample in IUPAC format:
-    stoichiometry_iupac = models.CharField('Stoichiometry IUPAC', max_length=300, blank=False, help_text='Enter the IUPAC stoichiometry formula of the measured sample. Ex: [Mo (C O)4 (C18 H33 P)2].')
+    sample_stoichiometry_iupac = models.CharField('Stoichiometry IUPAC', max_length=300, blank=False, help_text='Enter the IUPAC stoichiometry formula of the measured sample. Ex: [Mo (C O)4 (C18 H33 P)2].')
     # Stoichiometry of the sample in moiety format:
-    stoichiometry_moiety = models.CharField('Stoichiometry moiety', max_length=300, null=True, blank=True, help_text='Enter the moiety stoichiometry formula of the measured sample. Ex: C40 H66 Mo O4 P2.')
+    sample_stoichiometry_moiety = models.CharField('Stoichiometry moiety', max_length=300, null=True, blank=True, help_text='Enter the moiety stoichiometry formula of the measured sample. Ex: C40 H66 Mo O4 P2.')
     # Information about the preparation of the sample:
     sample_prep = models.CharField('Sample preparation', max_length=300, null=True, blank=True, help_text='Enter a text summarizing the method of sample preparation.')
     # Dimensions of the sample:
@@ -2063,7 +2065,16 @@ class Experiment(models.Model):
     # Purity of the sample:
     sample_purity = models.FloatField('Sample purity (%)', null=True, blank=True, help_text='Enter the purity of the measured sample.')
     # Crystal system of the sample:
-    sample_crystal_system = models.CharField('Sample crystal system', max_length=300, null=True, blank=True, help_text='Enter the crystal system of the measured sample.')
+    CRYSTAL_SYSTEM = (
+        ('a', 'Triclinic'),
+        ('b', 'Monoclinic'),
+        ('c', 'Orthorhombic'),
+        ('d', 'Tetragonal'),
+        ('e', 'Trigonal'),
+        ('f', 'Hexagonal'),
+        ('g', 'Cubic'),
+    )
+    sample_crystal_system = models.CharField('Sample crystal system', max_length=1, null=True, blank=True, choices=CRYSTAL_SYSTEM, help_text='Enter the crystal system of the measured sample.')
     
     # Measurement conditions:
     # Temparature of the measurement:
@@ -2073,9 +2084,9 @@ class Experiment(models.Model):
     # Current at the beginning of the scan:
     measurement_current = models.FloatField('Measurement current (mA)', null=True, blank=True, help_text='Enter the amount of stored current in the storage ring at the beginning of the scan')
     # Wavelength:
-    wavelength = models.FloatField('Wavelength (m)', null=True, blank=True, help_text='Enter the powder diffraction wavelength')
+    measurement_wavelength = models.FloatField('Wavelength (nm)', null=True, blank=True, help_text='Enter the powder diffraction wavelength')
     # Diffraction radiation type:
-    diff_radiation_type = models.CharField('Diffraction radiation type', max_length=150, null=True, blank=True, help_text='Enter the powder diffraction radiation type. Ex: synchrotron.')
+    diffraction_radiation_type = models.CharField('Diffraction radiation type', max_length=150, null=True, blank=True, help_text='Enter the powder diffraction radiation type. Ex: synchrotron.')
 
     # Crystalline:
     # Space group:
@@ -2083,17 +2094,17 @@ class Experiment(models.Model):
     # z:
     z = models.FloatField(null=True, blank=True, help_text='Enter the crystalline z parameter of the sample.')
     # a:
-    a = models.FloatField(null=True, blank=True, help_text='Enter the crystalline a parameter of the sample.')
+    a = models.FloatField('a (\u212B)', null=True, blank=True, help_text='Enter the crystalline a parameter of the sample.')
     # b:
-    b = models.FloatField(null=True, blank=True, help_text='Enter the crystalline b parameter of the sample.')
+    b = models.FloatField('b (\u212B)', null=True, blank=True, help_text='Enter the crystalline b parameter of the sample.')
     # c:
-    c = models.FloatField(null=True, blank=True, help_text='Enter the crystalline c parameter of the sample.')
+    c = models.FloatField('c (\u212B)', null=True, blank=True, help_text='Enter the crystalline c parameter of the sample.')
     # alpha:
-    alpha = models.FloatField(null=True, blank=True, help_text='Enter the crystalline alpha parameter of the sample.')
+    alpha = models.FloatField('alpha (°)', null=True, blank=True, help_text='Enter the crystalline alpha parameter of the sample.')
     # beta:
-    beta = models.FloatField(null=True, blank=True, help_text='Enter the crystalline beta parameter of the sample.')
+    beta = models.FloatField('beta (°)', null=True, blank=True, help_text='Enter the crystalline beta parameter of the sample.')
     # gama:
-    gama = models.FloatField(null=True, blank=True, help_text='Enter the crystalline gama parameter of the sample.')
+    gama = models.FloatField('gama (°)', null=True, blank=True, help_text='Enter the crystalline gama parameter of the sample.')
 
     # Powder parameters:
     # Minimum 2 theta:
@@ -2129,7 +2140,7 @@ class Experiment(models.Model):
 
     # Relating fields:
     # Foreign key relating to the element:
-    element = models.ForeignKey(Element, blank=False, on_delete=models.PROTECT, help_text='Choose the spectra\'s absorbing element and edge.')
+    element = models.ForeignKey(Element, blank=True, null=True, on_delete=models.PROTECT, help_text='Choose the spectra\'s absorbing element and edge.')
     # Foreign key relating to the beamline:
     beamline = models.ForeignKey(Beamline, blank=False, on_delete=models.PROTECT, help_text='Choose the beamline on which the experiment was performed.')
     # Foreign key relating to the citation:
@@ -2147,26 +2158,32 @@ class Experiment(models.Model):
         ('x', 'XEOL'),
         ('e', 'Electron Emission'),
     )
-    measurement_mode = models.CharField(max_length=1, null=True, blank=True, choices=MEASUREMENT_MODES, help_text='Select the measurement mode of the spectra.')
+    spectrum_measurement_mode = models.CharField(max_length=1, null=True, blank=True, choices=MEASUREMENT_MODES, help_text='Select the measurement mode of the spectra.')
     # Spectrum data type:
     DATA_TYPES = (
         ('r','Raw data'),
         ('m','\u03BC coefficients'),
         ('n','Normalized \u03BC coefficients'),
     )
-    data_type = models.CharField(max_length=1, null=True, blank=True, choices=DATA_TYPES, help_text='Select the spectra\'s data type.')
-    # File upload field for XAS energy:
-    spectrum_energy = models.FileField(null=True, blank=True, upload_to='uploads/energy/', help_text='Select the plain text file (.txt) containing the XAS energy data. The data array must be a column vector.')
-    # File upload field for XAS intensity of incident x-rays:
-    spectrum_i0 = models.FileField(null=True, blank=True, upload_to='uploads/i0/', help_text='Select the plain text file (.txt) containing the XAS intensity of incident x-rays (i0) data. The data array must be a column vector.')
-    # File upload field for XAS intensity of transmitted x-rays: 
-    spectrum_itrans = models.FileField(null=True, blank=True, upload_to='uploads/itrans/', help_text='Select the plain text file (.txt) containing the XAS intensity of transmitted x-rays (itrans) data. The data array must be a column vector.')
-    # File upload field for XAS intensity of mu coeficents:
-    spectrum_mutrans = models.FileField(null=True, blank=True, upload_to='uploads/mutrans/', help_text='Select the plain text file (.txt) containing the XAS intensity of absorption coefficients (\u03BCtrans) data. The data array must be a column vector.')
-    # File upload field for XAS normalized mu coefficients:
-    spectrum_normtrans = models.FileField(null=True, blank=True, upload_to='uploads/normtrans/', help_text='Select the plain text file (.txt) containing the XAS intensity of normalized spectra data. The data array must be a column vector.')
+    spectrum_data_type = models.CharField(max_length=1, null=True, blank=True, choices=DATA_TYPES, help_text='Select the spectra\'s data type.')
+    # File upload field for monochromator energy:
+    spectrum_energy = models.FileField(null=True, blank=True, upload_to='uploads/energy/', help_text='Select the plain text file (.txt) containing the monochromator energy data. The data array must be a column vector.')
+    # File upload field for the intensity of incident x-rays:
+    spectrum_i0 = models.FileField(null=True, blank=True, upload_to='uploads/i0/', help_text='Select the plain text file (.txt) containing the intensity of incident x-rays (i0) data. The data array must be a column vector.')
+    # File upload field for intensity of transmitted x-rays: 
+    spectrum_itrans = models.FileField(null=True, blank=True, upload_to='uploads/itrans/', help_text='Select the plain text file (.txt) containing the intensity of transmitted x-rays (itrans) data. The data array must be a column vector.')
+    # File upload field for intensity of fluorescence x-rays: 
+    spectrum_ifluor = models.FileField(null=True, blank=True, upload_to='uploads/ifluor/', help_text='Select the plain text file (.txt) containing the intensity of fluorescence x-rays (itrans) data. The data array must be a column vector.')
+    # File upload field for mu coefficients of transmitted x-rays:
+    spectrum_mutrans = models.FileField(null=True, blank=True, upload_to='uploads/mutrans/', help_text='Select the plain text file (.txt) containing the \u03BC coefficients of trasmitted x-rays (\u03BCtrans) data. The data array must be a column vector.')
+    # File upload field for mu coefficients of fluorescence x-rays:
+    spectrum_mufluor = models.FileField(null=True, blank=True, upload_to='uploads/mufluor/', help_text='Select the plain text file (.txt) containing the \u03BC coefficients of fluorescence x-rays (\u03BCfluor) data. The data array must be a column vector.')
+    # File upload field for normalized mu coefficients of transmitted x-rays:
+    spectrum_normtrans = models.FileField(null=True, blank=True, upload_to='uploads/normtrans/', help_text='Select the plain text file (.txt) containing the normalized \u03BC coefficients of transmitted x-rays data. The data array must be a column vector.')
+    # File upload field for normalized mu coefficients of fluorescence x-rays:
+    spectrum_normfluor = models.FileField(null=True, blank=True, upload_to='uploads/normfluor/', help_text='Select the plain text file (.txt) containing the normalized \u03BC coefficients of fluorescence x-rays data. The data array must be a column vector.')
     # Description of the normalization method used:
-    norm_info = models.CharField('Normalization information', max_length=300, null=True, blank=True, help_text='Enter a description of the normalization process used.')
+    spectrum_norm_info = models.CharField('Normalization information', max_length=300, null=True, blank=True, help_text='Enter a description of the normalization process used.')
     # Reference spectrum:
     reference = models.BooleanField(blank=False, help_text='Select if the spectrum is a reference spectrum')
 
@@ -2193,14 +2210,14 @@ class Experiment(models.Model):
         verbose_name = 'Experiment'
         verbose_name_plural = 'Experiments'
 
+    def get_absolute_url(self):
+        """Returns the URL to access a particular instance of the model."""
+        return reverse('experiment-detail', args=[str(self.id)])
+
+
     def __str__(self):
         """String for representing the Model object."""
-        string = None
-        if self.experiment_type != '4':
-            string = str(self.experiment_title) + ' ' + '(' + str(self.element.symbol) + ' ' + str(self.element.edge) + ' edge, Reference spectrum: ' + str(self.reference) + ')'
-        else:
-            string = {self.experiment_title}
-        return string
+        return self.experiment_title
 
 class Report(models.Model):
     """Model representing reported spectrums and diffractograms."""
