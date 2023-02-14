@@ -1,16 +1,21 @@
 from django.urls import path
 from database import views
 
-
 urlpatterns = [
     path('', views.index, name='index'),
-    path('experiments/', views.ExperimentListView.as_view(), name='experiments'),
-    path('experiments/<int:pk>', views.ExperimentDetailView.as_view(), name='experiment-detail'),
+    path('experiments/', views.experiment_list, name='experiments'),
+    path('experiments/<int:pk>', views.experiment_detail, name='experiment-detail'),
+    path('experiments/<int:pk>/delete/', views.DeleteExperiment.as_view(), name='experiment-delete'),
     path('experiments/<int:pk>/file=<str:string>', views.file_response, name='file-response'),
-    path('search-xas/', views.search_xas, name='search-xas'),
-    path('search-xrd/', views.search_xrd, name='search-xrd'),
+    path('search-data/', views.search_data, name='search-data'),
+    path('search-data/result/', views.search_result, name='result'),
     path('about/', views.about, name='about'),
     path('login/', views.login, name='login'),
-    path('create-account/', views.create_account, name='create-account'),
-    path('upload-data/', views.upload_data, name='upload-data'),
+    path('account/<int:pk>/update/', views.ChangeAccountView.as_view(), name='account-update'),
+    path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('user-data/', views.user_data_list, name='user-data'),
+    path('add-experiment/', views.AddExperiment.as_view(), name='add-experiment'),
+    path('add-element/', views.AddElement.as_view(), name='add-element'),
+    path('add-beamline/', views.AddBeamline.as_view(), name='add-beamline'),
+    path('add-facility/', views.AddFacility.as_view(), name='add-facility'),
 ]

@@ -1,0 +1,46 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  
+  <h2 class="initial_main_text">Sign up:</h2>
+  
+	{% if user.is_authenticated %}
+		<p>You are already logged in to an account!<p>
+	{% else %}
+		
+		<!-- Form to signup: -->
+		<form method="post" action="{% url 'signup' %}">
+			{% csrf_token %}
+			
+			<table class="form_table">
+				{% for field in form %}
+					<tr>
+						<td>
+							<strong>{{field.label_tag}}</strong><br>
+						</td>
+					</tr>
+					<tr>
+						<td class="form_item">
+							{{field}}
+							{% if field.help_text %}
+								<small style="color: black;">{{field.help_text}}</small>
+							{% endif %}
+							<br>
+							{% for error in field.errors %}
+								<small style="color: red;">{{error}}</small>
+							{% endfor %}
+						</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<td style="text-align: center;">
+						<button style="width: 21%;" type="submit">Sign up</button>
+					</td>
+				</tr>
+			</table>
+
+		</form>
+
+	{% endif %}
+
+{% endblock %}

@@ -1,19 +1,12 @@
 from django.contrib import admin
-from .models import Address, User, Facility, Beamline, Element, Citation, Experiment, Report
+from .models import Facility, Beamline, Element, Experiment, Report, User
 
 admin.site.site_header = "Cruzeiro do Sul Data Library for XAS & XRD administration"
 admin.site.site_title = "Cruzeiro do Sul Data Library for XAS & XRD administration"
 admin.site.index_title = ""
 
-class AddressAdmin(admin.ModelAdmin):
-    list_display = ('city', 'state', 'country')
-    list_filter = ('country', 'state')
-
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('last_name', 'first_name', 'email')
-
 class FacilityAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address')
+    list_display = ('name', 'country', 'state', 'city')
 
 class BeamlineAdmin(admin.ModelAdmin):
     list_display = ('name', 'facility')
@@ -50,7 +43,7 @@ class ExperimentAdmin(admin.ModelAdmin):
             'fields': ('mono_name', 'mono_d_spacing')
         }),
         ('Detector:', {
-            'fields': ('detector_i0', 'detector_it')
+            'fields': ('detector_i0', 'detector_it', 'detector_if')
         }),
         ('Spectrum data:', {
             'fields': ('spectrum_measurement_mode', 'spectrum_data_type', 'spectrum_energy', 'spectrum_i0', 'spectrum_itrans', 'spectrum_ifluor', 'spectrum_mutrans', 'spectrum_mufluor', 'spectrum_normtrans', 'spectrum_normfluor', 'spectrum_norm_info', 'reference')
@@ -62,15 +55,13 @@ class ExperimentAdmin(admin.ModelAdmin):
             'fields': ('cif_file', 'data_licence')
         }),
         ('Additional information:', {
-            'fields': ('user', 'citation', 'additional_info')
+            'fields': ('citation', 'doi', 'additional_info', 'user')
         }),
     )
 
-admin.site.register(Address, AddressAdmin)
-admin.site.register(User, UserAdmin)
+admin.site.register(User)
 admin.site.register(Facility, FacilityAdmin)
 admin.site.register(Beamline, BeamlineAdmin)
 admin.site.register(Element)
-admin.site.register(Citation)
 admin.site.register(Experiment, ExperimentAdmin)
 admin.site.register(Report)

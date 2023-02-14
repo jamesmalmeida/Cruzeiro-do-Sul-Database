@@ -1,66 +1,78 @@
 from django.db import models
 from django.urls import reverse
-import os
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-class Address(models.Model):
-    """Model representing addresses data."""
-    # Name of the country:
-    country = models.CharField(max_length=150, blank=False, help_text='Enter the country name.')
-    # Name of the state or province:
-    state = models.CharField(max_length=150, blank=False, help_text='Enter the state/province name.')
-    # Name of the city:
-    city = models.CharField(max_length=150, blank=False, help_text='Enter the city name.')
-    # Meta class:
-    class Meta:
-        verbose_name = 'Address'
-        verbose_name_plural = 'Addresses'
+class UserManager(BaseUserManager):
+    def create_user(self,email,password,first_name,last_name,web_page,country,state,city,**extra_fields):
+        """Creates and saves a User with the given information."""
+        if not email:
+            raise ValueError('Users must have an email address')
 
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.city}, {self.state}, {self.country}'
+        user = self.model(email=self.normalize_email(email),first_name=first_name,last_name=last_name,web_page=web_page,country=country,state=state,city=city,**extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
 
-class User(models.Model):
+    def create_superuser(self,email,password,first_name,last_name,web_page,country,state,city,**extra_fields):
+        """Creates and saves a superuser with the given email and password."""
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_active", True)
+        extra_fields.setdefault("is_superuser", True)
+        
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+
+        return self.create_user(email,password,first_name,last_name,web_page,country,state,city,**extra_fields)
+
+class User(AbstractBaseUser, PermissionsMixin):
     """Model representing users data."""
-    # User name:
-    first_name = models.CharField(max_length=150, blank=False, help_text='Enter your first name.')
-    last_name = models.CharField(max_length=150, blank=False, help_text='Enter your last name.')
-    # Link to user's Web Page:
-    web_page = models.URLField(max_length=300, null=True, blank=True, help_text='Enter the URL of your academic web page. Ex: Google Scholar, ORCID, etc.')
     # User E-mail: 
-    email = models.EmailField(max_length=300, blank=False, help_text='Enter your e-mail.')
-    # Password of user's account:
-    password = models.CharField(max_length=150, blank=False, help_text='Enter a password for your account.')
-    PERMISSIONS = (
-        ('a','Administrator'),
-        ('u','User'),
-        ('b','Blocked'),
-    )
-    # Permission of user's account:
-    permission = models.CharField(max_length=1, blank=False, choices=PERMISSIONS, default='u', help_text='Choose the permissions of the user.')
-    # Foreign key relating to user's address:
-    # Cannot be deleted if some user or facility is using it
-    address = models.ForeignKey(Address, blank=False, on_delete=models.PROTECT, help_text='Choose your current address.')
-    # Meta class:
-    class Meta:
-        ordering = ['last_name', 'first_name']
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
-    
+    email = models.EmailField(verbose_name='email address',max_length=250,null=False,blank=False,unique=True,help_text='Enter your e-mail.')
+    # User name:
+    first_name = models.CharField(verbose_name='first name',max_length=100,null=False,blank=False,help_text='Enter your first name.')
+    last_name = models.CharField(verbose_name='last name',max_length=100,null=False,blank=False,help_text='Enter your last name.')
+    # Link to user's Web Page:
+    web_page = models.URLField(verbose_name='academic web page',max_length=300,null=True,blank=True,help_text='Enter the URL of your academic web page. Ex: Google Scholar, ORCID, etc.')
+    # User country:
+    country = models.CharField(max_length=150,null=False,blank=False,help_text='Enter your current country.')
+    # User state/province:
+    state = models.CharField(max_length=150,null=False,blank=False,help_text='Enter your current state/province.')
+    # User city:
+    city = models.CharField(max_length=150,null=False,blank=False,help_text='Enter your current city.')
+
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name','last_name','web_page','country','state','city']
+
+    objects = UserManager()
+
+    def get_full_name(self):
+        return f'{self.last_name}, {self.first_name}'
+
+    def get_short_name(self):
+        return f'{self.last_name}, {self.first_name}'
+
     def __str__(self):
-        """String for representing the Model object."""
-        return f'Name: {self.last_name}, {self.first_name} (Email: {self.email})'
+        return f'{self.last_name}, {self.first_name} (Email: {self.email})'
 
 class Facility(models.Model):
     """Model representing ficilities data."""
     # Synchrotron or other X-ray facility name:
-    name = models.CharField(max_length=300, blank=False, help_text='Enter the name of synchrotron or other x-ray facility.')
+    name = models.CharField(max_length=300,null=False,blank=False,help_text='Enter the name of synchrotron or other x-ray facility.')
     # Energy of the stored current in the storage ring:
-    energy = models.FloatField(null=True, blank=True, help_text='Enter the energy (in GeV) of stored current in the storage ring.')
+    energy = models.FloatField(null=True,blank=True,help_text='Enter the energy (in GeV) of stored current in the storage ring.')
     # Description of the x-ray source:
-    xray_source = models.CharField('X-ray source', max_length=300, blank=False, help_text='Enter a description of the x-ray source. Ex: \'bend magnet\', \'undulator\', \'rotating copper anode\', etc.')
-    # Foreign key relating to facility's address:
-    # Cannot be deleted if some user or facility is using it
-    address = models.ForeignKey(Address, blank=False, on_delete=models.PROTECT, help_text='Choose the facility address.')
+    xray_source = models.CharField('X-ray source',max_length=300,null=False,blank=False, help_text='Enter a description of the x-ray source. Ex: \'bend magnet\', \'undulator\', \'rotating copper anode\', etc.')
+    # Facility country:
+    country = models.CharField(max_length=150,null=False,blank=False,help_text='Enter the country where the facility is located.')
+    # Facility state or province:
+    state = models.CharField(max_length=150,null=False,blank=False,help_text='Enter the state/province where the facility is located.')
+    # Facility city:
+    city = models.CharField(max_length=150,null=False,blank=False,help_text='Enter the city where the facility is located.')
     # Meta class:
     class Meta:
         verbose_name = 'Facility'
@@ -68,21 +80,21 @@ class Facility(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.name} ({self.address.city}, {self.address.state}, {self.address.country})'
+        return f'{self.name} ({self.city}, {self.state}, {self.country})'
 
 class Beamline(models.Model):
     """Model representing beamlines data."""
     # Beamline name:
-    name = models.CharField(max_length=300, blank=False, help_text='Enter the name by which the beamline is known.')
+    name = models.CharField(max_length=300,null=False,blank=False,help_text='Enter the name by which the beamline is known.')
     # How beam collimation is provided:
-    collimation = models.CharField(max_length=300, null=True, blank=True, help_text='Enter a concise statement of how beam collimation is provided.')
+    collimation = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a concise statement of how beam collimation is provided.')
     # How bram focusing is provided:
-    focusing = models.CharField(max_length=300, null=True, blank=True, help_text='Enter a concise statement about how beam focusing is provided.')
+    focusing = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a concise statement about how beam focusing is provided.')
     # How harmonic rejection is accomplished:
-    harmonic_rejection = models.CharField(max_length=300, null=True, blank=True, help_text='Enter a concise statement about how harmonic rejection is accomplished.')
+    harmonic_rejection = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a concise statement about how harmonic rejection is accomplished.')
     # Foreign key relating to beamline's facility:
     # Cannot be deleted if some beamline is using it
-    facility = models.ForeignKey(Facility, blank=False, on_delete=models.PROTECT, help_text='Choose the beamline facility.')
+    facility = models.ForeignKey(Facility,null=False,blank=False,on_delete=models.PROTECT,help_text='Choose the beamline facility.')
     # Meta class:
     class Meta:
         verbose_name = 'Beamline'
@@ -195,7 +207,7 @@ class Element(models.Model):
         ('Cf','Cf - Californium'),
     )
     # Absorbing element symbol:
-    symbol = models.CharField(max_length=2, choices=ELEMENTS, null=True, blank=True, help_text='Choose the absorbing element.')
+    symbol = models.CharField(max_length=2,choices=ELEMENTS,null=False,blank=False,help_text='Choose the absorbing element.')
     EDGES = (
         ('K','K'),
         ('L','L'),
@@ -1977,7 +1989,7 @@ class Element(models.Model):
         ('Cf','P3',17.0),
     )
     # Edge of absorbing element:
-    edge = models.CharField(max_length=2, choices=EDGES, blank=True, null=True, help_text='Choose the absorption edge. The generic edges <i>L, M, N,</i> and <i>O</i> should be used only for spectra spanning multiple edges.')
+    edge = models.CharField(max_length=2,choices=EDGES,blank=False,null=False,help_text='Choose the absorption edge. The generic edges L, M, N, and O should be used only for spectra spanning multiple edges.')
     # Meta class:
     class Meta:
         verbose_name = 'Element'
@@ -1991,21 +2003,6 @@ class Element(models.Model):
                 energy = tmp[2]
                 break
         return f'{self.symbol}: {self.edge} edge ({energy} eV)'
-
-class Citation(models.Model):
-    """Model representing citations data."""
-    # doi of the document where data was published:
-    doi = models.CharField(max_length=300, null=True, blank=True, help_text='Enter the doi of the document where the data was first published.')
-    # Citation of the document where data was published:
-    citation = models.CharField(max_length=300, blank=False, help_text='Enter the citation of the document where the data was first published.')
-    # Meta class:
-    class Meta:
-        verbose_name = 'Citation'
-        verbose_name_plural = 'Citations'
-
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.citation}'
 
 class Experiment(models.Model):
     """Model representing experiments."""
@@ -2021,49 +2018,49 @@ class Experiment(models.Model):
         ('7','EXAFS + Powder diffraction'),
     )
     # Experiment type:
-    experiment_type = models.CharField(max_length=1, blank=False, choices=TYPES, help_text='Choose the experiment type.')
+    experiment_type = models.CharField(max_length=1,null=False,blank=False,choices=TYPES,help_text='Choose the experiment type.')
     # Title of the experiment:
-    experiment_title = models.CharField(max_length=150, blank=False, help_text='Enter a title for the experiment.')
+    experiment_title = models.CharField(max_length=150,null=False,blank=False,help_text='Enter a title for the experiment.')
     
     # Sample:
     # Name of the sample:
-    sample_name = models.CharField('Sample name', max_length=300, blank=False, help_text='Enter a text identifying the measured sample.')
+    sample_name = models.CharField('Sample name',max_length=300,null=False,blank=False,help_text='Enter a text identifying the measured sample.')
     # Stoichiometry of the sample in IUPAC format:
-    sample_stoichiometry_iupac = models.CharField('Stoichiometry IUPAC', max_length=300, blank=False, help_text='Enter the IUPAC stoichiometry formula of the measured sample. Ex: [Mo (C O)4 (C18 H33 P)2].')
+    sample_stoichiometry_iupac = models.CharField('Stoichiometry IUPAC',max_length=300,null=False,blank=False,help_text='Enter the IUPAC stoichiometry formula of the measured sample. Ex: [Mo (C O)4 (C18 H33 P)2].')
     # Stoichiometry of the sample in moiety format:
-    sample_stoichiometry_moiety = models.CharField('Stoichiometry moiety', max_length=300, null=True, blank=True, help_text='Enter the moiety stoichiometry formula of the measured sample. Ex: C40 H66 Mo O4 P2.')
+    sample_stoichiometry_moiety = models.CharField('Stoichiometry moiety',max_length=300,null=True,blank=True,help_text='Enter the moiety stoichiometry formula of the measured sample. Ex: C40 H66 Mo O4 P2.')
     # Information about the preparation of the sample:
-    sample_prep = models.CharField('Sample preparation', max_length=300, null=True, blank=True, help_text='Enter a text summarizing the method of sample preparation.')
+    sample_prep = models.CharField('Sample preparation',max_length=300,null=True,blank=True,help_text='Enter a text summarizing the method of sample preparation.')
     # Dimensions of the sample:
-    sample_dimensions = models.CharField('Sample dimensions', max_length=150, null=True, blank=True, help_text='Enter the dimensions with units of the measured sample.')
+    sample_dimensions = models.CharField('Sample dimensions',max_length=150,null=True,blank=True,help_text='Enter the dimensions with units of the measured sample.')
     # PH of the sample:
-    sample_ph = models.FloatField('Sample ph', null=True, blank=True, help_text='Enter the ph of the sample.')
+    sample_ph = models.FloatField('Sample ph',null=True,blank=True,help_text='Enter the ph of the sample.')
     # Redox state (EH) of the sample:
-    sample_eh = models.FloatField('Sample redox state (V)', null=True, blank=True, help_text='Enter the redox (oxidation-reduction) state of the measured sample.')
+    sample_eh = models.FloatField('Sample redox state (V)',null=True,blank=True,help_text='Enter the redox (oxidation-reduction) state of the measured sample.')
     # Volume of the sample:
-    sample_volume = models.FloatField('Sample volume (mm\u00b2)', null=True, blank=True, help_text='Enter the volume of the measured sample.')
+    sample_volume = models.FloatField('Sample volume (mm\u00b2)',null=True,blank=True,help_text='Enter the volume of the measured sample.')
     # Porosity of the sample:
-    sample_porosity = models.FloatField('Sample porosity (%)', null=True, blank=True, help_text='Enter the porosity of the measured sample.')
+    sample_porosity = models.FloatField('Sample porosity (%)',null=True,blank=True,help_text='Enter the porosity of the measured sample.')
     # Densisty of the sample:
-    sample_density = models.FloatField('Sample density (g/cm\u00b3)', null=True, blank=True, help_text='Enter the density of the measured sample.')
+    sample_density = models.FloatField('Sample density (g/cm\u00b3)',null=True,blank=True,help_text='Enter the density of the measured sample.')
     # Concentration of the sample:
-    sample_concentration = models.FloatField('Sample concentration (g/L)', null=True, blank=True, help_text='Enter the concentration of the measured sample.')
+    sample_concentration = models.FloatField('Sample concentration (g/L)',null=True,blank=True,help_text='Enter the concentration of the measured sample.')
     # Resistivity of the sample:
-    sample_resistivity = models.FloatField('Sample resistivity (\u03A9)', null=True, blank=True, help_text='Enter the resistivity of the measured sample.')
+    sample_resistivity = models.FloatField('Sample resistivity (\u03A9)',null=True,blank=True,help_text='Enter the resistivity of the measured sample.')
     # Viscosity of the sample:
-    sample_viscosity = models.FloatField('Sample viscosity (Pa\u00D7s)', null=True, blank=True, help_text='Enter the viscosity of the measured sample.')
+    sample_viscosity = models.FloatField('Sample viscosity (Pa\u00D7s)',null=True,blank=True,help_text='Enter the viscosity of the measured sample.')
     # Electric field of the sample:
-    sample_electric_field = models.FloatField('Sample electric field (V/m)', null=True, blank=True, help_text='Enter the electric field of the measured sample.')
+    sample_electric_field = models.FloatField('Sample electric field (V/m)',null=True,blank=True,help_text='Enter the electric field of the measured sample.')
     # Magnetic field of the sample:
-    sample_magnetic_field = models.FloatField('Sample magnetic field (T)', null=True, blank=True, help_text='Enter the magnetic field of the measured sample.')
+    sample_magnetic_field = models.FloatField('Sample magnetic field (T)',null=True,blank=True,help_text='Enter the magnetic field of the measured sample.')
     # Magnetic moment of the sample:
-    sample_magnetic_moment = models.FloatField('Sample magnetic moment (J/T)', null=True, blank=True, help_text='Enter the magnetic moment of the measured sample.')
+    sample_magnetic_moment = models.FloatField('Sample magnetic moment (J/T)',null=True,blank=True,help_text='Enter the magnetic moment of the measured sample.')
     # Electrochemical potential of the sample:
-    sample_electrochemical_potential = models.FloatField('Sample electrochemical potential (J/mol)', null=True, blank=True, help_text='Enter the electrochemical potential of the measured sample.')
+    sample_electrochemical_potential = models.FloatField('Sample electrochemical potential (J/mol)',null=True,blank=True,help_text='Enter the electrochemical potential of the measured sample.')
     # Opacity of the sample:
-    sample_opacity = models.FloatField('Sample opacity (A/mm)', null=True, blank=True, help_text='Enter the opacity of the measured sample.')
+    sample_opacity = models.FloatField('Sample opacity (A/mm)',null=True,blank=True,help_text='Enter the opacity of the measured sample.')
     # Purity of the sample:
-    sample_purity = models.FloatField('Sample purity (%)', null=True, blank=True, help_text='Enter the purity of the measured sample.')
+    sample_purity = models.FloatField('Sample purity (%)',null=True,blank=True,help_text='Enter the purity of the measured sample.')
     # Crystal system of the sample:
     CRYSTAL_SYSTEM = (
         ('a', 'Triclinic'),
@@ -2074,79 +2071,79 @@ class Experiment(models.Model):
         ('f', 'Hexagonal'),
         ('g', 'Cubic'),
     )
-    sample_crystal_system = models.CharField('Sample crystal system', max_length=1, null=True, blank=True, choices=CRYSTAL_SYSTEM, help_text='Enter the crystal system of the measured sample.')
+    sample_crystal_system = models.CharField('Sample crystal system',max_length=1,null=True,blank=True,choices=CRYSTAL_SYSTEM,help_text='Enter the crystal system of the measured sample.')
     
     # Measurement conditions:
     # Temparature of the measurement:
-    measurement_temperature = models.FloatField('Measurement temperature (K)', null=True, blank=True, help_text='Enter the temperature at which the sample was measured.')
+    measurement_temperature = models.FloatField('Measurement temperature (K)',null=True,blank=True,help_text='Enter the temperature at which the sample was measured.')
     # Pressure of the measurement:
-    measurement_pressure = models.FloatField('Measurement pressure (Pa)', null=True, blank=True, help_text='Enter the pressure at which the sample was measured.')
+    measurement_pressure = models.FloatField('Measurement pressure (Pa)',null=True,blank=True,help_text='Enter the pressure at which the sample was measured.')
     # Current at the beginning of the scan:
-    measurement_current = models.FloatField('Measurement current (mA)', null=True, blank=True, help_text='Enter the amount of stored current in the storage ring at the beginning of the scan')
+    measurement_current = models.FloatField('Measurement current (mA)',null=True,blank=True,help_text='Enter the amount of stored current in the storage ring at the beginning of the scan')
     # Wavelength:
-    measurement_wavelength = models.FloatField('Wavelength (nm)', null=True, blank=True, help_text='Enter the powder diffraction wavelength')
+    measurement_wavelength = models.FloatField('Wavelength (nm)',null=True,blank=True,help_text='Enter the powder diffraction wavelength')
     # Diffraction radiation type:
-    diffraction_radiation_type = models.CharField('Diffraction radiation type', max_length=150, null=True, blank=True, help_text='Enter the powder diffraction radiation type. Ex: synchrotron.')
+    diffraction_radiation_type = models.CharField('Diffraction radiation type',max_length=150,null=True,blank=True,help_text='Enter the powder diffraction radiation type. Ex: synchrotron.')
 
     # Crystalline:
     # Space group:
-    space_group = models.CharField(max_length=150, null=True, blank=True, help_text='Enter the crystalline space groupe of the sample.')
+    space_group = models.CharField(max_length=150,null=True,blank=True,help_text='Enter the crystalline space groupe of the sample.')
     # z:
-    z = models.FloatField(null=True, blank=True, help_text='Enter the crystalline z parameter of the sample.')
+    z = models.FloatField(null=True,blank=True,help_text='Enter the crystalline z parameter of the sample.')
     # a:
-    a = models.FloatField('a (\u212B)', null=True, blank=True, help_text='Enter the crystalline a parameter of the sample.')
+    a = models.FloatField('a (\u212B)',null=True,blank=True,help_text='Enter the crystalline a parameter of the sample.')
     # b:
-    b = models.FloatField('b (\u212B)', null=True, blank=True, help_text='Enter the crystalline b parameter of the sample.')
+    b = models.FloatField('b (\u212B)',null=True,blank=True,help_text='Enter the crystalline b parameter of the sample.')
     # c:
-    c = models.FloatField('c (\u212B)', null=True, blank=True, help_text='Enter the crystalline c parameter of the sample.')
+    c = models.FloatField('c (\u212B)',null=True,blank=True,help_text='Enter the crystalline c parameter of the sample.')
     # alpha:
-    alpha = models.FloatField('alpha (°)', null=True, blank=True, help_text='Enter the crystalline alpha parameter of the sample.')
+    alpha = models.FloatField('alpha (°)',null=True,blank=True,help_text='Enter the crystalline alpha parameter of the sample.')
     # beta:
-    beta = models.FloatField('beta (°)', null=True, blank=True, help_text='Enter the crystalline beta parameter of the sample.')
+    beta = models.FloatField('beta (°)',null=True,blank=True,help_text='Enter the crystalline beta parameter of the sample.')
     # gama:
-    gama = models.FloatField('gama (°)', null=True, blank=True, help_text='Enter the crystalline gama parameter of the sample.')
+    gama = models.FloatField('gama (°)',null=True,blank=True,help_text='Enter the crystalline gama parameter of the sample.')
 
     # Powder parameters:
     # Minimum 2 theta:
-    min_2_theta = models.FloatField('Min 2\u03B8', null=True, blank=True, help_text='Enter the minium 2\u03B8.')
+    min_2_theta = models.FloatField('Min 2\u03B8',null=True,blank=True,help_text='Enter the minium 2\u03B8.')
     # Maximum 2 theta:
-    max_2_theta = models.FloatField('Max 2\u03B8', null=True, blank=True, help_text='Enter the maximum 2\u03B8.')
+    max_2_theta = models.FloatField('Max 2\u03B8',null=True,blank=True,help_text='Enter the maximum 2\u03B8.')
     # Step:
-    step = models.FloatField(null=True, blank=True, help_text='Enter the step.')
+    step = models.FloatField(null=True,blank=True,help_text='Enter the 2\u03B8 step.')
 
     # Scan:
     # Date and time of beginning of the scan:
-    start_time = models.DateTimeField(blank=False, help_text='Enter the beginning time and date of the scan.')
+    start_time = models.DateTimeField(null=False,blank=False,help_text='Enter the beginning time and date of the scan.')
     # Date and time of ending of the scan:
-    end_time = models.DateTimeField(null=True, blank=True, help_text='Enter the ending time and date of the scan.')
+    end_time = models.DateTimeField(null=True,blank=True,help_text='Enter the ending time and date of the scan.')
     # Edge energy used in the data acquisition software:
-    edge_energy = models.FloatField('Edge energy (eV)', null=True, blank=True, help_text='Enter the absorption edge used in the data acquisition software.')
+    edge_energy = models.FloatField('Edge energy (eV)',null=True,blank=True,help_text='Enter the absorption edge used in the data acquisition software.')
     # Operational System used to acquire the data:
-    os = models.CharField('Operational System', max_length=150, null=True, blank=True, help_text='Enter the operational system name (and version) used in the data acquisition.')
+    os = models.CharField('Operational System',max_length=150,null=True,blank=True,help_text='Enter the operational system name (and version) used in the data acquisition.')
     # Softwares used to acquire and process the data:
-    software = models.CharField(max_length=300, null=True, blank=True, help_text='Enter the softwares names (and versions) used in the data acquisition and process tasks.')
+    software = models.CharField(max_length=300,null=True,blank=True,help_text='Enter the softwares names (and versions) used in the data acquisition and process tasks.')
 
     # Monochromator:
     # Monochromator features:
-    mono_name = models.CharField('Monochromator name', max_length=300, null=True, blank=True, help_text='Enter a brief text identifying the material and diffracting plane or grating spacing of the monochromator.')
+    mono_name = models.CharField('Monochromator name',max_length=300,null=True,blank=True,help_text='Enter a brief text identifying the material and diffracting plane or grating spacing of the monochromator.')
     # D-spacing of monochromator under operating conditions:
-    mono_d_spacing = models.FloatField('Monochromator d-spacing (\u212B)', null=True, blank=True, help_text='Enter the known d-spacing of the monochromator under operating conditions.')
+    mono_d_spacing = models.FloatField('Monochromator d-spacing (\u212B)',null=True,blank=True,help_text='Enter the known d-spacing of the monochromator under operating conditions.')
 
     # Detector:
     # Description of incident flux:
-    detector_i0 = models.CharField(max_length=300, null=True, blank=True, help_text='Enter a description of how the incident flux was measured.')
+    detector_i0 = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a description of how the incident flux was measured.')
     # Description of transmission flux:
-    detector_it = models.CharField(max_length=300, null=True, blank=True, help_text='Enter a description of how the transmission flux was measured.')
+    detector_it = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a description of how the transmission flux was measured.')
+    # Description of fluorecence flux:
+    detector_if = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a description of how the fluorescence flux was measured.')
 
     # Relating fields:
     # Foreign key relating to the element:
-    element = models.ForeignKey(Element, blank=True, null=True, on_delete=models.PROTECT, help_text='Choose the spectra\'s absorbing element and edge.')
+    element = models.ForeignKey(Element,blank=True,null=True,on_delete=models.PROTECT,help_text='Choose the spectra\'s absorbing element and edge.')
     # Foreign key relating to the beamline:
-    beamline = models.ForeignKey(Beamline, blank=False, on_delete=models.PROTECT, help_text='Choose the beamline on which the experiment was performed.')
-    # Foreign key relating to the citation:
-    citation = models.ForeignKey(Citation, null=True, blank=True, on_delete=models.PROTECT, help_text='Choose the experiment\'s citation.')
+    beamline = models.ForeignKey(Beamline,blank=False,null=False,on_delete=models.PROTECT,help_text='Choose the beamline on which the experiment was performed.')
     # Foreign key relating to the user:
-    user = models.ForeignKey(User, blank=False, on_delete=models.CASCADE, help_text='Choose the user who uploaded the date.')
+    user = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE,help_text='Choose the user who uploaded the date.')
     
     # Spectrum data:
     # Spectrum measurement mode:
@@ -2158,52 +2155,56 @@ class Experiment(models.Model):
         ('x', 'XEOL'),
         ('e', 'Electron Emission'),
     )
-    spectrum_measurement_mode = models.CharField(max_length=1, null=True, blank=True, choices=MEASUREMENT_MODES, help_text='Select the measurement mode of the spectra.')
+    spectrum_measurement_mode = models.CharField(max_length=1,null=True,blank=True,choices=MEASUREMENT_MODES,help_text='Select the measurement mode of the spectra.')
     # Spectrum data type:
     DATA_TYPES = (
         ('r','Raw data'),
         ('m','\u03BC coefficients'),
         ('n','Normalized \u03BC coefficients'),
     )
-    spectrum_data_type = models.CharField(max_length=1, null=True, blank=True, choices=DATA_TYPES, help_text='Select the spectra\'s data type.')
+    spectrum_data_type = models.CharField(max_length=1,null=True,blank=True,choices=DATA_TYPES,help_text='Select the spectra\'s data type.')
     # File upload field for monochromator energy:
-    spectrum_energy = models.FileField(null=True, blank=True, upload_to='uploads/energy/', help_text='Select the plain text file (.txt) containing the monochromator energy data. The data array must be a column vector.')
+    spectrum_energy = models.FileField(null=True,blank=True,upload_to='uploads/energy/',help_text='Select the plain text file (.txt) containing the monochromator energy data. The data array must be a column vector.')
     # File upload field for the intensity of incident x-rays:
-    spectrum_i0 = models.FileField(null=True, blank=True, upload_to='uploads/i0/', help_text='Select the plain text file (.txt) containing the intensity of incident x-rays (i0) data. The data array must be a column vector.')
+    spectrum_i0 = models.FileField(null=True,blank=True,upload_to='uploads/i0/',help_text='Select the plain text file (.txt) containing the intensity of incident x-rays (i0) data. The data array must be a column vector.')
     # File upload field for intensity of transmitted x-rays: 
-    spectrum_itrans = models.FileField(null=True, blank=True, upload_to='uploads/itrans/', help_text='Select the plain text file (.txt) containing the intensity of transmitted x-rays (itrans) data. The data array must be a column vector.')
+    spectrum_itrans = models.FileField(null=True,blank=True,upload_to='uploads/itrans/',help_text='Select the plain text file (.txt) containing the intensity of transmitted x-rays (itrans) data. The data array must be a column vector.')
     # File upload field for intensity of fluorescence x-rays: 
-    spectrum_ifluor = models.FileField(null=True, blank=True, upload_to='uploads/ifluor/', help_text='Select the plain text file (.txt) containing the intensity of fluorescence x-rays (itrans) data. The data array must be a column vector.')
+    spectrum_ifluor = models.FileField(null=True,blank=True,upload_to='uploads/ifluor/',help_text='Select the plain text file (.txt) containing the intensity of fluorescence x-rays (itrans) data. The data array must be a column vector.')
     # File upload field for mu coefficients of transmitted x-rays:
-    spectrum_mutrans = models.FileField(null=True, blank=True, upload_to='uploads/mutrans/', help_text='Select the plain text file (.txt) containing the \u03BC coefficients of trasmitted x-rays (\u03BCtrans) data. The data array must be a column vector.')
+    spectrum_mutrans = models.FileField(null=True,blank=True,upload_to='uploads/mutrans/',help_text='Select the plain text file (.txt) containing the \u03BC coefficients of trasmitted x-rays (\u03BCtrans) data. The data array must be a column vector.')
     # File upload field for mu coefficients of fluorescence x-rays:
-    spectrum_mufluor = models.FileField(null=True, blank=True, upload_to='uploads/mufluor/', help_text='Select the plain text file (.txt) containing the \u03BC coefficients of fluorescence x-rays (\u03BCfluor) data. The data array must be a column vector.')
+    spectrum_mufluor = models.FileField(null=True,blank=True,upload_to='uploads/mufluor/',help_text='Select the plain text file (.txt) containing the \u03BC coefficients of fluorescence x-rays (\u03BCfluor) data. The data array must be a column vector.')
     # File upload field for normalized mu coefficients of transmitted x-rays:
-    spectrum_normtrans = models.FileField(null=True, blank=True, upload_to='uploads/normtrans/', help_text='Select the plain text file (.txt) containing the normalized \u03BC coefficients of transmitted x-rays data. The data array must be a column vector.')
+    spectrum_normtrans = models.FileField(null=True,blank=True,upload_to='uploads/normtrans/',help_text='Select the plain text file (.txt) containing the normalized \u03BC coefficients of transmitted x-rays data. The data array must be a column vector.')
     # File upload field for normalized mu coefficients of fluorescence x-rays:
-    spectrum_normfluor = models.FileField(null=True, blank=True, upload_to='uploads/normfluor/', help_text='Select the plain text file (.txt) containing the normalized \u03BC coefficients of fluorescence x-rays data. The data array must be a column vector.')
+    spectrum_normfluor = models.FileField(null=True,blank=True,upload_to='uploads/normfluor/',help_text='Select the plain text file (.txt) containing the normalized \u03BC coefficients of fluorescence x-rays data. The data array must be a column vector.')
     # Description of the normalization method used:
-    spectrum_norm_info = models.CharField('Normalization information', max_length=300, null=True, blank=True, help_text='Enter a description of the normalization process used.')
+    spectrum_norm_info = models.CharField('Normalization information',max_length=300,null=True,blank=True,help_text='Enter a description of the normalization process used.')
     # Reference spectrum:
-    reference = models.BooleanField(blank=False, help_text='Select if the spectrum is a reference spectrum')
+    reference = models.BooleanField(null=True,blank=True,help_text='Select if the spectrum is a reference spectrum')
 
     # Diffraction data:
     # File upload field for Powder diffraction 2 theta:
-    diffraction_2_theta = models.FileField('2\u03B8', null=True, blank=True, upload_to='uploads/2_theta/', help_text='Select the plain text file (.txt) containing the diffraction 2 theta data. The data array must be a column vector.')
+    diffraction_2_theta = models.FileField('2\u03B8',null=True,blank=True,upload_to='uploads/2_theta/',help_text='Select the plain text file (.txt) containing the diffraction 2 theta data. The data array must be a column vector.')
     # File upload field for Powder diffraction intensity:
-    diffraction_intensity = models.FileField(null=True, blank=True, upload_to='uploads/intensity/', help_text='Select the plain text file (.txt) containing the diffraction intensity data. The data array must be a column vector.')
+    diffraction_intensity = models.FileField(null=True,blank=True,upload_to='uploads/intensity/',help_text='Select the plain text file (.txt) containing the diffraction intensity data. The data array must be a column vector.')
 
     # Additional data:
     # File upload field for cif arquives:
-    cif_file = models.FileField('CIF', null=True, blank=True, upload_to='uploads/cif/', help_text='Select the Crystallographic Information File (.cif) of the sample.')
+    cif_file = models.FileField('CIF',null=True,blank=True,upload_to='uploads/cif/',help_text='Select the Crystallographic Information File (.cif) of the sample.')
     # Licence of the data:
-    data_licence = models.CharField(max_length=300, null=True, blank=True, help_text='Enter the licence of the data.')
+    data_licence = models.CharField(max_length=300,null=True,blank=True,help_text='Enter the licence of the data.')
 
     # Additional information:
     # Upload date and time of the sample:
     upload_date = models.DateTimeField(auto_now_add=True)
     # Aditional information about the spectrum:
-    additional_info = models.CharField('Additional information', max_length=300, null=True, blank=True, help_text='Enter additional information if needed')
+    additional_info = models.CharField('Additional information',max_length=300,null=True,blank=True,help_text='Enter additional information if needed')
+    # doi of the document where data was published:
+    doi = models.CharField(max_length=300,null=True,blank=True,help_text='Enter the doi of the document where the data was first published.')
+    # Citation of the document where data was published:
+    citation = models.CharField(max_length=300,null=True,blank=True,help_text='Enter the citation of the document where the data was first published.')
     
     # Meta class:
     class Meta:
@@ -2214,7 +2215,6 @@ class Experiment(models.Model):
         """Returns the URL to access a particular instance of the model."""
         return reverse('experiment-detail', args=[str(self.id)])
 
-
     def __str__(self):
         """String for representing the Model object."""
         return self.experiment_title
@@ -2222,11 +2222,11 @@ class Experiment(models.Model):
 class Report(models.Model):
     """Model representing reported spectrums and diffractograms."""
     # Reported experiment:
-    experiment = models.OneToOneField(Experiment, null=True, blank=True, on_delete=models.CASCADE, help_text='Choose the experiment to report.')
+    experiment = models.ForeignKey(Experiment,null=False,blank=False,on_delete=models.CASCADE,help_text='Choose the experiment to report.')
     # Reporter user:
-    reporter = models.ForeignKey(User, blank=False, on_delete=models.CASCADE, help_text='Choose the reporter.')
+    reporter = models.ForeignKey(User,null=False,blank=False,on_delete=models.CASCADE,help_text='Choose the reporter.')
     # Report motivation:
-    motivation = models.CharField(max_length=300, blank=False, help_text='Enter the motivation of the report.')
+    motivation = models.CharField(max_length=300,null=False,blank=False,help_text='Enter the motivation of the report.')
     # Meta class:
     class Meta:
         verbose_name = 'Report'

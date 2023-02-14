@@ -1,10 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-	<h2 class="initial_main_text">Select the Sample Elements:</h2>
-
-	<!-- Form to search diffractograms: -->
-	<form action="" method="post">
+	<h2 class="initial_main_text">Select the absorbing element:</h2>
+        
+	<!-- Form to search spectras: -->
+	<form action="{% url 'result' %}" method="get">
 	
 		<!-- Periodic Table: -->
 		<table style="margin-left: auto; margin-right: auto; border-collapse: separate;">
@@ -246,37 +246,115 @@
 		</br>
 
 		<table class="form_table">
-    	<tr>
-        <td>
-          <strong>Elements of the Sample (Separated by spaces):</strong>
-        </td>
-        <td>
-          <input type="text" class="form_text_field" id="composition"/>
-        </td>
-      </tr>
-			<tr>
-				<td>
-					<strong>Crystal System:</strong>
-				</td>
-				<td>
-					<select id="crystal_system">
-						<option value="Any" selected>Any</option>
-						<option value="Triclinic">Triclinic</option>
-						<option value="Monoclinic">Monoclinic</option>
-						<option value="Orthorhombic">Orthorhombic</option>
-						<option value="Tetragonal">Tetragonal</option>
-						<option value="Trigonal">Trigonal</option>
-						<option value="Hexagonal">Hexagonal</option>
-						<option value="Cubic">Cubic</option>
-					</select>
-				</td>
-			</tr>
-      <tr>
-        <td colspan="2">
-          <input style="width: 20%;" type="submit" value="Search"/>
-        </td>
-      </tr>
-    </table>
+    		<tr><td>
+        		<strong>Absorbing element:</strong>
+        	</td></tr>
+			<tr class="form_item"><td>
+				<input type="text" class="form_text_field" maxlength="2" id="absorbing_element" name="absorbing_element"/>
+				<small style="color: black;">Enter the absorbing element.</small>
+			</td></tr>
+			<tr><td>
+				<strong>Elements of the sample:</strong>
+			</td></tr>
+			<tr class="form_item"><td>
+				<input type="text" class="form_text_field" id="composition" name="composition"/>
+				<small style="color: black;">Enter the elements of the sample (separated by spaces).</small>
+			</td></tr>
+        	<tr><td>
+				<strong>Edge:</strong>
+			</td></tr>
+			<tr class="form_item"><td>
+				<select id="edge" name="edge">
+					<option value="Any" selected>Any</option>
+					<option value="K">  K</option>
+					<option value="L">  L</option>
+					<option value="L1">L1</option>
+					<option value="L2">L2</option>
+					<option value="L3">L3</option>
+					<option value="M">  M</option>
+					<option value="M1">M1</option>
+					<option value="M2">M2</option>
+					<option value="M3">M3</option>
+					<option value="M4">M4</option>
+					<option value="M5">M5</option>
+					<option value="N">  N</option>
+					<option value="N1">N1</option>
+					<option value="N2">N2</option>
+					<option value="N3">N3</option>
+					<option value="N4">N4</option>
+					<option value="N5">N5</option>
+					<option value="N6">N6</option>
+					<option value="N7">N7</option>
+					<option value="O">  O</option>
+					<option value="O1">O1</option>
+					<option value="O2">O2</option>
+					<option value="O3">O3</option>
+					<option value="O4">O4</option>
+					<option value="O5">O5</option>
+					<option value="P">  P</option>
+					<option value="P1">P1</option>
+					<option value="P2">P2</option>
+					<option value="P3">P3</option>
+				</select>
+				<small style="color: black;">Select absorbing element edge.</small>
+			</td></tr>
+			<tr><td>
+        		<strong>Data type:</strong>
+        	</td></tr>
+			<tr class="form_item"><td>
+				<select id="data_type" name="data_type">
+					<option value='Any' selected>Any</option>
+					<option value='1'>XAS</option>
+					<option value='2'>XANES</option>
+					<option value='3'>EXAFS</option>
+					<option value='4'>Powder diffraction</option>
+					<option value='5'>XAS + Powder diffraction</option>
+					<option value='6'>XANES + Powder diffraction</option>
+					<option value='7'>EXAFS + Powder diffraction</option>
+				</select>
+				<small style="color: black;">Select the data type.</small>
+			</td></tr>
+			<tr><td>
+        		<strong>XAS measurement mode:</strong>
+        	</td></tr>
+			<tr class="form_item"><td>
+				<select id="measurement" name="measurement">
+					<option value='Any' selected>Any</option>
+					<option value='t'>Transmission</option>
+					<option value='f'>Fluorescence</option>
+					<option value='h'>Herfd</option>
+					<option value='r'>Raman</option>
+					<option value='x'>Xeol</option>
+					<option value='e'>Electron emission</option>
+				</select>
+				<small style="color: black;">Select the XAS measurement mode.</small>
+			</td></tr>
+			<tr><td>
+				<strong>Search type:</strong>
+			</td></tr>
+			<tr class="form_item"><td>
+				<select id="SelectSearch" onchange="SearchMethodCheck();">
+					<option value="Manual" selected="selected">Manual</option>
+					<option value="Comparation">Comparation</option>
+				</select>
+				<small style="color: black;">Select the search type.</small>
+			</td></tr>
+			<tr id="ComparationEnergyLegend" style="display: none;"><td>
+				<strong>Energy array (.txt file):</strong>
+			</td></tr>
+			<tr id="ComparationEnergyFile" class="form_item" style="display: none;"><td>
+				<input type="file" style="width: 100%;" value="Choose Spectra File"/>
+			</td></tr>
+			<tr id="ComparationMuLegend" style="display: none;"><td>
+				<strong>μ array (.txt file):</strong>
+			</td></tr>
+			<tr id="ComparationMuFile" class="form_item" style="display: none;"><td>
+				<input type="file" style="width: 100%;" value="Choose Spectra File"/>
+			</td></tr>
+			<tr><td colspan="2" style="text-align: center;">
+				<input style="width: 21%;" type="submit" value="Search"/>
+			</td></tr>
+    	</table>
 	
 	</form>
 
