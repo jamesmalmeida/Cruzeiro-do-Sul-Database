@@ -16,18 +16,6 @@ class UserCreationForm(UserCreationForm):
         model = User
         fields = ["email","first_name","last_name","web_page","country","state","city","password1","password2"]
 
-class UserChangeForm(UserChangeForm):
-    first_name = forms.CharField(max_length=100,required=True,help_text='Enter your first name.')
-    last_name = forms.CharField(max_length=100,required=True,help_text='Enter your last name.')
-    web_page = forms.CharField(max_length=300,required=False,help_text='Enter the URL of your academic web page. Ex: Google Scholar, ORCID, etc.')
-    country = forms.CharField(max_length=150,required=True,help_text='Enter your current country.')
-    state = forms.CharField(max_length=150,required=True,help_text='Enter your current state/province.')
-    city = forms.CharField(max_length=150,required=True,help_text='Enter your current city.')
-    
-    class Meta:
-        model = User
-        fields = ["first_name","last_name","web_page","country","state","city","password"]
-
 class AddExperiment(forms.ModelForm):
 
     class Meta:

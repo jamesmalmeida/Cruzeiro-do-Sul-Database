@@ -162,8 +162,8 @@ class SignUpView(CreateView):
 
 class ChangeAccountView(UpdateView):
     model = User
-    form_class = UserChangeForm
-    success_url = reverse_lazy("account")
+    fields = ["first_name","last_name","web_page","country","state","city"]
+    success_url = reverse_lazy("index")
     template_name = "registration/change_account.html"
 
 class AddExperiment(CreateView):

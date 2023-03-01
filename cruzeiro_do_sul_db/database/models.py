@@ -2038,7 +2038,7 @@ class Experiment(models.Model):
     # Redox state (EH) of the sample:
     sample_eh = models.FloatField('Sample redox state (V)',null=True,blank=True,help_text='Enter the redox (oxidation-reduction) state of the measured sample.')
     # Volume of the sample:
-    sample_volume = models.FloatField('Sample volume (mm\u00b2)',null=True,blank=True,help_text='Enter the volume of the measured sample.')
+    sample_volume = models.FloatField('Sample volume (mm\u00b3)',null=True,blank=True,help_text='Enter the volume of the measured sample.')
     # Porosity of the sample:
     sample_porosity = models.FloatField('Sample porosity (%)',null=True,blank=True,help_text='Enter the porosity of the measured sample.')
     # Densisty of the sample:

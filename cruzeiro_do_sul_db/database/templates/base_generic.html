@@ -66,7 +66,7 @@
           <li style="float: left;" class="top_item"><a href="{% url 'user-data' %}">User Data</a></li>
           <li style="float: left;" class="top_item"><a href="{% url 'about' %}">About</a></li>
           <li style="float: right;" class="top_item"><a href="{% url 'logout' %}">Log out</a></li>
-          <li style="float: right;" class="top_item"><a href="">{{user.last_name}}, {{user.first_name}}</a></li>
+          <li style="float: right;" class="top_item"><a href="account/{{user.id}}/update/">{{user.last_name}}, {{user.first_name}}</a></li>
           <li class="float_text">Logged as: </li>
         {% else %}
           <li style="float: left;" class="top_item"><a href="{% url 'about' %}">About</a></li>
