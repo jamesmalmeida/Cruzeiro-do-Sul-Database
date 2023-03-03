@@ -1,5 +1,11 @@
 # Cruzeiro do Sul Database
-  Sirius XAS & XRD database
+  QUATI Beamline (Sirius - CNPEM) Data Library for storing XAS & XRD spectras.
+  
+  Developed initially in 2023 by Anailson Santos Silva as a research project during his participation in the 30th Summer Scholarship Program (PBV30) of the   National Center for Research in Energy and Materials (CNPEM) located in Campinas, São Paulo - Brazil.
+  
+  The simulation data was obtained by Francis Germánico Villacrés Merchán during his participation in the PBV30.
+  
+  The idealizers of the database and the website were PhDs Santiago José Alejandro Figueroa (QUATI - LNLS) and James Moraes de Almeida (ILUM) and the engineer Igor Ferreira Torquato (QUATI - LNLS).
 
 # Requirements:
   - Python (preferable Python3.10) with Django.
