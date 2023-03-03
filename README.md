@@ -9,7 +9,8 @@
   - Clone the repository:
     - You can download the source code and extract it in a file-system's folder;
     - Or you can clone the repository to a file-system's folder with git or Github-Desktop.
-  - In a terminal, go to the folder location where you placed the files containing manage.py file inside Cruzeiro-do-Sul-Database/cruzeiro_do_sul_db/ folder.
+  - In a terminal, go to the folder location where you placed the files containing manage.py file
+    - Inside ~/../Cruzeiro-do-Sul-Database/cruzeiro_do_sul_db/.
   - Make the migrations to the database. Replace 'python3.10' with your python version. Commands:
     - python3.10 manage.py makemigrations database
     - python3.10 manage.py migrate database
