@@ -61,7 +61,6 @@
       <ul class="topmenu">
 				<li style="float: left;" class="top_item"><a href="{% url 'index' %}">Home</a></li>
 				<li style="float: left;" class="top_item"><a href="{% url 'experiments' %}">Experiments</a></li>
-				<li style="float: left;" class="top_item"><a href="{% url 'normalization' %}">Normalizations</a></li>
         <li style="float: left;" class="top_item"><a href="{% url 'search-data' %}">Search Data</a></li>
         {% if user.is_authenticated %}
           <li style="float: left;" class="top_item"><a href="{% url 'user-data' %}">User Data</a></li>

@@ -1,0 +1,41 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  
+  <h2 class="initial_main_text">Add Element:</h2>
+  
+  {% if user.is_authenticated %}
+
+    <!-- Form for add absorbing element: -->
+    <form action="" method="POST">
+      {% csrf_token %}
+
+      <table class="form_table">
+        <tr><td style="text-align: center;">
+          <h4>Add Absorbing Element:</h4>
+        </td></tr>
+        <tr><td>
+          <strong>Absorbing element symbol:</strong>
+        </td></tr>
+        <tr><td class="form_item">
+          {{form.symbol}} <small style="color: black;">{{form.symbol.help_text}}</small>
+        </td></tr>
+        <tr><td>
+          <strong>Absorbing element edge:</strong>
+        </td></tr>
+        <tr><td class="form_item">
+          {{ form.edge }} <small style="color: black;">{{form.edge.help_text}}</small>
+        </td></tr>
+        <tr><td style="text-align: center;">
+          <input style="width: 21%;" type="submit" value="Add Absorbing Element"/>
+        </td></tr>
+      </table>
+
+    </form>
+  {% else %}
+    <p>
+      You need to be logged in to access this page.
+    </p>
+  {% endif %}
+
+{% endblock %}
