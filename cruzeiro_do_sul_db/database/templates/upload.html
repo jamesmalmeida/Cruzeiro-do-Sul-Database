@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload de Arquivo</title>
+</head>
+<body>
+    <h1>Upload de Arquivo</h1>
+    <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
+        {% csrf_token %}
+        <input type="file" name="file"><br><br>
+        
+        <label for="title">Título do Gráfico:</label>
+        <input type="text" id="title" name="title"><br><br>
+        
+        <label for="legend">Exibir Legenda:</label>
+        <input type="checkbox" id="legend" name="legend"><br><br>
+        
+        <label for="bg_color">Cor de Fundo:</label>
+        <input type="text" id="bg_color" name="bg_color"><br><br>
+        
+        <label for="grid_color">Cor da Grade:</label>
+        <input type="text" id="grid_color" name="grid_color"><br><br>
+        
+        <input type="submit" value="Enviar">
+    </form>
+</body>
+</html>
+
+{% endblock %}
