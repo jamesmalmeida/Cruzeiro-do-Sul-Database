@@ -331,7 +331,7 @@ def normalize_file(request):
                 
                 absorcao_normalizada.append(normalizado)
                 
-                pasta_destino = "C:\JupyterLab\INICIAÇÃO A PESQUISA CIENTÍFICA\Cruzeiro-do-Sul-Database\cruzeiro_do_sul_db\db_xanes"
+                pasta_destino = "db_xanes"
                 os.makedirs(pasta_destino, exist_ok=True)
                 
                 nome_arquivo = f"{file}_normalizado.txt"
@@ -365,6 +365,7 @@ def normalize_file(request):
                 )
                 
                 fig.update_traces(line=dict(color=line_color))
+                fig.update_xaxes(rangeslider_visible=True) #JAMES
             
                 plot_div = fig.to_html(full_html=False)
                 
@@ -408,7 +409,7 @@ def normalize_file(request):
 def plotly_chart(request):
     
     # Dados do gráfico
-    path = 'C:\JupyterLab\INICIAÇÃO A PESQUISA CIENTÍFICA\Cruzeiro-do-Sul-Database\cruzeiro_do_sul_db\db_xanes'
+    path = 'db_xanes'
     
     def load_graph(file_path):
         with open(file_path, 'r') as file:
@@ -416,7 +417,7 @@ def plotly_chart(request):
             graph = [list(map(float, value.strip().split())) for value in data]
         return np.array(graph)
     
-    reference_file = 'C:\JupyterLab\INICIAÇÃO A PESQUISA CIENTÍFICA\DADOS NORMALIZADOS\Al2Fe(SiO5)2_py_out_conv.txt_normalizado.txt'
+    reference_file = 'DADOS NORMALIZADOS\Al2Fe(SiO5)2_py_out_conv.txt_normalizado.txt'
 
     reference_graph = load_graph(reference_file)
     
@@ -429,6 +430,7 @@ def plotly_chart(request):
     data = [trace]
     layout = go.Layout(title='Exemplo de Gráfico Plotly')
     figure = go.Figure(data=data, layout=layout)
+    figure.update_xaxes(rangeslider_visible=True)
 
     # Geração do código HTML para o gráfico
     div = opy.plot(figure, auto_open=False, output_type='div')
