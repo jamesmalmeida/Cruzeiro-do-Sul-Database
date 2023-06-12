@@ -1,0 +1,632 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+	<h2 class="initial_main_text">Experiment: {{ experiment.experiment_title }}</h2>
+
+  <table class="form_table">
+		<tr><td style="text-align: center;">
+			<h4>Experiment:</h4>
+		</td></tr>
+    <tr><td>
+      <strong>Experiment type:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+			{% if experiment.experiment_type == '1' %}
+				XAS
+			{% elif experiment.experiment_type == '2' %}
+				XANES
+			{% elif experiment.experiment_type == '3' %}
+				EXAFS
+			{% elif experiment.experiment_type == '4' %}
+				Powder diffraction
+			{% elif experiment.experiment_type == '5' %}
+				XAS + Powder diffraction
+			{% elif experiment.experiment_type == '6' %}
+				XANES + Powder diffraction
+			{% elif experiment.experiment_type == '7' %}
+				EXAFS + Powder diffraction
+			{% else %}
+        None
+      {% endif %}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Absorbing Element:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>Absorbing element:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.element %}
+        {{ experiment.element }}
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Sample:</h4>
+		</td></tr>
+    <tr><td>
+      <strong>Sample name:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_name }}
+    </td></tr>
+    <tr><td>
+      <strong>Sample stoichiometry (IUPAC):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_stoichiometry_iupac }}
+    </td></tr>
+    <tr><td>
+      <strong>Sample stoichiometry (Moiety):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_stoichiometry_moiety }}
+    </td></tr>
+    <tr><td>
+      <strong>Sample preparation:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_prep }}
+    </td></tr>
+    <tr><td>
+      <strong>Sample ph:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_ph }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample redox state (V):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_eh }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample volume (mm<sup>3</sup>):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_volume }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample porosity (%):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_porosity }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample density (g/mm<sup>3</sup>):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_density }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample concentration (g/L):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_concentration }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample resistivity (Ω):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_resistivity }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample viscosity (Pa·s):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_viscosity }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample electric field (V/m):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_electric_field }}
+    </td></tr>
+    <tr><td>
+      <strong>Sample magnetic field (T):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_magnetic_field }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample magnetic moment (J/T):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_magnetic_moment }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample electrochemical potential (J/mol):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_electrochemical_potential }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample opacity (A/mm):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_opacity }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample purity (%):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.sample_purity }}
+    </td></tr>
+		<tr><td>
+      <strong>Sample crystal system:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.sample_crystal_system == 'a' %}
+				Triclinic
+			{% elif experiment.sample_crystal_system == 'b' %}
+				Monoclinic
+			{% elif experiment.sample_crystal_system == 'c' %}
+				Orthorhombic
+			{% elif experiment.sample_crystal_system == 'd' %}
+				Tetragonal
+			{% elif experiment.sample_crystal_system == 'e' %}
+				Trigonal
+			{% elif experiment.sample_crystal_system == 'f' %}
+				Hexagonal
+			{% elif experiment.sample_crystal_system == 'g' %}
+				Cubic
+      {% else %}
+        None
+			{% endif %}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Crystalline Information:</h4>
+		</td></tr>
+    <tr><td>
+      <strong>Space group:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.space_group }}
+    </td></tr>
+    <tr><td>
+      <strong>z:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.z }}
+    </td></tr>
+    <tr><td>
+      <strong>a (Å):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.a }}
+    </td></tr>
+    <tr><td>
+      <strong>b (Å):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.b }}
+    </td></tr>
+    <tr><td>
+      <strong>c (Å):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.c }}
+    </td></tr>
+    <tr><td>
+      <strong>&alpha; (°):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.alpha }}
+    </td></tr>
+    <tr><td>
+      <strong>&beta; (°):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beta }}
+    </td></tr>
+    <tr><td>
+      <strong>&gamma; (°):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.gama }}
+    </td></tr>
+		
+		<tr><td style="text-align: center;">
+			<h4>Powder Parameters:</h4>
+		</td></tr>
+    <tr><td>
+      <strong>Min 2θ (°):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.min_2_theta }}
+    </td></tr>
+    <tr><td>
+      <strong>Max 2θ (°):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.max_2_theta }}
+    </td></tr>
+		<tr><td>
+      <strong>Step (°):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.step }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Measurement Conditions:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>Measurement temperature (K):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.measurement_temperature }}
+    </td></tr>
+    <tr><td>
+      <strong>Measurement pressure (Pa):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.measurement_pressure }}
+    </td></tr>
+    <tr><td>
+      <strong>Measurement current (mA):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.measurement_current }}
+    </td></tr>
+    <tr><td>
+      <strong>Measurement wavelength (nm):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.measurement_wavelength }}
+    </td></tr>
+    <tr><td>
+      <strong>Diffraction radiation type:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.diffraction_radiation_type }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Scan Information:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>Start time:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.start_time }}
+    </td></tr>
+    <tr><td>
+      <strong>End time:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.end_time }}
+    </td></tr>
+    <tr><td>
+      <strong>Edge energy (eV) used in the data acquisition software:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.edge_energy }}
+    </td></tr>
+    <tr><td>
+      <strong>Operational System used to acquire the data:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.os }}
+    </td></tr>
+    <tr><td>
+      <strong>Softwares used to acquire and process the data:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.software }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Facility:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>Facility name:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beamline.facility.name }}
+    </td></tr>
+    <tr><td>
+      <strong>Facility energy (GeV):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beamline.facility.energy }}
+    </td></tr>
+    <tr><td>
+      <strong>Facility x-rays source:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beamline.facility.xray_source }}
+    </td></tr>
+    <tr><td>
+      <strong>Facility address:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beamline.facility.country }}, {{ experiment.beamline.facility.state }}, {{ experiment.beamline.facility.city }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Beamline:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>Beamline name:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beamline.name }}
+    </td></tr>
+    <tr><td>
+      <strong>Collimation information:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beamline.collimation }}
+    </td></tr>
+    <tr><td>
+      <strong>Focusing information:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beamline.focusing }}
+    </td></tr>
+    <tr><td>
+      <strong>Harmonic rejection information:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.beamline.harmonic_rejection }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Monochromator:</h4>
+		</td></tr>
+    <tr><td>
+      <strong>Monochromator name:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.mono_name }}
+    </td></tr>
+    <tr><td>
+      <strong>Monochromator d-spacing (Å):</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.mono_d_spacing }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Detector:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>How the incident flux was measured:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.detector_i0 }}
+    </td></tr>
+    <tr><td>
+      <strong>How the transmitted flux was measured:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.detector_it }}
+    </td></tr>
+    <tr><td>
+      <strong>How the fluorescence flux was measured:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.detector_if }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>XAS Data:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>Measurement mode:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_measurement_mode == 't' %}
+				Transmission
+			{% elif experiment.spectrum_measurement_mode == 'f' %}
+				Fluorescence
+			{% elif experiment.spectrum_measurement_mode == 'h' %}
+				HERFD
+			{% elif experiment.spectrum_measurement_mode == 'r' %}
+				Raman
+			{% elif experiment.spectrum_measurement_mode == 'x' %}
+				XEOL
+			{% elif experiment.spectrum_measurement_mode == 'e' %}
+				Electron Emission
+      {% else %}
+        None
+			{% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Data type:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_data_type == 'r' %}
+				Raw Data
+			{% elif experiment.spectrum_data_type == 'm' %}
+				&mu; Coefficients
+			{% elif experiment.spectrum_data_type == 'n' %}
+				Normalized &mu; Coefficients
+      {% else %}
+        None
+			{% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Monochromator energy file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_energy %}
+        <a href="{{request.path}}/file=energy">{{ experiment.spectrum_energy }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Intensity of incident x-rays (i0) file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_i0 %}
+        <a href="{{request.path}}/file=i0">{{ experiment.spectrum_i0 }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Intensity of transmitted x-rays (itrans) file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_itrans %}
+        <a href="{{request.path}}/file=itrans">{{ experiment.spectrum_itrans }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Intensity of fluorescence x-rays (ifluor) file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_ifluor %}
+        <a href="{{request.path}}/file=ifluor">{{ experiment.spectrum_ifluor }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>&mu; coefficients of transmitted x-rays (mutrans) file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_mutrans %}
+        <a href="{{request.path}}/file=mutrans">{{ experiment.spectrum_mutrans }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>&mu; coefficients of fluorescence x-rays (mufluor) file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_mufluor %}
+        <a href="{{request.path}}/file=mufluor">{{ experiment.spectrum_mufluor }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Normalized &mu; coefficients of transmitted x-rays (normtrans) file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_normtrans %}
+        <a href="{{request.path}}/file=normtrans">{{ experiment.spectrum_normtrans }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Normalized &mu; coefficients of fluorescence x-rays (normfluor) file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.spectrum_normfluor %}
+        <a href="{{request.path}}/file=normfluor">{{ experiment.spectrum_normfluor }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Normalization information:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.spectrum_norm_info }}
+    </td></tr>
+    <tr><td>
+      <strong>Reference spectra:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.reference }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>XRD Data:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>Diffraction 2&theta; file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.diffraction_2_theta %}
+        <a href="{{request.path}}/file=xrd_2_theta">{{ experiment.diffraction_2_theta }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Diffraction intensity file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.diffraction_intensity %}
+        <a href="{{request.path}}/file=xrd_intensity">{{ experiment.diffraction_intensity }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Additional Data:</h4>
+		</td></tr>
+		<tr><td>
+      <strong>CIF file:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {% if experiment.cif_file %}
+        <a href="{{request.path}}/file=cif">{{ experiment.cif_file }}</a>
+      {% else %}
+        None
+      {% endif %}
+    </td></tr>
+    <tr><td>
+      <strong>Data licence:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.data_licence }}
+    </td></tr>
+
+		<tr><td style="text-align: center;">
+			<h4>Additional Information:</h4>
+		</td></tr>
+    <tr><td>
+      <strong>Upload date:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.upload_date }}
+    </td></tr>
+		<tr><td>
+      <strong>Uploaded by:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.user.last_name }}, {{ experiment.user.first_name }}
+    </td></tr>
+    <tr><td>
+      <strong>Citation:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.citation }}
+    </td></tr>
+    <tr><td>
+      <strong>Citation doi:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.doi }}
+    </td></tr>
+    <tr><td>
+      <strong>Additional information:</strong>
+    </td></tr>
+    <tr><td class="form_item">
+      {{ experiment.additional_info }}
+    </td></tr>
+  </table>
+
+  {% if user.is_authenticated and experiment.user == user %}
+    <p>
+      <strong><a href="{{request.path}}/delete/">Delete this experiment?</a></strong>
+    </p>
+  {% endif %}
+
+{% endblock %}
