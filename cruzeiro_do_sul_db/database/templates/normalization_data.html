@@ -1,0 +1,56 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            text-align: center;
+        }
+        
+        form {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        input[type="file"],
+        input[type="text"],
+        input[type="color"] {
+            margin-bottom: 10px;
+        }
+        
+        label {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Normalização do espectro</h1>
+    <t3>Formatos aceitáveis: .txt ou .csv</t3>
+    <form method="post" enctype="multipart/form-data"></br>
+        {% csrf_token %}
+
+        <input type="file" name="file">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" value="{{ title }}">
+        <label for="xaxis_title">Rótulo Eixo X:</label>
+        <input type="text" id="xaxis_title" name="xaxis_title" value="{{ xaxis_title }}">
+        <label for="yaxis_title">Rótulo Eixo Y:</label>
+        <input type="text" id="yaxis_title" name="yaxis_title" value="{{ yaxis_title }}">
+        <label for="bg_color">Cor de Fundo:</label>
+        <input type="color" id="bg_color" name="bg_color" value="{{ bg_color }}">
+        <label for="grid_color">Cor da Grade:</label>
+        <input type="color" id="grid_color" name="grid_color" value="{{ grid_color }}">
+        <label for="line_color">Cor da Linha:</label>
+        <input type="color" id="line_color" name="line_color" value="{{ line_color_reference }}">
+        
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
+
+{% endblock %}

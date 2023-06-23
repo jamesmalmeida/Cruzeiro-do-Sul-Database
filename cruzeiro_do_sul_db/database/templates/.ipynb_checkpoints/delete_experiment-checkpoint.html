@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  
+  <h2 class="initial_main_text">Delete Experiment:</h2>
+  
+  {% if user.is_authenticated and experiment.user == user %}
+
+		<p>Are you sure you want to delete the experiment: {{ experiment }}?</p></p>
+    <!-- Form for delete experiment: -->
+    <form action="" method="POST">
+      {% csrf_token %}
+			<p>
+				<input style="width: 21%;" type="submit" value="Yes, delete."/>
+			</p>
+    </form>
+  {% else %}
+    <p>
+      You need to be the owner of the experiment to be able to delete it.
+    </p>
+  {% endif %}
+
+{% endblock %}
