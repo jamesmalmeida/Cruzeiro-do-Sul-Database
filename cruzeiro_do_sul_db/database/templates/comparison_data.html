@@ -17,6 +17,18 @@
             align-items: center;
         }
         
+        #edge {
+            margin-bottom: 10px;
+        }
+
+        #abs_element {
+            margin-bottom: 10px;
+        }
+
+        #num_materials {
+            margin-bottom: 10px;
+        }
+
         input[type="file"],
         input[type="text"],
         input[type="color"] {
@@ -37,19 +49,41 @@
         <input type="file" name="file">
         <label for="title">Título:</label>
         <input type="text" id="title" name="title" value="{{ title }}">
-        <label for="xaxis_title">Rótulo Eixo X:</label>
+        <label for="xaxis_title">Rótulo - Eixo X:</label>
         <input type="text" id="xaxis_title" name="xaxis_title" value="{{ xaxis_title }}">
-        <label for="yaxis_title">Rótulo Eixo Y:</label>
+        <label for="yaxis_title">Rótulo - Eixo Y:</label>
         <input type="text" id="yaxis_title" name="yaxis_title" value="{{ yaxis_title }}">
-        <label for="bg_color">Cor de Fundo:</label>
-        <input type="color" id="bg_color" name="bg_color" value="{{ bg_color }}">
-        <label for="grid_color">Cor da Grade:</label>
-        <input type="color" id="grid_color" name="grid_color" value="{{ grid_color }}">
-        <label for="line_color_reference">Cor do Gráfico de Referência:</label>
-        <input type="color" id="line_color_reference" name="line_color_reference" value="{{ line_color_reference }}">
-        <label for="line_color_similar">Cor do Gráfico Similar:</label>
-        <input type="color" id="line_color_similar" name="line_color_similar" value="{{ line_color_similar }}">
-        
+        <label for="bg_color">Cor de fundo:</label>
+        <input type="color" id="bg_color" name="bg_color" value="#FFFFFF">
+        <label for="grid_color">Cor da grade:</label>
+        <input type="color" id="grid_color" name="grid_color" value="#5F5F5F">
+        <label for="line_color_reference">Cor da curva de referência:</label>
+        <input type="color" id="line_color_reference" name="line_color_reference" value="#000000">
+        <label for="line_color_similar">Cor da curva similar:</label>
+        <input type="color" id="line_color_similar" name="line_color_similar" value="#0050FF">
+        <label for="num_materials">n° materiais: <span id="valor_materials">1</span></label>
+        <input type="range" id="num_materials" name="num_materials" value="1" min="1" max="10" step="1">
+        <script>
+            const numMaterialsInput = document.getElementById("num_materials");
+            const valorMaterialsSpan = document.getElementById("valor_materials");
+            numMaterialsInput.addEventListener("input", function() {
+                valorMaterialsSpan.textContent = numMaterialsInput.value;
+            });
+        </script>
+        <label for="abs_element">Elemento de absorção</label>
+        <select id="abs_element" name="abs_element">
+            <option value="opcao1">Fe</option>
+            <option value="opcao2">Cu</option>
+            <option value="opcao3">Al</option>
+            <option value="opcao4">Ca</option>
+        </select>
+        <label for="edge">Borda de absorção</label>
+        <select id="edge" name="edge">
+            <option value="opcao1">K</option>
+            <option value="opcao2">L</option>
+            <option value="opcao3">M</option>
+            <option value="opcao4">N</option>
+        </select>
         <button type="submit">Enviar</button>
     </form>
 </body>
