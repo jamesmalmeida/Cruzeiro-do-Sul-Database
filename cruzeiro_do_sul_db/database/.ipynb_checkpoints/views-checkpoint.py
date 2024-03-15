@@ -3,7 +3,10 @@ from django.http import FileResponse
 from django.urls import reverse_lazy
 from .forms import UserCreationForm, UserChangeForm, AddExperiment
 from .models import Experiment, Beamline, Facility, User, Element, Normalization, Comparison, normalization_function
+from .normalization import read_file
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import TemplateView, ListView
 from django.db.models import Q 
@@ -13,6 +16,10 @@ import plotly.offline as opy
 import plotly.graph_objs as go
 import tempfile
 import os
+import re
+from io import StringIO
+from chardet import detect
+from .ga_combinator import ga
 import pandas as pd
 import numpy as np
 from lmfit.models import LinearModel
@@ -233,6 +240,7 @@ def download_file(caminho_arquivo):
     return response
        
 def normalize_file(request):
+    # Essa é a função que está sendo utilizada na aba de normalização
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -240,7 +248,26 @@ def normalize_file(request):
             # Verifique o tipo de arquivo, se necessário
             if file.name.endswith('.txt') or file.name.endswith('.csv'):
                 # Lê o arquivo com pandas
-                df = pd.read_csv(file, sep=' ', header=0)
+                try:
+                    with open(os.path.join('db_xanes', str(file)), "rb") as fl:
+                        result = detect(fl.read())
+                        encoding = result["encoding"]
+
+                    with open(os.path.join('db_xanes', str(file)), "r", encoding=encoding) as f:
+                        data = f.read()
+                    data_io = StringIO(data)
+                    df = pd.read_csv(data_io, sep="\t", header=0)
+
+                except:
+                    with open(os.path.join('db_xanes', str(file)), "rb") as fl:
+                        result = detect(fl.read())
+                        encoding = result["encoding"]
+
+                    with open(os.path.join('db_xanes', str(file)), "r", encoding=encoding) as f:
+                        data = f.read()
+                    data = re.sub(r"\s{2,}", " ", data)
+                    data_io = StringIO(data)
+                    df = pd.read_csv(data_io, sep=" ", header=0)
 
                 # Exclue as colunas vazias
                 df = df.dropna(axis=1)        
@@ -347,10 +374,12 @@ def normalize_file(request):
                 
                 absorcao_normalizada.append(normalizado)
                 
-                pasta_destino = "C:\JupyterLab\INICIAÇÃO A PESQUISA CIENTÍFICA\Cruzeiro-do-Sul-Database\cruzeiro_do_sul_db\\normalization"
+                pasta_destino = "./normalization"
                 os.makedirs(pasta_destino, exist_ok=True)
                 
-                nome_arquivo = f"{file}_normalizado.txt"
+                file_name, ext = os.path.splitext(str(file))
+
+                nome_arquivo = f"{file_name}_normalizado.txt"
                 
                 caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
                 
@@ -433,7 +462,6 @@ def normalize(df, file):
 
     # Exclue as colunas vazias
     df = df.dropna(axis=1)        
-
     # Definição do intervalo da faixa inicial (restrição)
 
     background = df[0:20]
@@ -536,10 +564,12 @@ def normalize(df, file):
 
     absorcao_normalizada.append(normalizado)
 
-    pasta_destino = "C:\JupyterLab\INICIAÇÃO A PESQUISA CIENTÍFICA\Cruzeiro-do-Sul-Database\cruzeiro_do_sul_db\\normalization"
+    pasta_destino = "./normalization"
     os.makedirs(pasta_destino, exist_ok=True)
 
-    nome_arquivo = f"{file}_normalizado.txt"#_normalizado.txt"
+    file_name, ext = os.path.splitext(str(file))
+
+    nome_arquivo = f"{file_name}_normalizado.txt"#_normalizado.txt"
 
     caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
 
@@ -550,157 +580,97 @@ def normalize(df, file):
             arquivo.write(f"{xwide.iloc[i]}\t{normalizado[i]}\n")
     return caminho_arquivo
 
+def handle_uploaded_file(uploaded_file): # Para poder ler o arquivo na função read_file
+    path = default_storage.save('temp/' + uploaded_file.name, ContentFile(uploaded_file.read()))
+    temp_file_path = os.path.join(default_storage.location, path)
+    df, header = read_file(temp_file_path)
+    os.remove(temp_file_path)
+    return (df, header)
+
 def spectra_comparison(request):
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
             print("file",file)
-            # Verifique o tipo de arquivo, se necessário
-            #if file.name.endswith('.txt') or file.name.endswith('.csv'):
+            if not (file.name.endswith('.xdi')): # Verificando o tipo de arquivo
+                raise TypeError('File must be .xdi')
             
-            folder_path = 'C:\JupyterLab\INICIAÇÃO A PESQUISA CIENTÍFICA\Cruzeiro-do-Sul-Database\cruzeiro_do_sul_db\\normalization'
-            
-            file_path = os.path.join(folder_path, str(f"{file}_normalizado.txt"))
-            
-            df_nao_normalizado = pd.read_csv(file, sep=' ', header=0)
-            df = pd.read_csv(normalize(df_nao_normalizado, str(file)), sep='\t')
-            def load_graph(file_path):
-                with open(file_path, 'r') as file:
-                    data = file.readlines()[1:]  # Skip the first line
-                    graph = [list(map(float, value.strip().split())) for value in data]
-                return np.array(graph)
+            abs_element = 'Fe'#str(request.POST.get('abs_element')) #Por que está dando errado?
+            edge = str(request.POST.get('edge'))
 
-            def calculate_rmse(graph1, graph2):
-                interpolated_graph2 = interp1d(graph2[:, 0], graph2[:, 1], kind='linear', fill_value='extrapolate')
-                interpolated_values = interpolated_graph2(graph1[:, 0])
-                return np.sqrt(np.sum((graph1[:, 1] - interpolated_values) ** 2))
+            header, df = handle_uploaded_file(file)
 
+            try:
+                n_materials = int(request.POST.get('num_materials'))
+                ga_combinator_dic = ga(n_materials, abs_element, edge, df)
+            except Exception as e:
+                print(f'Error while running ga_combinator.py: {e}')
 
-                fig = go.Figure(data=go.Scatter(x=df.iloc[:,0], y=df.iloc[:,1], mode='lines'))
+            #plot
+            array_with_max_fitness = ga_combinator_dic['array_with_max_fitness']
+            target_spectrum = ga_combinator_dic['target_spectrum']
+            funcs_keys_with_max_fitness = ga_combinator_dic['funcs_keys_with_max_fitness']
+            spectra = ga_combinator_dic['spectra']
+            coeffs_with_max_fitness = ga_combinator_dic['coeffs_with_max_fitness']
+            gen = ga_combinator_dic['gen']
+            best_result = ga_combinator_dic['best_result']
+            domain = ga_combinator_dic['domain']
 
-                title = request.POST.get('title', 'Gráfico Plotly')
-                bg_color = request.POST.get('bg_color', 'white')
-                grid_color = request.POST.get('grid_color', 'lightgray')
-                line_color = request.POST.get('line_color', 'blue')
-                xaxis_title = request.POST.get('xaxis_title', 'Eixo X')
-                yaxis_title = request.POST.get('yaxis_title', 'Eixo Y')
-
-                fig.update_layout(
-                    title=title,
-                    showlegend=legend,
-                    plot_bgcolor=bg_color,
-                    xaxis=dict(gridcolor=grid_color),
-                    yaxis=dict(gridcolor=grid_color)
-                )
-
-                fig.update_traces(line=dict(color=line_color))
-
-                plot_div = fig.to_html(full_html=False)
-
-            #def plot_graphs(reference_graph, matching_graph):
-                #plt.plot(reference_graph[:, 0], reference_graph[:, 1], label='Reference Graph')
-                #plt.plot(matching_graph[:, 0], matching_graph[:, 1], label='Matching Graph')
-                #plt.legend()
-                #plt.xlabel('X-axis')
-                #plt.ylabel('Y-axis')
-                #plt.title('Comparison of Graphs')
-                #plt.show()
-                
-
-            reference_file = file_path#df
-            folder_path = 'C:\JupyterLab\INICIAÇÃO A PESQUISA CIENTÍFICA\Cruzeiro-do-Sul-Database\cruzeiro_do_sul_db\db_xanes'
-
-            reference_graph = load_graph(reference_file)
-            lowest_rmse = float('inf')
-            matching_graph = None
-            current_file = ""
-
-            # Define the x-axis range to compare
-            range_start = reference_graph[0,0]
-            range_end = reference_graph[-1,0]
-
-            for file_name in os.listdir(folder_path):
-                if file_name.endswith('.txt'):
-                    file_path = os.path.join(folder_path, file_name)
-                    current_graph = load_graph(file_path)
-
-                    # Filter graphs based on x-axis range
-                    mask = (range_start <= current_graph[:, 0]) & (current_graph[:, 0] <= range_end)
-                    current_graph = current_graph[mask]
-                    #print(current_graph)
-
-                    if current_graph.shape[0] > 0:  # Check if filtered graph has at least one data point
-                        current_rmse = calculate_rmse(reference_graph, current_graph)
-                        if current_rmse < lowest_rmse:
-                            lowest_rmse = current_rmse
-                            matching_graph = current_graph
-                            current_file = file_name
-            #else:
-            #    return render(request, 'error.html', {'error_message': 'Formato de arquivo inválido. Por favor, envie um arquivo .txt ou .csv.'})
-            
-            
-            print("current_file", str(current_file))
-            
-            path_match = os.path.join(folder_path, str(current_file))
-            
-            df_match = pd.read_csv(path_match, delimiter='\t', encoding='latin1')
-            
-            data_reference = go.Scatter(x=df.iloc[:,0], y=df.iloc[:,1], mode='lines', name=str(file).replace(".txt", ""), line=dict(color=request.POST.get('line_color_reference', '#0000FF')))
-            data_matching = go.Scatter(x=df_match.iloc[:,0], y=df_match.iloc[:,1], mode='markers',name=current_file.replace(".txt", ""), line=dict(color=request.POST.get('line_color_similar', '#0000FF')))
-            
-            fig = go.Figure(data=[data_reference, data_matching])
-            
-            #fig = go.Figure(data=go.Scatter(x=df.iloc[:,0], y=df.iloc[:,1], mode='lines'))
-            #fig = go.Figure(data=go.Scatter(x=df_match.iloc[:,0], y=df_match.iloc[:,1]))
-
-            
             title = request.POST.get('title', 'Gráfico Plotly')
             bg_color = request.POST.get('bg_color', 'white')
             grid_color = request.POST.get('grid_color', 'lightgray')
-            #line_color_reference = request.POST.get('line_color_reference', 'blue')
-            #line_color_similar = request.POST.get('line_color_similar', 'blue')
+            line_color = request.POST.get('line_color', 'blue')
             xaxis_title = request.POST.get('xaxis_title', 'Eixo X')
             yaxis_title = request.POST.get('yaxis_title', 'Eixo Y')
 
-            fig.update_layout(
-                title=title,
+            fig = go.Figure()
+
+            layout = go.Layout(
+                title=f'{title} | Generation {gen + 1} | Best Result = {best_result[2:]}',
+                showlegend=True,
                 plot_bgcolor=bg_color,
-                xaxis_title = xaxis_title,
-                yaxis_title = yaxis_title,
                 xaxis=dict(gridcolor=grid_color),
-                yaxis=dict(gridcolor=grid_color)
+                yaxis=dict(gridcolor=grid_color),
+                legend=dict(orientation="h"),
+                xaxis_title=xaxis_title,
+                yaxis_title=yaxis_title
             )
 
-            #fig.update_traces(line=dict(color=line_color_reference))
-            #fig.update_traces(line=dict(color=line_color_similar))
+            trace_names = []
+
+            trace = go.Scatter(x=domain, y=array_with_max_fitness, mode='lines', line=dict(width=1.5, dash='dash', color=line_color))
+            fig.add_trace(trace)
+            trace_names.append('Max fitness')
+
+            trace = go.Scatter(x=domain, y=target_spectrum, mode='lines', line=dict(width=2, color=request.POST.get('line_color_reference')))
+            fig.add_trace(trace)
+            trace_names.append('Target spectrum')
+
+            for func in range(len(funcs_keys_with_max_fitness)):
+                trace = go.Scatter(x=domain, y=spectra[funcs_keys_with_max_fitness[func]] * coeffs_with_max_fitness[func], mode='lines', line=dict(width=0.5, dash='dot'))
+                fig.add_trace(trace)
+                trace_names.append(funcs_keys_with_max_fitness[func])
+   
+            for i, name in enumerate(trace_names):
+                fig.data[i].name = name
+
+            fig.update_layout(layout)
+
+            fig.update_xaxes(showgrid=True)
+            fig.update_yaxes(showgrid=True)
 
             plot_div = fig.to_html(full_html=False)
 
-            return render(request, 'plotly_chart.html', {
+        return render(request, 'plotly_chart.html', {
                 'plot_div': plot_div,
                 'title': title,
                 'bg_color': bg_color,
                 'grid_color': grid_color,
-                #'line_color_reference': line_color_reference,
-                #'line_color_similar': line_color_similar,
+                'line_color': line_color,
                 'xaxis_title': xaxis_title,
                 'yaxis_title': yaxis_title
             })
-        
-            '''
-            
-            plot_div = fig.to_html(full_html=False)
-            return render(request, 'plotly_chart.html', {'plot_div': plot_div})
-            
-            '''
-
-            if matching_graph is None:
-                print("No matching graph found!")
-            else:
-                print(f"Matching graph found with RMSE: {lowest_rmse}")
-                print(f"Espectros similares: {reference_file}, {current_file}")
-                #plot_graphs(reference_graph, matching_graph)
 
     return render(request, 'comparison_data.html')
 

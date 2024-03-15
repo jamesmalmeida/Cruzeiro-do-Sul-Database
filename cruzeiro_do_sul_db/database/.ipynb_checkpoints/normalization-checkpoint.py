@@ -21,6 +21,8 @@ def normalize(df, n=15, polyfit_start=0.5, polyfit_end=0.01):
     DataFrame: Normalized DataFrame with added 'norm' column.
     """
     norm_df = df.copy()
+
+    print(debug_1)
     
     if polyfit_end >= polyfit_start:
         raise ValueError("POLYFIT_START MUST BE HIGHER THAN POLYFIT END.")

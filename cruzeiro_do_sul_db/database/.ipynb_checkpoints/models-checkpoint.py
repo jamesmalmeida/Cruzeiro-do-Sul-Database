@@ -2264,7 +2264,7 @@ class Report(models.Model):
     
 def normalization_function(request):
     print("re", request)
-
+    print(debug_2)
     if request.method == 'POST':
             form = FileUploadForm(request.POST, request.FILES)
             if form.is_valid():

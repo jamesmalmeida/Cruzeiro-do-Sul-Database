@@ -240,6 +240,7 @@ def download_file(caminho_arquivo):
     return response
        
 def normalize_file(request):
+    # Essa é a função que está sendo utilizada na aba de normalização
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -461,7 +462,6 @@ def normalize(df, file):
 
     # Exclue as colunas vazias
     df = df.dropna(axis=1)        
-
     # Definição do intervalo da faixa inicial (restrição)
 
     background = df[0:20]
