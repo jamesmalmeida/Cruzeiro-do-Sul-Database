@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visualizar Arquivo XDI</title>
+</head>
+<body>
+    <h2>Visualizar Arquivo XDI</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Visualizar</button>
+    </form>
+    {% if info_xdi %}
+    <h3>Conteúdo do Arquivo XDI:</h3>
+    <pre>{{ info_xdi }}</pre>
+    {% endif %}
+</body>
+</html>

@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import FileResponse
 from django.urls import reverse_lazy
-from .forms import UserCreationForm, UserChangeForm, AddExperiment
-from .models import Experiment, Beamline, Facility, User, Element, Normalization, Comparison, normalization_function
+from django.conf import settings
+from .forms import UserCreationForm, UserChangeForm, AddExperiment, UploadFileForm, UploadXDIForm
+from .models import Experiment, Beamline, Facility, User, Element, Normalization, Comparison
 from .normalization import read_file
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.storage import default_storage
@@ -23,7 +24,7 @@ from .ga_combinator import ga
 import pandas as pd
 import numpy as np
 from lmfit.models import LinearModel
-from .forms import FileUploadForm
+from .forms import UploadFileForm
 from numpy import diff
 from scipy.interpolate import interp1d
 from django.http import HttpResponse
@@ -145,7 +146,67 @@ def signup(request):
 
 def experiment_detail(request, pk):
     experiment = Experiment.objects.get(pk=int(pk))
-    return render(request, 'experiment_detail.html', {'experiment': experiment})
+
+    caminho_arquivo = os.path.join(settings.MEDIA_ROOT, experiment.xdi_file.name)
+    secoes = [
+    "Element.symbol",
+    "Element.edge",
+    "Mono.d_spacing",
+    "Mono.name",
+    "Sample.formula",
+    "Sample.name",
+    "Sample.prep",
+    "Sample.temperature",
+    "Sample.reference",
+    "Detector.I0",
+    "Detector.I1",
+    "Detector.I2",
+    "Facility.Name",
+    "Beamline.Name",
+    "Beamline.name",
+    "Facility.name",
+    "Beamline.xray_source",
+    "Beamline.Storage_Ring_Current",
+    "Beamline.I0",
+    "Beamline.I1",
+    "Scan.start_time",
+    "Scan.end_time",
+    "ScanParameters.Start",
+    "ScanParameters.ScanType",
+    "ScanParameters.E0",
+    "ScanParameters.Legend",
+    "ScanParameters.Region1",
+    "ScanParameters.Region2",
+    "ScanParameters.Region3",
+    "ScanParameters.End"
+    ]
+    regex = '|'.join(map(re.escape, secoes))
+    with open(caminho_arquivo, 'r') as texto:
+        linhas = texto.read()
+        matches = re.findall(f'({regex}):\\s*(.*)', linhas)
+
+    valores = {}
+    for match in matches:
+        secao, valor = match[0], match[1]
+        secao_primaria, secao_secundaria = secao.split('.')
+        if secao_primaria not in valores:
+            valores[secao_primaria] = {}
+        valores[secao_primaria][secao_secundaria] = valor
+    match = re.search(r'#---+', linhas, re.MULTILINE)
+    if match:
+        tabela_inicio = match.end()
+        tabela_linhas = linhas[tabela_inicio:].strip().split('\n')
+
+        valores_tabela = []
+        for linha in tabela_linhas:
+            if re.match(r'(\s+\d+\.\d+\s+){2,4}', linha):
+                valores_tabela.append([float(valor) for valor in linha.split()])
+    else:
+        # Se não encontrar o início da tabela, definir valores_tabela como None
+        valores_tabela = None
+
+
+    return render(request, 'experiment_detail.html', {'experiment': experiment, 'valores': valores, 'valores_tabela': valores_tabela})
 
 def file_response(request, pk, string):
     experiment = Experiment.objects.get(pk=int(pk))
@@ -242,7 +303,7 @@ def download_file(caminho_arquivo):
 def normalize_file(request):
     # Essa é a função que está sendo utilizada na aba de normalização
     if request.method == 'POST':
-        form = FileUploadForm(request.POST, request.FILES)
+        form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
             # Verifique o tipo de arquivo, se necessário
@@ -456,129 +517,6 @@ def normalize_file(request):
             
     return render(request, 'normalization_data.html')
 
-def normalize(df, file):
-    # Lê o arquivo com pandas
-    #df = pd.read_csv(file, sep=' ', header=0)
-
-    # Exclue as colunas vazias
-    df = df.dropna(axis=1)        
-    # Definição do intervalo da faixa inicial (restrição)
-
-    background = df[0:20]
-
-    # Tratamento dos dados usando um fit de modelo linear
-
-    modelo_linear = LinearModel()
-    dados_x = background.iloc[:, 0].values
-    dados_y = background.iloc[:, 1].values
-
-    params_linear = modelo_linear.guess(dados_y, x=dados_x)
-
-    resultado_fit = modelo_linear.fit(dados_y, params_linear, x=dados_x)
-
-    # Extrapolação para todo o intervalo do espectro
-
-    xwide = df.iloc[:, 0]
-    predicted_faixa_inicial = modelo_linear.eval(resultado_fit.params, x=xwide)
-
-    # Ajuste da faixa final XANES utilizando fit linear
-
-    resultados = []
-    slope_min = 1000
-
-    # Loop para definir o intervalo de pontos na faixa final
-
-    for npt in range(-20, -100, -1):
-        np_init = npt
-        np_end = -1
-        final_medida = df.iloc[np_init:np_end]
-        faixa_final = df[np_init:np_end]
-        modelo_linear = LinearModel()
-        dados_x = faixa_final.iloc[:, 0].values
-        dados_y = faixa_final.iloc[:, 1].values
-
-        params_linear = modelo_linear.guess(dados_y, x=dados_x)
-        resultado_fit = modelo_linear.fit(dados_y, params_linear, x=dados_x)
-
-        resultados.append([npt, resultado_fit.best_values['slope']])
-
-        # Identificação do menor valor dentro do intervalo de fit
-
-        if abs(resultado_fit.best_values['slope']) < slope_min:
-            slope_min = abs(resultado_fit.best_values['slope'])
-            npt_min = npt
-
-    # Aplicação do fit linear
-
-    final_medida = df.iloc[npt_min:np_end]
-    faixa_final = df[npt_min:np_end]
-    modelo_linear = LinearModel()
-    dados_x = faixa_final.iloc[:, 0].values
-    dados_y = faixa_final.iloc[:, 1].values
-
-    params_linear = modelo_linear.guess(dados_y, x=dados_x)
-    resultado_fit_final = modelo_linear.fit(dados_y, params_linear, x=dados_x)
-
-    # Extrapolação do fit no intervalo da faixa final para todo o intervalo do espectro
-
-    xwide = df.iloc[:, 0]
-    predicted_faixa_final = modelo_linear.eval(resultado_fit_final.params, x=xwide)
-
-    absorcao = df.iloc[:, 1]
-    nova_curva = absorcao - predicted_faixa_inicial
-
-    # Ajuste final para todos os dados de absorção do espectro
-
-    fit_final = absorcao/predicted_faixa_final
-
-    # Derivada para encontrar o ponto E0
-
-    x = [df.iloc[:, 0]]
-    y =  [df.iloc[:, 1]]
-    dydx = diff(y)/diff(x)
-
-    E0 = np.amax(dydx[0])
-    local = np.argmax(dydx[0])
-    E0x = x[0][local]
-
-    dydx = diff(fit_final)/diff(xwide)
-
-    E0 = np.amax(dydx)
-    local = np.argmax(dydx)
-    E0x = xwide[local]
-
-    # Interpolação para obter o ponto na extrapolação da pré-borda e pós-borda referente ao E0
-
-    f = interp1d(xwide, predicted_faixa_inicial)
-    ponto_borda_inicial = f(E0x)
-    g = interp1d(xwide, predicted_faixa_final)
-    ponto_borda_final = g(E0x)
-
-    # Normalização dos dados de absorção de raio x pela diferença do edge jump
-
-    edge_jump = abs(ponto_borda_final - ponto_borda_inicial)
-
-    absorcao_normalizada = []
-
-    normalizado = absorcao/edge_jump
-
-    absorcao_normalizada.append(normalizado)
-
-    pasta_destino = "./normalization"
-    os.makedirs(pasta_destino, exist_ok=True)
-
-    file_name, ext = os.path.splitext(str(file))
-
-    nome_arquivo = f"{file_name}_normalizado.txt"#_normalizado.txt"
-
-    caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
-
-    with open(caminho_arquivo, "w") as arquivo:
-        # Escreve o cabeçalho das colunas
-        arquivo.write("Energy\tAbsorption\n")            
-        for i in range(0,len(xwide)):
-            arquivo.write(f"{xwide.iloc[i]}\t{normalizado[i]}\n")
-    return caminho_arquivo
 
 def handle_uploaded_file(uploaded_file): # Para poder ler o arquivo na função read_file
     path = default_storage.save('temp/' + uploaded_file.name, ContentFile(uploaded_file.read()))
@@ -589,7 +527,7 @@ def handle_uploaded_file(uploaded_file): # Para poder ler o arquivo na função 
 
 def spectra_comparison(request):
     if request.method == 'POST':
-        form = FileUploadForm(request.POST, request.FILES)
+        form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
             print("file",file)

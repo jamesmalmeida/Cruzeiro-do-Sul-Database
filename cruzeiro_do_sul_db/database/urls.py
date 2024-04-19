@@ -1,7 +1,9 @@
 from django.urls import path
 from database import views
+# from .views import upload_xdi
 
 urlpatterns = [
+    # path('upload/', upload_xdi, name='upload_xdi'),
     path('', views.index, name='index'),
     path('experiments/', views.experiment_list, name='experiments'),
     path('experiments/<int:pk>', views.experiment_detail, name='experiment-detail'),

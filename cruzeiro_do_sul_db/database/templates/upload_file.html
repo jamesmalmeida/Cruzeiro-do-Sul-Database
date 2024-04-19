@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload de Arquivo XDI</title>
+</head>
+<body>
+    <h2>Upload de Arquivo XDI</h2>
+    <form method="post" enctype="multipart/form-data" id="uploadForm">
+        {% csrf_token %}
+        <input type="file" id="fileInput" name="xdi_file" accept=".xdi" onchange="mostrarInfoArquivo()">
+        <button type="submit">Enviar</button>
+    </form>
+    <div id="infoArquivo"></div>
+
+    <script>
+        function mostrarInfoArquivo() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const content = event.target.result;
+                document.getElementById('infoArquivo').innerText = content;
+            };
+
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>

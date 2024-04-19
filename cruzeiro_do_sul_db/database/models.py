@@ -1,6 +1,9 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+import os
+from django.conf import settings
+from pathlib import Path
 
 class UserManager(BaseUserManager):
     def create_user(self,email,password,first_name,last_name,web_page,country,state,city,**extra_fields):
@@ -2029,7 +2032,7 @@ class Element(models.Model):
                 energy = tmp[2]
                 break
         return f'{self.symbol}: {self.edge} edge ({energy} eV)'
-
+   
 class Experiment(models.Model):
     """Model representing experiments."""
     
@@ -2047,191 +2050,22 @@ class Experiment(models.Model):
     experiment_type = models.CharField(max_length=1,null=False,blank=False,choices=TYPES,help_text='Choose the experiment type.')
     # Title of the experiment:
     experiment_title = models.CharField(max_length=150,null=False,blank=False,help_text='Enter a title for the experiment.')
-    
-    # Sample:
-    # Name of the sample:
-    sample_name = models.CharField('Sample name',max_length=300,null=False,blank=False,help_text='Enter a text identifying the measured sample.')
-    # Stoichiometry of the sample in IUPAC format:
-    sample_stoichiometry_iupac = models.CharField('Stoichiometry IUPAC',max_length=300,null=False,blank=False,help_text='Enter the IUPAC stoichiometry formula of the measured sample. Ex: [Mo (C O)4 (C18 H33 P)2].')
-    # Stoichiometry of the sample in moiety format:
-    sample_stoichiometry_moiety = models.CharField('Stoichiometry moiety',max_length=300,null=True,blank=True,help_text='Enter the moiety stoichiometry formula of the measured sample. Ex: C40 H66 Mo O4 P2.')
-    # Information about the preparation of the sample:
-    sample_prep = models.CharField('Sample preparation',max_length=300,null=True,blank=True,help_text='Enter a text summarizing the method of sample preparation.')
-    # Dimensions of the sample:
-    sample_dimensions = models.CharField('Sample dimensions',max_length=150,null=True,blank=True,help_text='Enter the dimensions with units of the measured sample.')
-    # PH of the sample:
-    sample_ph = models.FloatField('Sample ph',null=True,blank=True,help_text='Enter the ph of the sample.')
-    # Redox state (EH) of the sample:
-    sample_eh = models.FloatField('Sample redox state (V)',null=True,blank=True,help_text='Enter the redox (oxidation-reduction) state of the measured sample.')
-    # Volume of the sample:
-    sample_volume = models.FloatField('Sample volume (mm\u00b3)',null=True,blank=True,help_text='Enter the volume of the measured sample.')
-    # Porosity of the sample:
-    sample_porosity = models.FloatField('Sample porosity (%)',null=True,blank=True,help_text='Enter the porosity of the measured sample.')
-    # Densisty of the sample:
-    sample_density = models.FloatField('Sample density (g/cm\u00b3)',null=True,blank=True,help_text='Enter the density of the measured sample.')
-    # Concentration of the sample:
-    sample_concentration = models.FloatField('Sample concentration (g/L)',null=True,blank=True,help_text='Enter the concentration of the measured sample.')
-    # Resistivity of the sample:
-    sample_resistivity = models.FloatField('Sample resistivity (\u03A9)',null=True,blank=True,help_text='Enter the resistivity of the measured sample.')
-    # Viscosity of the sample:
-    sample_viscosity = models.FloatField('Sample viscosity (Pa\u00D7s)',null=True,blank=True,help_text='Enter the viscosity of the measured sample.')
-    # Electric field of the sample:
-    sample_electric_field = models.FloatField('Sample electric field (V/m)',null=True,blank=True,help_text='Enter the electric field of the measured sample.')
-    # Magnetic field of the sample:
-    sample_magnetic_field = models.FloatField('Sample magnetic field (T)',null=True,blank=True,help_text='Enter the magnetic field of the measured sample.')
-    # Magnetic moment of the sample:
-    sample_magnetic_moment = models.FloatField('Sample magnetic moment (J/T)',null=True,blank=True,help_text='Enter the magnetic moment of the measured sample.')
-    # Electrochemical potential of the sample:
-    sample_electrochemical_potential = models.FloatField('Sample electrochemical potential (J/mol)',null=True,blank=True,help_text='Enter the electrochemical potential of the measured sample.')
-    # Opacity of the sample:
-    sample_opacity = models.FloatField('Sample opacity (A/mm)',null=True,blank=True,help_text='Enter the opacity of the measured sample.')
-    # Purity of the sample:
-    sample_purity = models.FloatField('Sample purity (%)',null=True,blank=True,help_text='Enter the purity of the measured sample.')
-    # Crystal system of the sample:
-    CRYSTAL_SYSTEM = (
-        ('a', 'Triclinic'),
-        ('b', 'Monoclinic'),
-        ('c', 'Orthorhombic'),
-        ('d', 'Tetragonal'),
-        ('e', 'Trigonal'),
-        ('f', 'Hexagonal'),
-        ('g', 'Cubic'),
-    )
-    sample_crystal_system = models.CharField('Sample crystal system',max_length=1,null=True,blank=True,choices=CRYSTAL_SYSTEM,help_text='Enter the crystal system of the measured sample.')
-    
-    # Measurement conditions:
-    # Temparature of the measurement:
-    measurement_temperature = models.FloatField('Measurement temperature (K)',null=True,blank=True,help_text='Enter the temperature at which the sample was measured.')
-    # Pressure of the measurement:
-    measurement_pressure = models.FloatField('Measurement pressure (Pa)',null=True,blank=True,help_text='Enter the pressure at which the sample was measured.')
-    # Current at the beginning of the scan:
-    measurement_current = models.FloatField('Measurement current (mA)',null=True,blank=True,help_text='Enter the amount of stored current in the storage ring at the beginning of the scan')
-    # Wavelength:
-    measurement_wavelength = models.FloatField('Wavelength (nm)',null=True,blank=True,help_text='Enter the powder diffraction wavelength')
-    # Diffraction radiation type:
-    diffraction_radiation_type = models.CharField('Diffraction radiation type',max_length=150,null=True,blank=True,help_text='Enter the powder diffraction radiation type. Ex: synchrotron.')
+  
+    # Upload XDI File:
+    # File upload field for xdi arquives:
+    xdi_file = models.FileField('XDI',null=True,blank=True,upload_to='uploads/xdi/',help_text='Select the XAS Data Interchange Format (.xdi) of the sample.')
 
-    # Crystalline:
-    # Space group:
-    space_group = models.CharField(max_length=150,null=True,blank=True,help_text='Enter the crystalline space groupe of the sample.')
-    # z:
-    z = models.FloatField(null=True,blank=True,help_text='Enter the crystalline z parameter of the sample.')
-    # a:
-    a = models.FloatField('a (\u212B)',null=True,blank=True,help_text='Enter the crystalline a parameter of the sample.')
-    # b:
-    b = models.FloatField('b (\u212B)',null=True,blank=True,help_text='Enter the crystalline b parameter of the sample.')
-    # c:
-    c = models.FloatField('c (\u212B)',null=True,blank=True,help_text='Enter the crystalline c parameter of the sample.')
-    # alpha:
-    alpha = models.FloatField('alpha (°)',null=True,blank=True,help_text='Enter the crystalline alpha parameter of the sample.')
-    # beta:
-    beta = models.FloatField('beta (°)',null=True,blank=True,help_text='Enter the crystalline beta parameter of the sample.')
-    # gama:
-    gama = models.FloatField('gama (°)',null=True,blank=True,help_text='Enter the crystalline gama parameter of the sample.')
-
-    # Powder parameters:
-    # Minimum 2 theta:
-    min_2_theta = models.FloatField('Min 2\u03B8',null=True,blank=True,help_text='Enter the minium 2\u03B8.')
-    # Maximum 2 theta:
-    max_2_theta = models.FloatField('Max 2\u03B8',null=True,blank=True,help_text='Enter the maximum 2\u03B8.')
-    # Step:
-    step = models.FloatField(null=True,blank=True,help_text='Enter the 2\u03B8 step.')
-
-    # Scan:
-    # Date and time of beginning of the scan:
-    start_time = models.DateTimeField(null=False,blank=False,help_text='Enter the beginning time and date of the scan.')
-    # Date and time of ending of the scan:
-    end_time = models.DateTimeField(null=True,blank=True,help_text='Enter the ending time and date of the scan.')
-    # Edge energy used in the data acquisition software:
-    edge_energy = models.FloatField('Edge energy (eV)',null=True,blank=True,help_text='Enter the absorption edge used in the data acquisition software.')
-    # Operational System used to acquire the data:
-    os = models.CharField('Operational System',max_length=150,null=True,blank=True,help_text='Enter the operational system name (and version) used in the data acquisition.')
-    # Softwares used to acquire and process the data:
-    software = models.CharField(max_length=300,null=True,blank=True,help_text='Enter the softwares names (and versions) used in the data acquisition and process tasks.')
-
-    # Monochromator:
-    # Monochromator features:
-    mono_name = models.CharField('Monochromator name',max_length=300,null=True,blank=True,help_text='Enter a brief text identifying the material and diffracting plane or grating spacing of the monochromator.')
-    # D-spacing of monochromator under operating conditions:
-    mono_d_spacing = models.FloatField('Monochromator d-spacing (\u212B)',null=True,blank=True,help_text='Enter the known d-spacing of the monochromator under operating conditions.')
-
-    # Detector:
-    # Description of incident flux:
-    detector_i0 = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a description of how the incident flux was measured.')
-    # Description of transmission flux:
-    detector_it = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a description of how the transmission flux was measured.')
-    # Description of fluorecence flux:
-    detector_if = models.CharField(max_length=300,null=True,blank=True,help_text='Enter a description of how the fluorescence flux was measured.')
-
-    # Relating fields:
-    # Foreign key relating to the element:
-    element = models.ForeignKey(Element,blank=True,null=True,on_delete=models.PROTECT,help_text='Choose the spectra\'s absorbing element and edge.')
-    # Foreign key relating to the beamline:
-    beamline = models.ForeignKey(Beamline,blank=False,null=False,on_delete=models.PROTECT,help_text='Choose the beamline on which the experiment was performed.')
     # Foreign key relating to the user:
     user = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE,help_text='Choose the user who uploaded the date.')
-    
-    # Spectrum data:
-    # Spectrum measurement mode:
-    MEASUREMENT_MODES = (
-        ('t', 'Transmission'),
-        ('f', 'Fluorescence'),
-        ('h', 'HERFD'),
-        ('r', 'Raman'),
-        ('x', 'XEOL'),
-        ('e', 'Electron Emission'),
-    )
-    spectrum_measurement_mode = models.CharField(max_length=1,null=True,blank=True,choices=MEASUREMENT_MODES,help_text='Select the measurement mode of the spectra.')
-    # Spectrum data type:
-    DATA_TYPES = (
-        ('r','Raw data'),
-        ('m','\u03BC coefficients'),
-        ('n','Normalized \u03BC coefficients'),
-    )
-    spectrum_data_type = models.CharField(max_length=1,null=True,blank=True,choices=DATA_TYPES,help_text='Select the spectra\'s data type.')
-    # File upload field for monochromator energy:
-    spectrum_energy = models.FileField(null=True,blank=True,upload_to='uploads/energy/',help_text='Select the plain text file (.txt) containing the monochromator energy data. The data array must be a column vector.')
-    # File upload field for the intensity of incident x-rays:
-    spectrum_i0 = models.FileField(null=True,blank=True,upload_to='uploads/i0/',help_text='Select the plain text file (.txt) containing the intensity of incident x-rays (i0) data. The data array must be a column vector.')
-    # File upload field for intensity of transmitted x-rays: 
-    spectrum_itrans = models.FileField(null=True,blank=True,upload_to='uploads/itrans/',help_text='Select the plain text file (.txt) containing the intensity of transmitted x-rays (itrans) data. The data array must be a column vector.')
-    # File upload field for intensity of fluorescence x-rays: 
-    spectrum_ifluor = models.FileField(null=True,blank=True,upload_to='uploads/ifluor/',help_text='Select the plain text file (.txt) containing the intensity of fluorescence x-rays (itrans) data. The data array must be a column vector.')
-    # File upload field for mu coefficients of transmitted x-rays:
-    spectrum_mutrans = models.FileField(null=True,blank=True,upload_to='uploads/mutrans/',help_text='Select the plain text file (.txt) containing the \u03BC coefficients of trasmitted x-rays (\u03BCtrans) data. The data array must be a column vector.')
-    # File upload field for mu coefficients of fluorescence x-rays:
-    spectrum_mufluor = models.FileField(null=True,blank=True,upload_to='uploads/mufluor/',help_text='Select the plain text file (.txt) containing the \u03BC coefficients of fluorescence x-rays (\u03BCfluor) data. The data array must be a column vector.')
-    # File upload field for normalized mu coefficients of transmitted x-rays:
-    spectrum_normtrans = models.FileField(null=True,blank=True,upload_to='uploads/normtrans/',help_text='Select the plain text file (.txt) containing the normalized \u03BC coefficients of transmitted x-rays data. The data array must be a column vector.')
-    # File upload field for normalized mu coefficients of fluorescence x-rays:
-    spectrum_normfluor = models.FileField(null=True,blank=True,upload_to='uploads/normfluor/',help_text='Select the plain text file (.txt) containing the normalized \u03BC coefficients of fluorescence x-rays data. The data array must be a column vector.')
-    # Description of the normalization method used:
-    spectrum_norm_info = models.CharField('Normalization information',max_length=300,null=True,blank=True,help_text='Enter a description of the normalization process used.')
-    # Reference spectrum:
-    reference = models.BooleanField(null=True,blank=True,help_text='Select if the spectrum is a reference spectrum')
-
-    # Diffraction data:
-    # File upload field for Powder diffraction 2 theta:
-    diffraction_2_theta = models.FileField('2\u03B8',null=True,blank=True,upload_to='uploads/2_theta/',help_text='Select the plain text file (.txt) containing the diffraction 2 theta data. The data array must be a column vector.')
-    # File upload field for Powder diffraction intensity:
-    diffraction_intensity = models.FileField(null=True,blank=True,upload_to='uploads/intensity/',help_text='Select the plain text file (.txt) containing the diffraction intensity data. The data array must be a column vector.')
-
-    # Additional data:
-    # File upload field for cif arquives:
-    cif_file = models.FileField('CIF',null=True,blank=True,upload_to='uploads/cif/',help_text='Select the Crystallographic Information File (.cif) of the sample.')
-    # Licence of the data:
-    data_licence = models.CharField(max_length=300,null=True,blank=True,help_text='Enter the licence of the data.')
-
     # Additional information:
-    # Upload date and time of the sample:
-    upload_date = models.DateTimeField(auto_now_add=True)
+
+
+
     # Aditional information about the spectrum:
     additional_info = models.CharField('Additional information',max_length=300,null=True,blank=True,help_text='Enter additional information if needed')
     # doi of the document where data was published:
     doi = models.CharField(max_length=300,null=True,blank=True,help_text='Enter the doi of the document where the data was first published.')
-    # Citation of the document where data was published:
-    citation = models.CharField(max_length=300,null=True,blank=True,help_text='Enter the citation of the document where the data was first published.')
-    
+
     # Meta class:
     class Meta:
         verbose_name = 'Experiment'
@@ -2262,135 +2096,3 @@ class Report(models.Model):
         """String for representing the Model object."""
         return f'{self.experiment.experiment_title}, Reporter: {self.reporter.last_name}, {self.reporter.first_name}, Reported user: {self.experiment.user.last_name}, {self.experiment.user.first_name}'
     
-def normalization_function(request):
-    print("re", request)
-    if request.method == 'POST':
-            form = FileUploadForm(request.POST, request.FILES)
-            if form.is_valid():
-                file = request.FILES['file']
-                # Verifique o tipo de arquivo, se necessário
-                if file.name.endswith('.txt') or file.name.endswith('.csv'):
-                    # Lê o arquivo com pandas
-                    df = pd.read_csv(file, sep=' ', header=0)
-
-                    # Exclue as colunas vazias
-                    df = df.dropna(axis=1)        
-
-                    # Definição do intervalo da faixa inicial (restrição)
-
-                    background = df[0:20]
-
-                    # Tratamento dos dados usando um fit de modelo linear
-
-                    modelo_linear = LinearModel()
-                    dados_x = background.iloc[:, 0].values
-                    dados_y = background.iloc[:, 1].values
-
-                    params_linear = modelo_linear.guess(dados_y, x=dados_x)
-
-                    resultado_fit = modelo_linear.fit(dados_y, params_linear, x=dados_x)
-
-                    # Extrapolação para todo o intervalo do espectro
-
-                    xwide = df.iloc[:, 0]
-                    predicted_faixa_inicial = modelo_linear.eval(resultado_fit.params, x=xwide)
-
-                    # Ajuste da faixa final XANES utilizando fit linear
-
-                    resultados = []
-                    slope_min = 1000
-
-                    # Loop para definir o intervalo de pontos na faixa final
-
-                    for npt in range(-20, -100, -1):
-                        np_init = npt
-                        np_end = -1
-                        final_medida = df.iloc[np_init:np_end]
-                        faixa_final = df[np_init:np_end]
-                        modelo_linear = LinearModel()
-                        dados_x = faixa_final.iloc[:, 0].values
-                        dados_y = faixa_final.iloc[:, 1].values
-
-                        params_linear = modelo_linear.guess(dados_y, x=dados_x)
-                        resultado_fit = modelo_linear.fit(dados_y, params_linear, x=dados_x)
-
-                        resultados.append([npt, resultado_fit.best_values['slope']])
-
-                        # Identificação do menor valor dentro do intervalo de fit
-
-                        if abs(resultado_fit.best_values['slope']) < slope_min:
-                            slope_min = abs(resultado_fit.best_values['slope'])
-                            npt_min = npt
-
-                    # Aplicação do fit linear
-
-                    final_medida = df.iloc[npt_min:np_end]
-                    faixa_final = df[npt_min:np_end]
-                    modelo_linear = LinearModel()
-                    dados_x = faixa_final.iloc[:, 0].values
-                    dados_y = faixa_final.iloc[:, 1].values
-
-                    params_linear = modelo_linear.guess(dados_y, x=dados_x)
-                    resultado_fit_final = modelo_linear.fit(dados_y, params_linear, x=dados_x)
-
-                    # Extrapolação do fit no intervalo da faixa final para todo o intervalo do espectro
-
-                    xwide = df.iloc[:, 0]
-                    predicted_faixa_final = modelo_linear.eval(resultado_fit_final.params, x=xwide)
-
-                    absorcao = df.iloc[:, 1]
-                    nova_curva = absorcao - predicted_faixa_inicial
-
-                    # Ajuste final para todos os dados de absorção do espectro
-
-                    fit_final = absorcao/predicted_faixa_final
-
-                    # Derivada para encontrar o ponto E0
-
-                    x = [df.iloc[:, 0]]
-                    y =  [df.iloc[:, 1]]
-                    dydx = diff(y)/diff(x)
-
-                    E0 = np.amax(dydx[0])
-                    local = np.argmax(dydx[0])
-                    E0x = x[0][local]
-
-                    dydx = diff(fit_final)/diff(xwide)
-
-                    E0 = np.amax(dydx)
-                    local = np.argmax(dydx)
-                    E0x = xwide[local]
-
-                    # Interpolação para obter o ponto na extrapolação da pré-borda e pós-borda referente ao E0
-
-                    f = interp1d(xwide, predicted_faixa_inicial)
-                    ponto_borda_inicial = f(E0x)
-                    g = interp1d(xwide, predicted_faixa_final)
-                    ponto_borda_final = g(E0x)
-
-                    # Normalização dos dados de absorção de raio x pela diferença do edge jump
-
-                    edge_jump = abs(ponto_borda_final - ponto_borda_inicial)
-
-                    absorcao_normalizada = []
-
-                    normalizado = absorcao/edge_jump
-
-                    absorcao_normalizada.append(normalizado)
-
-                    pasta_destino = "C:\JupyterLab\INICIAÇÃO A PESQUISA CIENTÍFICA\Cruzeiro-do-Sul-Database\cruzeiro_do_sul_db\db_xanes"
-                    os.makedirs(pasta_destino, exist_ok=True)
-
-                    nome_arquivo = f"{file}_normalizado.txt"
-
-                    caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
-
-                    with open(caminho_arquivo, "w") as arquivo:
-                        # Escreve o cabeçalho das colunas
-                        arquivo.write("Energia\tAbsorção\n")            
-                        for i in range(0,len(xwide)):
-                            arquivo.write(f"{xwide.iloc[i]}\t{normalizado[i]}\n")
-
-                    df = pd.read_csv(caminho_arquivo, delimiter='\t', encoding='latin1')  # Leia o arquivo em um DataFrame pandas
-                print("string", caminho_arquivo)
-                return caminho_arquivo
