@@ -134,6 +134,9 @@ class Comparison(models.Model):
         return f'{self.name}'
 
 class Element(models.Model):
+
+
+
     """Model representing elements data."""
     ELEMENTS = (
         ('H', 'H - Hydrogen'),
@@ -2031,8 +2034,16 @@ class Element(models.Model):
             if tmp[0] == self.symbol and tmp[1] == self.edge:
                 energy = tmp[2]
                 break
-        return f'{self.symbol}: {self.edge} edge ({energy} eV)'
-   
+        return f'{self.symbol}: {self.edge} edge ({energy} eV)' 
+    
+class XDIFile(models.Model):
+    element_symbol = models.TextField()
+    element_edge = models.TextField() 
+
+    def __str__(self):
+        return f"XDI File ID: {self.id}"
+
+
 class Experiment(models.Model):
     """Model representing experiments."""
     
@@ -2040,11 +2051,7 @@ class Experiment(models.Model):
     TYPES = (
         ('1','XAS'),
         ('2','XANES'),
-        ('3','EXAFS'),
-        ('4','Powder diffraction'),
-        ('5','XAS + Powder diffraction'),
-        ('6','XANES + Powder diffraction'),
-        ('7','EXAFS + Powder diffraction'),
+        ('3','EXAFS')
     )
     # Experiment type:
     experiment_type = models.CharField(max_length=1,null=False,blank=False,choices=TYPES,help_text='Choose the experiment type.')
@@ -2054,6 +2061,39 @@ class Experiment(models.Model):
     # Upload XDI File:
     # File upload field for xdi arquives:
     xdi_file = models.FileField('XDI',null=True,blank=True,upload_to='uploads/xdi/',help_text='Select the XAS Data Interchange Format (.xdi) of the sample.')
+
+    element_symbol = models.TextField(null=False)
+    element_edge = models.TextField(null=False)
+    mono_d_spacing = models.TextField(null=False)
+    mono_name = models.TextField(null=False)
+    sample_formula = models.TextField(null=False)
+    sample_name = models.TextField(null=False)
+    sample_prep = models.TextField(null=False)
+    sample_temperature = models.TextField(null=False)
+    sample_reference = models.TextField(null=False)
+    detector_I0 = models.TextField(null=False)
+    detector_I1 = models.TextField(null=False)
+    detector_I2 = models.TextField(null=False)
+    facility_Name = models.TextField(null=False)
+    beamline_xray_source = models.TextField(null=False)
+    beamline_Storage_Ring_Current = models.TextField(null=False)
+    beamline_I0 = models.TextField(null=False)
+    beamline_I1 = models.TextField(null=False)
+    scan_start_time = models.TextField(null=False)
+    scan_end_time = models.TextField(null=False)
+    scanParameters_Start = models.TextField(null=False)
+    scanParameters_ScanType = models.TextField(null=False)
+    scanParameters_E0 = models.TextField(null=False)
+    scanParameters_Legend = models.TextField(null=False)
+    scanParameters_Region1 = models.TextField(null=False)
+    scanParameters_Region2 = models.TextField(null=False)
+    scanParameters_Region3 = models.TextField(null=False)
+    scanParameters_End = models.TextField(null=False)
+    tabela = models.TextField(null=False)
+
+
+
+
 
     # Foreign key relating to the user:
     user = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE,help_text='Choose the user who uploaded the date.')

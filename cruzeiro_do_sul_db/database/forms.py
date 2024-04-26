@@ -12,13 +12,17 @@ class UserCreationForm(UserCreationForm):
     state = forms.CharField(max_length=150,required=True,help_text='Enter your current state/province.')
     city = forms.CharField(max_length=150,required=True,help_text='Enter your current city.')
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()
 
     class Meta:
         model = User
         fields = ["email","first_name","last_name","web_page","country","state","city","password1","password2"]
 
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+    class Meta:
+        model = Experiment
+        fields = '__all__'
+        
 class UploadXDIForm(forms.ModelForm):
     class Meta:
         model = Experiment

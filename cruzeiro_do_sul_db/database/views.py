@@ -3,7 +3,7 @@ from django.http import FileResponse
 from django.urls import reverse_lazy
 from django.conf import settings
 from .forms import UserCreationForm, UserChangeForm, AddExperiment, UploadFileForm, UploadXDIForm
-from .models import Experiment, Beamline, Facility, User, Element, Normalization, Comparison
+from .models import Experiment, Beamline, Facility, User, Element, Normalization, Comparison, XDIFile
 from .normalization import read_file
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.storage import default_storage
@@ -246,16 +246,16 @@ class ChangeAccountView(UpdateView):
     success_url = reverse_lazy("index")
     template_name = "registration/change_account.html"
 
-class AddExperiment(CreateView):
-    form_class = AddExperiment
-    template_name = "add_experiment.html"
-    success_url = reverse_lazy('user-data')
+# class AddExperiment(CreateView):
+#     form_class = AddExperiment
+#     template_name = "add_experiment.html"
+#     success_url = reverse_lazy('user-data')
 
-    def form_valid(self, form):
-        instance = form.save(commit=False)
-        instance.user = self.request.user
-        instance.save()
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         instance = form.save(commit=False)
+#         instance.user = self.request.user
+#         instance.save()
+#         return super().form_valid(form)
 
 class DeleteExperiment(DeleteView):
     model = Experiment
@@ -524,6 +524,255 @@ def handle_uploaded_file(uploaded_file): # Para poder ler o arquivo na função 
     df, header = read_file(temp_file_path)
     os.remove(temp_file_path)
     return (df, header)
+
+# element_s = dicio["Element"]["symbol"], element_e = dicio["Element"]["edge"]
+
+def AddExperiment(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file_xdi(request.FILES['file'])
+            return render(request, 'user_data.html')
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload_file.html', {'form': form})
+
+def handle_uploaded_file_xdi(xdi_file):
+    lines = xdi_file.read().decode('utf-8')
+    dicio, tabela = parse_xdi_content(lines)
+    try:
+        element_symbol = dicio["Element"]["symbol"]
+    except KeyError:
+        element_symbol = "Not Informed"
+
+    try:
+        element_edge = dicio["Element"]["edge"]
+    except KeyError:
+        element_edge = "Not Informed"
+
+    try:
+        mono_d_spacing = dicio["Mono"]["d_spacing"]
+    except KeyError:
+        mono_d_spacing = "Not Informed"
+
+    try:
+        mono_name = dicio["Mono"]["name"]
+    except KeyError:
+        mono_name = "Not Informed"
+
+    try:
+        sample_formula = dicio["Sample"]["formula"]
+    except KeyError:
+        sample_formula = "Not Informed"
+
+    try:
+        sample_name = dicio["Sample"]["name"]
+    except KeyError:
+        sample_name = "Not Informed"
+
+    try:
+        sample_prep = dicio["Sample"]["prep"]
+    except KeyError:
+        sample_prep = "Not Informed"
+
+    try:
+        sample_temperature = dicio["Sample"]["temperature"]
+    except KeyError:
+        sample_temperature = "Not Informed"
+
+    try:
+        sample_reference = dicio["Sample"]["reference"]
+    except KeyError:
+        sample_reference = "Not Informed"
+
+    try:
+        detector_I0 = dicio["Detector"]["I0"]
+    except KeyError:
+        detector_I0 = "Not Informed"
+
+    try:
+        detector_I1 = dicio["Detector"]["I1"]
+    except KeyError:
+        detector_I1 = "Not Informed"
+
+    try:
+        detector_I2 = dicio["Detector"]["I2"]
+    except KeyError:
+        detector_I2 = "Not Informed"
+
+    try:
+        facility_Name = dicio["Facility"]["name"]
+    except KeyError:
+        facility_Name = "Not Informed"
+
+    try:
+        beamline_xray_source = dicio["Beamline"]["xray_source"]
+    except KeyError:
+        beamline_xray_source = "Not Informed"
+
+    try:
+        beamline_Storage_Ring_Current = dicio["Beamline"]["Storage_Ring_Current"]
+    except KeyError:
+        beamline_Storage_Ring_Current = "Not Informed"
+
+    try:
+        beamline_I0 = dicio["Beamline"]["I0"]
+    except KeyError:
+        beamline_I0 = "Not Informed"
+
+    try:
+        beamline_I1 = dicio["Beamline"]["I1"]
+    except KeyError:
+        beamline_I1 = "Not Informed"
+
+    try:
+        scan_start_time = dicio["Scan"]["start_time"]
+    except KeyError:
+        scan_start_time = "Not Informed"
+
+    try:
+        scan_end_time = dicio["Scan"]["end_time"]
+    except KeyError:
+        scan_end_time = "Not Informed"
+
+    try:
+        scanParameters_Start = dicio["ScanParameters"]["Start"]
+    except KeyError:
+        scanParameters_Start = "Not Informed"
+
+    try:
+        scanParameters_ScanType = dicio["ScanParameters"]["ScanType"]
+    except KeyError:
+        scanParameters_ScanType = "Not Informed"
+
+    try:
+        scanParameters_E0 = dicio["ScanParameters"]["E0"]
+    except KeyError:
+        scanParameters_E0 = "Not Informed"
+
+    try:
+        scanParameters_Legend = dicio["ScanParameters"]["Legend"]
+    except KeyError:
+        scanParameters_Legend = "Not Informed"
+
+    try:
+        scanParameters_Region1 = dicio["ScanParameters"]["Region1"]
+    except KeyError:
+        scanParameters_Region1 = "Not Informed"
+
+    try:
+        scanParameters_Region2 = dicio["ScanParameters"]["Region2"]
+    except KeyError:
+        scanParameters_Region2 = "Not Informed"
+
+    try:
+        scanParameters_Region3 = dicio["ScanParameters"]["Region3"]
+    except KeyError:
+        scanParameters_Region3 = "Not Informed"
+
+    try:
+        scanParameters_End = dicio["ScanParameters"]["End"]
+    except KeyError:
+        scanParameters_End = "Not Informed"
+
+
+
+
+    Experiment.objects.create(element_symbol = element_symbol,
+                            element_edge = element_edge,
+                            mono_d_spacing = mono_d_spacing,
+                            mono_name = mono_name,
+                            sample_formula = sample_formula,
+                            sample_name = sample_name,
+                            sample_prep = sample_prep,
+                            sample_temperature = sample_temperature,
+                            sample_reference = sample_reference,
+                            detector_I0 = detector_I0,
+                            detector_I1 = detector_I0,                        
+                            detector_I2 = detector_I0,
+                            facility_Name = facility_Name,
+                            beamline_xray_source = beamline_xray_source,
+                            beamline_Storage_Ring_Current = beamline_Storage_Ring_Current,
+                            beamline_I0 = beamline_I0,
+                            beamline_I1 = beamline_I0,
+                            scan_start_time = scan_start_time,
+                            scan_end_time = scan_end_time,
+                            scanParameters_Start = scanParameters_Start,
+                            scanParameters_ScanType = scanParameters_ScanType,
+                            scanParameters_E0 = scanParameters_E0,
+                            scanParameters_Legend = scanParameters_Legend,
+                            scanParameters_Region1 = scanParameters_Region1,
+                            scanParameters_Region2 = scanParameters_Region1,
+                            scanParameters_Region3 = scanParameters_Region1,
+                            scanParameters_End = scanParameters_End,
+                            tabela = tabela
+                                   )
+
+def parse_xdi_content(lines):
+    secoes = [
+    "Element.symbol",
+    "Element.edge",
+    "Mono.d_spacing",
+    "Mono.name",
+    "Sample.formula",
+    "Sample.name",
+    "Sample.prep",
+    "Sample.temperature",
+    "Sample.reference",
+    "Detector.I0",
+    "Detector.I1",
+    "Detector.I2",
+    "Facility.Name",
+    "Beamline.Name",
+    "Beamline.name",
+    "Facility.name",
+    "Beamline.xray_source",
+    "Beamline.Storage_Ring_Current",
+    "Beamline.I0",
+    "Beamline.I1",
+    "Scan.start_time",
+    "Scan.end_time",
+    "ScanParameters.Start",
+    "ScanParameters.ScanType",
+    "ScanParameters.E0",
+    "ScanParameters.Legend",
+    "ScanParameters.Region1",
+    "ScanParameters.Region2",
+    "ScanParameters.Region3",
+    "ScanParameters.End"
+    ]
+    regex = '|'.join(map(re.escape, secoes))
+
+    matches = re.findall(f'({regex}):\\s*(.*)', lines)
+
+    valores = {}
+    for match in matches:
+        secao, valor = match[0], match[1]
+        secao_primaria, secao_secundaria = secao.split('.')
+        if secao_primaria not in valores:
+            valores[secao_primaria] = {}
+        valores[secao_primaria][secao_secundaria] = valor
+
+    # for secao in secoes:
+    #     secao_primaria, secao_secundaria = secao.split('.')
+    #     if secao_primaria not in valores:
+    #         valores[secao_primaria] = {secao_secundaria: None}
+    #     elif secao_secundaria not in valores[secao_primaria]:
+    #         valores[secao_primaria][secao_secundaria] = "Not informed"
+
+    match = re.search(r'#---+', lines, re.MULTILINE)
+    if match:
+        tabela_inicio = match.end()
+        tabela_linhas = lines[tabela_inicio:].strip().split('\n')
+
+        valores_tabela = []
+        for linha in tabela_linhas:
+            if re.match(r'(\s+\d+\.\d+\s+){2,4}', linha):
+                valores_tabela.append([float(valor) for valor in linha.split()])
+    else:
+        # Se não encontrar o início da tabela, definir valores_tabela como None
+        valores_tabela = None
+    return valores, valores_tabela
 
 def spectra_comparison(request):
     if request.method == 'POST':
