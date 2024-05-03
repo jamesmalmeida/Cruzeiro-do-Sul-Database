@@ -1,7 +1,7 @@
-<<<<<<< HEAD
-=======
 {% extends "base_generic.html" %}
+
 {% block content %}
+
   <h1>Upload an XDI File</h1>
   <form action="" method="POST" enctype="multipart/form-data">
      {% csrf_token %}
@@ -11,6 +11,7 @@
       The fields required for all types of experiments are marked with (*).
     </p>
     {% if user.is_authenticated %}
+
       <table class="form_table">
         <tr><td style="text-align: center;">
           <h4>Experiment:</h4>
@@ -63,6 +64,6 @@
       </p>
     {% endif %}
   </form>
+
 {% endblock %}
 
->>>>>>> 8611cc1 (Upload XDI files)
