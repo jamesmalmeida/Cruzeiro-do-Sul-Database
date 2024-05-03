@@ -17,6 +17,11 @@
     - Or you can clone the repository to a file-system's folder with git or Github-Desktop.
   - In a terminal, go to the folder location where you placed the files containing manage.py file. Command:
     - cd ~/../Cruzeiro-do-Sul-Database/cruzeiro_do_sul_db/
+  - Make the install dependencies. Commands:
+    - pip install pandas
+    - pip install lmfit
+    - pip install plotly
+    - pip install keyboard
   - Make the migrations to the database. Commands:
     - python manage.py makemigrations database
     - python manage.py migrate database
