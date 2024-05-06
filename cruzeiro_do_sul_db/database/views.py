@@ -151,7 +151,6 @@ def signup(request):
 
 def experiment_detail(request, pk):
     experiment = Experiment.objects.get(pk=int(pk))
-    print(experiment.element_symbol)
     caminho_arquivo = os.path.join(settings.MEDIA_ROOT, experiment.xdi_file.name)
     secoes = [
         "Element.symbol",
@@ -548,7 +547,7 @@ def handle_uploaded_file(uploaded_file): # Para poder ler o arquivo na função 
 
 # element_s = dicio["Element"]["symbol"], element_e = dicio["Element"]["edge"]
 
-def handle_uploaded_file_xdi(PostedDataForm, xdi_file):
+def handle_uploaded_file_xdi(user_id, PostedDataForm, xdi_file):
 
     lines = xdi_file.read().decode('utf-8')
     dicio, tabela = parse_xdi_content(lines)
@@ -708,8 +707,9 @@ def handle_uploaded_file_xdi(PostedDataForm, xdi_file):
 
     path = default_storage.save('XDIs/' + xdi_file.name, ContentFile(xdi_file.read()))
     xdi_filePath = path
-
+    
     Experiment.objects.create(
+        user_id                       = user_id,
         xdi_file                      = xdi_filePath,
         experiment_title              = experiment_title,
         experiment_type               = experiment_type,
@@ -748,7 +748,7 @@ def handle_uploaded_file_xdi(PostedDataForm, xdi_file):
 def AddExperiment(request):
     if request.method == 'POST':
         form = UploadXDIForm(request.POST, request.FILES)
-        handle_uploaded_file_xdi(request.POST, request.FILES['xdi_file'])
+        handle_uploaded_file_xdi(request.user.id, request.POST, request.FILES['xdi_file'])
         return render(request, 'user_data.html')
     else:
         form = UploadXDIForm()
