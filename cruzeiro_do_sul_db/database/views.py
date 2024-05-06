@@ -3,6 +3,8 @@ from django.http import FileResponse
 from django.urls import reverse_lazy
 from django.conf import settings
 from .forms import UserCreationForm, UserChangeForm, AddExperiment, UploadFileForm, UploadXDIForm
+from .forms import RegisterForm
+
 from .models import Experiment, Beamline, Facility, User, Element, Normalization, Comparison, XDIFile
 from .normalization import read_file
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -237,7 +239,24 @@ def file_response(request, pk, string):
     else:
         return
 
+
+def sign_up(request):
+    if request.method == 'GET':
+        form = RegisterForm()
+        return render(request, 'registration/signup.html', {'form': form})    
+   
+    if request.method == 'POST':
+        form = RegisterForm(request.POST) 
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            return redirect('login')
+        else:
+            #return render(request, 'usuario/register.html', {'form': form})
+            return render(request, 'registration/signup.html', form)  
+
 class SignUpView(CreateView):
+    #form_class = UserCreationForm
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"

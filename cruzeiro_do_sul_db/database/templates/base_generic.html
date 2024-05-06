@@ -13,6 +13,9 @@
     <link rel="icon" href="{% static 'images/ico.png' %}" type="image/x-icon" />
     <!-- CSS Style: -->
     {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" type="text/css" href="{% static 'styles/style.css' %}" >
     <!-- Include JavaScript File: -->
     {% load static %}
@@ -33,54 +36,49 @@
 
     <!-- Header Bar: -->
     <header>
-      <table class="header_table">
-        
-        <!-- Logo of the database -->
-        <td style="width: 30%;">  
-          <figure>
-						{% load static %}
-            <img class="image" src="{% static 'images/logo.png' %}" alt="Cruzeiro do Sul Data Library logo" title="Cruzeiro do Sul Data Library logo" />
-          </figure>
-        </td>
-
-        <!-- Name of the database -->
-        <td style="width: 40%;">  
-          <h1>Cruzeiro do Sul Data Library for XAS &amp; XRD</h1>
-        </td>
-
-        <!-- Blank element -->
-        <td style="width: 30%;">
-        </td>
-
-      </table>
+      <div class="container-fluid">
+        <div class="row justify-content-md-center align-items-center">
+          <div class="col-4">
+            <img src="{% static 'images/logo.png' %}" class="img-fluid" alt="Cruzeiro do Sul Data Library logo" title="Cruzeiro do Sul Data Library logo">
+          </div>
+          <div class="col-6">
+            <h1 class="text-white text-left fw-bold mb-4">Cruzeiro do Sul Data Library for XAS &amp; XRD</h1>
+          </div>
+        </div>
+      </div>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              <a class="nav-link" href="{% url 'index' %}" >Home</a>
+              <a class="nav-link" href="{% url 'experiments' %}" >Experiments</a>
+              <a class="nav-link" href="{% url 'normalization' %}" >Normalization</a>
+              <a class="nav-link" href="{% url 'comparison' %}" >Comparison</a>
+              <a class="nav-link" href="{% url 'search-data' %}" >Search Data</a>
+              {% if user.is_authenticated %}
+                <a class="nav-link" href="{% url 'user-data' %}" >User Data</a>
+                <a class="nav-link" href="{% url 'about' %}" >About</a>
+                <a class="nav-link" href="account/{{user.id}}/update/" ><span class="badge text-bg-info rounded-pill">Logged as {{user.last_name}}, {{user.first_name}}</span></a>
+                <form id="frmLogout" method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <a class="nav-link" href="#" onClick="document.getElementById('frmLogout').submit();" ><span class="badge text-bg-danger rounded-pill">Log out</span></a>
+                </form>
+              {% else %}
+                <a class="nav-link" href="{% url 'about' %}" >About</a>
+                <a class="nav-link" href="{% url 'signup' %}" ><span class="badge text-bg-success rounded-pill">Sign up</span></a>
+                <a class="nav-link disabled" aria-disabled="true"> or </a>
+                <a class="nav-link" href="{% url 'login' %}" ><span class="badge text-bg-primary rounded-pill">Log in</span></a>
+              {% endif %}              
+            </div>
+          </div>
+        </div>
+      </nav>      
     </header>
 
-    <!-- Navigation Bar: -->
-    <nav>
-      <!-- Options: -->
-      <ul class="topmenu">
-				<li style="float: left;" class="top_item"><a href="{% url 'index' %}">Home</a></li>
-				<li style="float: left;" class="top_item"><a href="{% url 'experiments' %}">Experiments</a></li>
-				<li style="float: left;" class="top_item"><a href="{% url 'normalization' %}">Normalization</a></li>
-				<li style="float: left;" class="top_item"><a href="{% url 'comparison' %}">Comparison</a></li>
-        <li style="float: left;" class="top_item"><a href="{% url 'search-data' %}">Search Data</a></li>
-        {% if user.is_authenticated %}
-          <li style="float: left;" class="top_item"><a href="{% url 'user-data' %}">User Data</a></li>
-          <li style="float: left;" class="top_item"><a href="{% url 'about' %}">About</a></li>
-          <li style="float: right;" class="top_item"><a href="{% url 'logout' %}">Log out</a></li>
-          <li style="float: right;" class="top_item"><a href="account/{{user.id}}/update/">{{user.last_name}}, {{user.first_name}}</a></li>
-          <li class="float_text">Logged as: </li>
-        {% else %}
-          <li style="float: left;" class="top_item"><a href="{% url 'about' %}">About</a></li>
-          <li style="float: right;" class="top_item"><a href="{% url 'signup' %}">Sign up</a></li>
-          <li class="float_text"> or </li>
-          <li style="float: right;" class="top_item"><a href="{% url 'login' %}">Log in</a></li>
-        {% endif %}
-      </ul>
-    </nav>
-
-    <!-- Main Bar: -->
-    <main>
+    <div class="container">
       
 			{% block content %}
 			{% endblock %}
@@ -108,7 +106,7 @@
         {% endif %}
       {% endblock %}
 
-    </main>
+    </div>
 
     <!-- Footer Bar: -->
     <footer>

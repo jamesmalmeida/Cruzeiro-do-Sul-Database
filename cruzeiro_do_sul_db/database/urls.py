@@ -1,5 +1,6 @@
 from django.urls import path
 from database import views
+
 # from .views import upload_xdi
 
 urlpatterns = [
@@ -14,7 +15,8 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('login/', views.login, name='login'),
     path('accounts/<int:pk>/update/', views.ChangeAccountView.as_view(), name='account-update'),
-    path('signup/', views.SignUpView.as_view(), name='signup'),
+    #path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('signup/', views.sign_up, name = 'signup'),
     path('user-data/', views.user_data_list, name='user-data'),
     # path('add-experiment/', views.AddExperiment.as_view(), name='add-experiment'),
     path('add-experiment/', views.AddExperiment, name='add-experiment'),

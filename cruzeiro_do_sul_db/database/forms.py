@@ -3,7 +3,14 @@ from .models import User, Experiment
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
+
+class RegisterForm(UserCreationForm):
+    class Meta:
+        model=User
+        fields = ['first_name','last_name','web_page','country','state', 'email','password1','password2'] 
+        
 class UserCreationForm(UserCreationForm):
+    
     email      = forms.EmailField(max_length=250,required=True,help_text='Enter your e-mail.')
     first_name = forms.CharField(max_length=100,required=True,help_text='Enter your first name.')
     last_name  = forms.CharField(max_length=100,required=True,help_text='Enter your last name.')
@@ -11,6 +18,7 @@ class UserCreationForm(UserCreationForm):
     country    = forms.CharField(max_length=150,required=True,help_text='Enter your current country.')
     state      = forms.CharField(max_length=150,required=True,help_text='Enter your current state/province.')
     city       = forms.CharField(max_length=150,required=True,help_text='Enter your current city.')
+    #is_superuser = None
 
 
 class Meta:
