@@ -1,82 +1,114 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-	<h2 class="initial_main_text">Cruzeiro do Sul Data Library Home:</h2>
-  
-	<p>
-		Welcome to Cruzeiro do Sul Data Library! The Sirius XAS &amp; XRD Data Library.
-	</p>
 
-  <table class="form_table">
-		<tr><td colspan="2" style="text-align: center;">
-				<strong>The Library has the following record counts:</strong>
-		</td></tr>
-    <tr><td>
-        <strong>Number of experiments:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_experiments }}
-    </td></tr>
-    <tr><td>
-      <strong>Number of XAS experiments:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_experiments_xas }}
-    </td></tr>
-    <tr><td>
-      <strong>Number of XANES experiments:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_experiments_xanes }}
-    </td></tr>
-    <tr><td>
-      <strong>Number of EXAFS experiments:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_experiments_exafs }}
-    </td></tr>
-		<tr><td>
-      <strong>Number of XRD experiments:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_experiments_xrd }}
-    </td></tr>
-		<tr><td>
-      <strong>Number of XAS + XRD experiments:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_experiments_xas_xrd }}
-    </td></tr>
-		<tr><td>
-      <strong>Number of XANES + XRD experiments:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_experiments_xanes_xrd }}
-    </td></tr>
-		<tr><td>
-      <strong>Number of EXAFS + XRD experiments:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_experiments_exafs_xrd }}
-    </td></tr>
-		<tr><td>
-      <strong>Number of beamlines:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_beamlines }}
-    </td></tr>
-		<tr><td>
-      <strong>Number of facilities:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_facilities }}
-    </td></tr>
-		<tr><td>
-      <strong>Number of users:</strong>
-    </td></tr>
-    <tr class="form_item"><td>
-      {{ num_users }}
-    </td></tr>
-  </table>
+<div class="mt-5">
+  <div class="card shadow-none border mb-3 mt-6" data-component-card="data-component-card">
+    <div class="card-header p-4 border-bottom bg-body">
+      <div class="row g-3 justify-content-between align-items-center">
+        <div class="col-12 col-md">
+          <h4 class="text-body mb-0" data-anchor="data-anchor" id="multiple-select-example">Cruzeiro do Sul Data Library</h4>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0 m-1">
+      <legend>The Library has the following record counts</legend>
+      <span>
+        Welcome to Cruzeiro do Sul Data Library! The Sirius XAS &amp; XRD Data Library.
+      </span>
+      
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of experiments</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_experiments }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of XAS experiments</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_experiments_xas }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of XANES experiments</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_experiments_xanes }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of EXAFS experiments</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_experiments_exafs }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of XRD experiments</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_experiments_xrd }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of XAS + XRD experiments</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_experiments_xas_xrd }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of XANES + XRD experiments</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_experiments_xanes_xrd }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of EXAFS + XRD experiments</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_experiments_exafs_xrd }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of beamlines</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_beamlines }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of facilities</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_facilities }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-bg-light">
+            <div class="card-body text-center">
+              <h5 class="card-title">Number of users</h5>
+              <span class="badge rounded-pill text-bg-info">{{ num_users }}</span>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+  </div>
+</div>
 
 {% endblock %}
