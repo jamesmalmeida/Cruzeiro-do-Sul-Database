@@ -749,7 +749,7 @@ def AddExperiment(request):
     if request.method == 'POST':
         form = UploadXDIForm(request.POST, request.FILES)
         handle_uploaded_file_xdi(request.user.id, request.POST, request.FILES['xdi_file'])
-        return render(request, 'user_data.html')
+        return redirect('user-data')
     else:
         form = UploadXDIForm()
     return render(request, 'upload_xdi.html', {'form': form})
