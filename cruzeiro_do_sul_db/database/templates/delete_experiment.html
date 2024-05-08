@@ -1,23 +1,40 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  
-  <h2 class="initial_main_text">Delete Experiment:</h2>
-  
-  {% if user.is_authenticated and experiment.user == user %}
 
-		<p>Are you sure you want to delete the experiment: {{ experiment }}?</p></p>
+<div class="mt-5">
+  <div class="card shadow-none border mb-3 mt-6" data-component-card="data-component-card">
+    <div class="card-header p-4 border-bottom bg-body">
+      <div class="row g-3 justify-content-between align-items-center">
+        <div class="col-12 col-md">
+          <h4>Experiment: {{experiment.experiment_title}}</h4>
+        </div>
+      </div>
+    </div>
+    {% if user.is_authenticated and experiment.user == user %}
+
+    <div class="row justify-content-center mt-4">
+      <div class="col-4">
+        <div class="alert alert-danger" role="alert">
+          <h4 class="alert-heading">Attention!</h4>
+          Are you sure you want to delete the experiment, {{ experiment }}???
+          <hr>
+          <form action="" method="POST">
+            {% csrf_token %}
+            <div class="btn-group-vertical col-12 mx-auto" role="group" aria-label="Basic outlined example">
+              <input type="submit" class="btn btn-danger btn-sm" value="Yes, delete" />
+              <input type="button" class="btn btn-primary btn-sm" onclick="history.back();" value="No, go back"/>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
     <!-- Form for delete experiment: -->
-    <form action="" method="POST">
-      {% csrf_token %}
-			<p>
-				<input style="width: 21%;" type="submit" value="Yes, delete."/>
-			</p>
-    </form>
-  {% else %}
-    <p>
+    {% else %}
+    <div class="alert alert-danger m-3" role="alert">
       You need to be the owner of the experiment to be able to delete it.
-    </p>
-  {% endif %}
-
+    </div>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

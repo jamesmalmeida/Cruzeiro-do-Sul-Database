@@ -1,69 +1,63 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+<div class="mt-5">
+  <div class="card shadow-none border mb-3 mt-6" data-component-card="data-component-card">
+    <div class="card-header p-4 border-bottom bg-body">
+      <div class="row g-3 justify-content-between align-items-center">
+        <div class="col-12 col-md">
+          <h4 class="text-body mb-0" data-anchor="data-anchor" id="multiple-select-example">Add Experiment</h4>
+        </div>
+      </div>
+    </div>
 
-  <h1>Upload an XDI File</h1>
-  <form action="" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+    <form action="" method="POST" enctype="multipart/form-data" class="row m-1 g-3">
+      {% csrf_token %}
+      <div class="alert alert-info" role="alert">
+        The fields required for all types of experiments are marked with (*).
+      </div>
+      {% if user.is_authenticated %}
+        <div class="col-md-12">
+          <legend>Experiment</legend>
+        </div>
+        <div class="col-md-2">
+          <label for="inputEmail4" class="form-label">Experiment Type*</label>
+          {{form.experiment_type}}
+        </div>
+        <div class="col-md-10">
+          <label for="inputEmail4" class="form-label">Experiment Title*</label>
+          {{form.experiment_title}}
+        </div>
 
-    <h2 class="initial_main_text">Add Experiment:</h2>
-    <p>
-      The fields required for all types of experiments are marked with (*).
-    </p>
-    {% if user.is_authenticated %}
+        <div class="col-md-12">
+          <legend>Additional Information</legend>
+        </div>
+        <div class="col-md-2">
+          <label for="inputEmail4" class="form-label">Citation doi*</label>
+          {{form.doi}}
+        </div>
+        <div class="col-md-10">
+          <label for="inputEmail4" class="form-label">Others information*</label>
+          {{form.additional_info}}
+        </div>
 
-      <table class="form_table">
-        <tr><td style="text-align: center;">
-          <h4>Experiment:</h4>
-        </td></tr>
-        <tr><td>
-          <strong>Experiment Title (*):</strong>
-        </td></tr>
-        <tr><td class="form_item">
-          <input type="text" name="experiment_title">
-        </td></tr>
-        <tr><td>
-          <strong>Experiment Type (*):</strong>
-        </td></tr>
-        <tr><td class="form_item">
-          <input type="text" name="experiment_type">
-        </td></tr>
-    
-        <tr><td style="text-align: center;">
-          <h4>Upload XDI File:</h4>
-        </td></tr>
-        <tr><td>
-          <strong>XDI file (*):</strong>
-        </td></tr>
-        <tr><td class="form_item">
-          <input type="file" name="xdi_file">
-        </td></tr>
-    
-        <tr><td style="text-align: center;">
-          <h4>Additional Information:</h4>
-        </td></tr>
-        <tr><td>
-          <strong>Citation doi:</strong>
-        </td></tr>
-        <tr><td class="form_item">
-          <input type="text" name="doi">
-        </td></tr>
-        <tr><td>
-          <strong>Additional information:</strong>
-        </td></tr>
-        <tr><td class="form_item">
-          <input type="text" name="additional_info">
-        </td></tr>
-        <tr><td style="text-align: center;">
-          <input style="width: 21%;" type="submit" value="Upload data"/>
-        </td></tr>
-      </table>
-    {% else %}
-      <p>
+        <div class="col-md-12">
+          <legend>XDI File</legend>
+        </div>
+        <div class="col-md-12">
+          <label for="inputEmail4" class="form-label">Upload XDI file*</label>
+          <input type="file" name="xdi_file" class="form-control">
+        </div>
+
+        <div class="col text-end">
+          <button class="btn btn-primary" type="submit">Upload data</button>
+        </div>
+      {% else %}
+      <div class="alert alert-danger m-3" role="alert">
         You need to be logged in to access this page.
-      </p>
-    {% endif %}
-  </form>
-
+      </div>
+      {% endif %}
+    </form>
+  </div>
+</div>
 {% endblock %}
-

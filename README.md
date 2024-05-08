@@ -21,6 +21,16 @@
     - python manage.py makemigrations database
     - python manage.py migrate database
     - python manage.py makemigrations
+    - python manage.py migrate   
+  - Install dependencies. Commands:
+    - pip install pandas
+    - pip install lmfit
+    - pip install plotly
+    - pip install keyboard
+  - Make the migrations to the database. Commands:
+    - python manage.py makemigrations database
+    - python manage.py migrate database
+    - python manage.py makemigrations
     - python manage.py migrate
   - Create a superuser (optional). Command:
     - python manage.py createsuperuser

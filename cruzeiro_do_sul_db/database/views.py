@@ -3,6 +3,8 @@ from django.http import FileResponse
 from django.urls import reverse_lazy
 from django.conf import settings
 from .forms import UserCreationForm, UserChangeForm, AddExperiment, UploadFileForm, UploadXDIForm
+from .forms import RegisterForm
+
 from .models import Experiment, Beamline, Facility, User, Element, Normalization, Comparison, XDIFile
 from .normalization import read_file
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -30,6 +32,9 @@ from scipy.interpolate import interp1d
 from django.http import HttpResponse
 import mimetypes
 
+from django.core.files.storage import FileSystemStorage
+from datetime import datetime
+
 def index(request):
     """View function for home page of site."""
     # Generate counts of some of the main objects
@@ -52,17 +57,17 @@ def index(request):
     # Available experiments (type = EXAFS + XRD):
     num_experiments_exafs_xrd = Experiment.objects.filter(experiment_type__exact='7').count()
     context = {
-        'num_experiments': num_experiments,
-        'num_experiments_xas': num_experimets_xas,
-        'num_experiments_xanes': num_experiments_xanes,
-        'num_experiments_exafs': num_experiments_exafs,
-        'num_experiments_xrd': num_experiments_xrd,
-        'num_experiments_xas_xrd': num_experiments_xas_xrd,
+        'num_experiments'          : num_experiments,
+        'num_experiments_xas'      : num_experimets_xas,
+        'num_experiments_xanes'    : num_experiments_xanes,
+        'num_experiments_exafs'    : num_experiments_exafs,
+        'num_experiments_xrd'      : num_experiments_xrd,
+        'num_experiments_xas_xrd'  : num_experiments_xas_xrd,
         'num_experiments_xanes_xrd': num_experiments_xanes_xrd,
         'num_experiments_exafs_xrd': num_experiments_exafs_xrd,
-        'num_beamlines': num_beamlines,
-        'num_facilities': num_facilities,
-        'num_users': num_users,
+        'num_beamlines'            : num_beamlines,
+        'num_facilities'           : num_facilities,
+        'num_users'                : num_users,
     }
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'index.html', context=context)
@@ -146,39 +151,38 @@ def signup(request):
 
 def experiment_detail(request, pk):
     experiment = Experiment.objects.get(pk=int(pk))
-
     caminho_arquivo = os.path.join(settings.MEDIA_ROOT, experiment.xdi_file.name)
     secoes = [
-    "Element.symbol",
-    "Element.edge",
-    "Mono.d_spacing",
-    "Mono.name",
-    "Sample.formula",
-    "Sample.name",
-    "Sample.prep",
-    "Sample.temperature",
-    "Sample.reference",
-    "Detector.I0",
-    "Detector.I1",
-    "Detector.I2",
-    "Facility.Name",
-    "Beamline.Name",
-    "Beamline.name",
-    "Facility.name",
-    "Beamline.xray_source",
-    "Beamline.Storage_Ring_Current",
-    "Beamline.I0",
-    "Beamline.I1",
-    "Scan.start_time",
-    "Scan.end_time",
-    "ScanParameters.Start",
-    "ScanParameters.ScanType",
-    "ScanParameters.E0",
-    "ScanParameters.Legend",
-    "ScanParameters.Region1",
-    "ScanParameters.Region2",
-    "ScanParameters.Region3",
-    "ScanParameters.End"
+        "Element.symbol",
+        "Element.edge",
+        "Mono.d_spacing",
+        "Mono.name",
+        "Sample.formula",
+        "Sample.name",
+        "Sample.prep",
+        "Sample.temperature",
+        "Sample.reference",
+        "Detector.I0",
+        "Detector.I1",
+        "Detector.I2",
+        "Facility.Name",
+        "Beamline.Name",
+        "Beamline.name",
+        "Facility.name",
+        "Beamline.xray_source",
+        "Beamline.Storage_Ring_Current",
+        "Beamline.I0",
+        "Beamline.I1",
+        "Scan.start_time",
+        "Scan.end_time",
+        "ScanParameters.Start",
+        "ScanParameters.ScanType",
+        "ScanParameters.E0",
+        "ScanParameters.Legend",
+        "ScanParameters.Region1",
+        "ScanParameters.Region2",
+        "ScanParameters.Region3",
+        "ScanParameters.End"
     ]
     regex = '|'.join(map(re.escape, secoes))
     with open(caminho_arquivo, 'r') as texto:
@@ -204,7 +208,6 @@ def experiment_detail(request, pk):
     else:
         # Se não encontrar o início da tabela, definir valores_tabela como None
         valores_tabela = None
-
 
     return render(request, 'experiment_detail.html', {'experiment': experiment, 'valores': valores, 'valores_tabela': valores_tabela})
 
@@ -235,7 +238,24 @@ def file_response(request, pk, string):
     else:
         return
 
+
+def sign_up(request):
+    if request.method == 'GET':
+        form = RegisterForm()
+        return render(request, 'registration/signup.html', {'form': form})    
+   
+    if request.method == 'POST':
+        form = RegisterForm(request.POST) 
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            return redirect('login')
+        else:
+            #return render(request, 'usuario/register.html', {'form': form})
+            return render(request, 'registration/signup.html', form)  
+
 class SignUpView(CreateView):
+    #form_class = UserCreationForm
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
@@ -527,19 +547,30 @@ def handle_uploaded_file(uploaded_file): # Para poder ler o arquivo na função 
 
 # element_s = dicio["Element"]["symbol"], element_e = dicio["Element"]["edge"]
 
-def AddExperiment(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_file_xdi(request.FILES['file'])
-            return render(request, 'user_data.html')
-    else:
-        form = UploadFileForm()
-    return render(request, 'upload_file.html', {'form': form})
+def handle_uploaded_file_xdi(user_id, PostedDataForm, xdi_file):
 
-def handle_uploaded_file_xdi(xdi_file):
     lines = xdi_file.read().decode('utf-8')
     dicio, tabela = parse_xdi_content(lines)
+    
+    try:
+        experiment_title = PostedDataForm['experiment_title']
+    except KeyError:
+        experiment_title = "Not Informed"
+    try:
+        experiment_type = PostedDataForm['experiment_type']
+    except KeyError:
+        experiment_type = "Not Informed"
+
+    try:
+        doi = PostedDataForm['doi']
+    except KeyError:
+        doi = "Not Informed"
+
+    try:
+        additional_info = PostedDataForm['additional_info']
+    except KeyError:
+        additional_info = "Not Informed"
+
     try:
         element_symbol = dicio["Element"]["symbol"]
     except KeyError:
@@ -599,7 +630,6 @@ def handle_uploaded_file_xdi(xdi_file):
         detector_I2 = dicio["Detector"]["I2"]
     except KeyError:
         detector_I2 = "Not Informed"
-
     try:
         facility_Name = dicio["Facility"]["name"]
     except KeyError:
@@ -675,38 +705,54 @@ def handle_uploaded_file_xdi(xdi_file):
     except KeyError:
         scanParameters_End = "Not Informed"
 
+    path = default_storage.save('XDIs/' + xdi_file.name, ContentFile(xdi_file.read()))
+    xdi_filePath = path
+    
+    Experiment.objects.create(
+        user_id                       = user_id,
+        xdi_file                      = xdi_filePath,
+        experiment_title              = experiment_title,
+        experiment_type               = experiment_type,
+        doi                           = doi,
+        additional_info               = additional_info,
+        element_symbol                = element_symbol,
+        element_edge                  = element_edge,
+        mono_d_spacing                = mono_d_spacing,
+        mono_name                     = mono_name,
+        sample_formula                = sample_formula,
+        sample_name                   = sample_name,
+        sample_prep                   = sample_prep,
+        sample_temperature            = sample_temperature,
+        sample_reference              = sample_reference,
+        detector_I0                   = detector_I0,
+        detector_I1                   = detector_I0,
+        detector_I2                   = detector_I0,
+        facility_Name                 = facility_Name,
+        beamline_xray_source          = beamline_xray_source,
+        beamline_Storage_Ring_Current = beamline_Storage_Ring_Current,
+        beamline_I0                   = beamline_I0,
+        beamline_I1                   = beamline_I0,
+        scan_start_time               = scan_start_time,
+        scan_end_time                 = scan_end_time,
+        scanParameters_Start          = scanParameters_Start,
+        scanParameters_ScanType       = scanParameters_ScanType,
+        scanParameters_E0             = scanParameters_E0,
+        scanParameters_Legend         = scanParameters_Legend,
+        scanParameters_Region1        = scanParameters_Region1,
+        scanParameters_Region2        = scanParameters_Region1,
+        scanParameters_Region3        = scanParameters_Region1,
+        scanParameters_End            = scanParameters_End,
+        tabela                        = tabela
+        )
 
-
-
-    Experiment.objects.create(element_symbol = element_symbol,
-                            element_edge = element_edge,
-                            mono_d_spacing = mono_d_spacing,
-                            mono_name = mono_name,
-                            sample_formula = sample_formula,
-                            sample_name = sample_name,
-                            sample_prep = sample_prep,
-                            sample_temperature = sample_temperature,
-                            sample_reference = sample_reference,
-                            detector_I0 = detector_I0,
-                            detector_I1 = detector_I0,                        
-                            detector_I2 = detector_I0,
-                            facility_Name = facility_Name,
-                            beamline_xray_source = beamline_xray_source,
-                            beamline_Storage_Ring_Current = beamline_Storage_Ring_Current,
-                            beamline_I0 = beamline_I0,
-                            beamline_I1 = beamline_I0,
-                            scan_start_time = scan_start_time,
-                            scan_end_time = scan_end_time,
-                            scanParameters_Start = scanParameters_Start,
-                            scanParameters_ScanType = scanParameters_ScanType,
-                            scanParameters_E0 = scanParameters_E0,
-                            scanParameters_Legend = scanParameters_Legend,
-                            scanParameters_Region1 = scanParameters_Region1,
-                            scanParameters_Region2 = scanParameters_Region1,
-                            scanParameters_Region3 = scanParameters_Region1,
-                            scanParameters_End = scanParameters_End,
-                            tabela = tabela
-                                   )
+def AddExperiment(request):
+    if request.method == 'POST':
+        form = UploadXDIForm(request.POST, request.FILES)
+        handle_uploaded_file_xdi(request.user.id, request.POST, request.FILES['xdi_file'])
+        return redirect('user-data')
+    else:
+        form = UploadXDIForm()
+    return render(request, 'upload_xdi.html', {'form': form})
 
 def parse_xdi_content(lines):
     secoes = [

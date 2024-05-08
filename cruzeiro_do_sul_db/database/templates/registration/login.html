@@ -1,44 +1,40 @@
 {% extends "base_generic.html" %}
-
 {% block content %}
-  
-  <h2 class="initial_main_text">Log in:</h2>
-	
-	{% if user.is_authenticated %}
-		<p>You already are logged!<p>
-	{% else %}
-		<!-- Form to login: -->
-		<form method="post" action="{% url 'login' %}">
-			{% csrf_token %}
-			
-			<table class="form_table">
-				<tr><td>
-					<strong>{{form.username.label_tag}}</strong>
-				</td></tr>
-				<tr><td class="form_item">
-					{{form.username}}
-					<small style="color: black;">Enter your e-mail.</small>
-				</td></tr>
-				<tr><td>
-					<strong>{{form.password.label_tag}}</strong>
-				</td></tr>
-				<tr><td class="form_item">
-					{{form.password}}
-					<small style="color: black;">Enter your password.</small>
-				</td></tr>
-				{% if form.errors %}
-					<tr><td>
-						<small style="color: red;">Your username and password didn't match. Please try again.</small>
-					</td></tr>
-				{% endif %}
-				<tr><td colspan="2" style="text-align: center;">
-					<input style="width: 21%;" type="submit" value="login"/>
-				</td></tr>
-			</table>
-	
-		</form>
 
-		<p><strong><a href="{% url 'password_reset' %}">Lost password?</a></strong></p>
-	{% endif %}
-
+<div class="mt-5">
+  <div class="card shadow-none border mb-3 mt-6" data-component-card="data-component-card">
+    <div class="card-header p-4 border-bottom bg-body">
+      <div class="row g-3 justify-content-between align-items-center">
+        <div class="col-12 col-md">
+          <h4 class="text-body mb-0" data-anchor="data-anchor" id="multiple-select-example">Log in</h4>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0 m-1">
+      {% if user.is_authenticated %}
+      <div class="alert alert-danger m-3" role="alert">
+        <strong>You already are logged!</strong>
+      </div>
+      {% else %}
+        <!-- Form to login: -->
+        <form class="form-signin" method="POST" action="{% url 'login' %}">  
+          {% csrf_token %}
+          <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+          <div class="col mb-2">
+            <label for="inputEmail" class="sr-only">{{form.username.label_tag}}</label>
+            <input type="email" id="id_username" name="username" class="form-control" placeholder="Email address"required="" autofocus="">
+          </div>
+          <div class="col mb-2">
+            <label for="inputPassword" class="sr-only">{{form.password.label_tag}}</label>
+            <input type="password" id="id_password" name="password" class="form-control" placeholder="Password" required="">
+          </div>  
+          <div class="col mb-2">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            <a href="{% url 'password_reset' %}">Lost password?</a>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

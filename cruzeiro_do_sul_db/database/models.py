@@ -134,9 +134,6 @@ class Comparison(models.Model):
         return f'{self.name}'
 
 class Element(models.Model):
-
-
-
     """Model representing elements data."""
     ELEMENTS = (
         ('H', 'H - Hydrogen'),

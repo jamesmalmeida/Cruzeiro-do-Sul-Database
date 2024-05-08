@@ -1,505 +1,551 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-	<h2 class="initial_main_text">Experiment: {{ experiment.experiment_title }}</h2>
-
-  <table class="form_table">
-		<tr><td style="text-align: center;">
-			<h4>Experiment:</h4>
-		</td></tr>
-    <tr><td>
-      <strong>Experiment type:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-			{% if experiment.experiment_type == '1' %}
-				XAS
-			{% elif experiment.experiment_type == '2' %}
-				XANES
-			{% elif experiment.experiment_type == '3' %}
-				EXAFS
-			{% elif experiment.experiment_type == '4' %}
-				Powder diffraction
-			{% elif experiment.experiment_type == '5' %}
-				XAS + Powder diffraction
-			{% elif experiment.experiment_type == '6' %}
-				XANES + Powder diffraction
-			{% elif experiment.experiment_type == '7' %}
-				EXAFS + Powder diffraction
-			{% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-    <tr>
-      <td style="text-align: center;">
-          <h4>Element Symbol:</h4>
-      </td>
-  </tr>
-  <tr>
-      <td>
-          <strong>Element Symbol:</strong>
-      </td>
-  </tr>
-  <tr>
-      <td class="form_item">
-          {% if valores.Element.symbol %}
-              {{ valores.Element.symbol }}
-          {% else %}
-              None
-          {% endif %}
-      </td>
-  </tr>
-
-    <tr>
-      <td style="text-align: center;">
-          <h4>Element Egde:</h4>
-      </td>
-  </tr>
-  <tr>
-      <td>
-          <strong>Element Edge:</strong>
-      </td>
-  </tr>
-  <tr>
-      <td class="form_item">
-          {% if valores.Element.edge %}
-              {{ valores.Element.edge }}
-          {% else %}
-              None
-          {% endif %}
-      </td>
-  </tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Mono Name:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Mono name:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Mono.name %}
-        {{ valores.Mono.name }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-    <tr><td style="text-align: center;">
-			<h4>Mono D-spacing:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Mono D-spacing:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Mono.d_spacing %}
-        {{ valores.Mono.d_spacing }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Sample Formula:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Sample formula:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Sample.formula %}
-        {{ valores.Sample.formula }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Sample Name:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Sample name:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Sample.name %}
-        {{ valores.Sample.name }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Sample Preparation:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Sample preparation:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Sample.prep %}
-        {{ valores.Sample.prep }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Sample Temperature:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Sample temperature:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Sample.temperature %}
-        {{ valores.Sample.temperature }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-    <tr><td style="text-align: center;">
-			<h4>Sample Reference:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Sample Reference:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Sample.reference %}
-        {{ valores.Sample.reference }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Facility Name:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Facility name:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Facility.Name %}
-        {{ valores.Facility.Name }}
-      {% elif valores.Facility.name %}
-        {{ valores.Facility.name }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Beamline Name:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Beamline name:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Beamline.Name %}
-        {{ valores.Beamline.Name }}
-      {% elif valores.Beamline.name %}
-        {{ valores.Beamline.name }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Beamline X-Ray Source:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Beamline X-ray source:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Beamline.xray_source %}
-        {{ valores.Beamline.xray_source }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Beamline Storage Ring Current:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Beamline storage ring current:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Beamline.Storage_Ring_Current %}
-        {{ valores.Beamline.Storage_Ring_Current }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Beamline I0:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Beamline I0:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Beamline.I0 %}
-        {{ valores.Beamline.I0 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Beamline I1:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Beamline I1:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Beamline.I1 %}
-        {{ valores.Beamline.I1 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-    <tr><td style="text-align: center;">
-			<h4>Detector I0:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Detector I0:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Detector.I0 %}
-        {{ valores.Detector.I0 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-    <tr><td style="text-align: center;">
-			<h4>Detector I1:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Detector I1:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Detector.I1 %}
-        {{ valores.Detector.I1 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-    <tr><td style="text-align: center;">
-			<h4>Detector I2:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Detector I2:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Detector.I2 %}
-        {{ valores.Detector.I2 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan Start Time:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan start time:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Scan.start_time %}
-        {{ valores.Scan.start_time }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan End Time:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan end time:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.Scan.end_time %}
-        {{ valores.Scan.end_time }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan Parameters Start:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan parameters start:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.ScanParameters.Start %}
-        {{ valores.ScanParameters.Start }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan Parameters Scan Type:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan parameters scan type:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.ScanParameters.ScanType %}
-        {{ valores.ScanParameters.ScanType }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan Parameters E0:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan parameters E0:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.ScanParameters.E0 %}
-        {{ valores.ScanParameters.E0 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan Parameters Legend:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan parameters legend:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.ScanParameters.Legend %}
-        {{ valores.ScanParameters.Legend }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan Parameters Region1:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan parameters region1:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.ScanParameters.Region1 %}
-        {{ valores.ScanParameters.Region1 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan Parameters Region2:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan parameters region2:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.ScanParameters.Region2 %}
-        {{ valores.ScanParameters.Region2 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-  <tr><td style="text-align: center;">
-			<h4>Scan Parameters Region3:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan parameters region3:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.ScanParameters.Region3 %}
-        {{ valores.ScanParameters.Region3 }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-    <tr><td style="text-align: center;">
-			<h4>Scan Parameters End:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Scan parameters end:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if valores.ScanParameters.End %}
-        {{ valores.ScanParameters.End }}
-      {% else %}
-        None
-      {% endif %}
-    </td></tr>
-
-      <tr>
-        <th>energy</th>
-        <th>itrans</th>
-        <th>i0</th>
-      </tr>
-      <tbody>
-        {% for linha in valores_tabela|slice:":30" %}
+<div class="mt-5">
+  <div class="card shadow-none border mb-3 mt-6" data-component-card="data-component-card">
+    <div class="card-header p-4 border-bottom bg-body">
+      <div class="row g-3 justify-content-between align-items-center">
+        <div class="col-12 col-md">
+          <h4>Experiment: {{experiment.experiment_title}}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive m-2">
+      <table class="table table-bordered table-striped table-hover table-sm" cellspacing="0">
         <tr>
-          {% for valor in linha %}
-          <td>{{ valor }}</td>
-          {% endfor %}
+          <td colspan="3">
+            <strong>Experiment type</strong>
+          </td>
         </tr>
-        {% endfor %}
-      </tbody>
+        <tr>
+          <td colspan="3">
+            {% if experiment.experiment_type == '1' %}
+            XAS
+            {% elif experiment.experiment_type == '2' %}
+            XANES
+            {% elif experiment.experiment_type == '3' %}
+            EXAFS
+            {% elif experiment.experiment_type == '4' %}
+            Powder diffraction
+            {% elif experiment.experiment_type == '5' %}
+            XAS + Powder diffraction
+            {% elif experiment.experiment_type == '6' %}
+            XANES + Powder diffraction
+            {% elif experiment.experiment_type == '7' %}
+            EXAFS + Powder diffraction
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>Element Symbol</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Element.symbol %}
+            {{ valores.Element.symbol }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
 
-		<tr><td style="text-align: center;">
-			<h4>XDI File:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>XDI file:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {% if experiment.xdi_file %}
-        <a href="{{request.path}}/file=xdi_file">{{ experiment.xdi_file }}</a>
-      {% else %}
-        None
+        <tr>
+          <td colspan="3">
+            <strong>Element Edge</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Element.edge %}
+            {{ valores.Element.edge }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Mono name</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Mono.name %}
+            {{ valores.Mono.name }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Mono D-spacing</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Mono.d_spacing %}
+            {{ valores.Mono.d_spacing }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Sample formula</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Sample.formula %}
+            {{ valores.Sample.formula }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Sample name</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Sample.name %}
+            {{ valores.Sample.name }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Sample preparation</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Sample.prep %}
+            {{ valores.Sample.prep }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Sample temperature</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Sample.temperature %}
+            {{ valores.Sample.temperature }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Sample Reference</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Sample.reference %}
+            {{ valores.Sample.reference }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Facility name</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Facility.Name %}
+            {{ valores.Facility.Name }}
+            {% elif valores.Facility.name %}
+            {{ valores.Facility.name }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Beamline name</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Beamline.Name %}
+            {{ valores.Beamline.Name }}
+            {% elif valores.Beamline.name %}
+            {{ valores.Beamline.name }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Beamline X-ray source</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Beamline.xray_source %}
+            {{ valores.Beamline.xray_source }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Beamline storage ring current</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Beamline.Storage_Ring_Current %}
+            {{ valores.Beamline.Storage_Ring_Current }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Beamline I0</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Beamline.I0 %}
+            {{ valores.Beamline.I0 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Beamline I1</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Beamline.I1 %}
+            {{ valores.Beamline.I1 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Detector I0</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Detector.I0 %}
+            {{ valores.Detector.I0 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Detector I1</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Detector.I1 %}
+            {{ valores.Detector.I1 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Detector I2</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Detector.I2 %}
+            {{ valores.Detector.I2 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan start time</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Scan.start_time %}
+            {{ valores.Scan.start_time }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan end time</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.Scan.end_time %}
+            {{ valores.Scan.end_time }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan parameters start</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.ScanParameters.Start %}
+            {{ valores.ScanParameters.Start }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan parameters scan type</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.ScanParameters.ScanType %}
+            {{ valores.ScanParameters.ScanType }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan parameters E0</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.ScanParameters.E0 %}
+            {{ valores.ScanParameters.E0 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan parameters legend</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.ScanParameters.Legend %}
+            {{ valores.ScanParameters.Legend }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan parameters region1</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.ScanParameters.Region1 %}
+            {{ valores.ScanParameters.Region1 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan parameters region2</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.ScanParameters.Region2 %}
+            {{ valores.ScanParameters.Region2 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan parameters region3</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.ScanParameters.Region3 %}
+            {{ valores.ScanParameters.Region3 }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>Scan parameters end</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if valores.ScanParameters.End %}
+            {{ valores.ScanParameters.End }}
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td>energy</td>
+          <td>itrans</v>
+          <td>i0</td>
+        </tr>
+        
+          {% for linha in valores_tabela|slice:":30" %}
+          <tr>
+            {% for valor in linha %}
+            <td>{{ valor }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        <tr>
+          <td colspan="3">
+            <strong>XDI file</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {% if experiment.xdi_file %}
+            <a href="{{request.path}}/file=xdi_file">{{ experiment.xdi_file }}</a>
+            {% else %}
+            None
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>Data licence</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            {{ experiment.data_licence }}
+          </td>
+        </tr>
+        </table>
+
+        <table class="table table-bordered table-striped table-hover table-sm" id="dataTable">
+        <tr>
+          <td>
+            <legend>Additional Information</legend>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Uploaded by</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ experiment.user.last_name }}, {{ experiment.user.first_name }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Citation doi</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ experiment.doi }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Additional information</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ experiment.additional_info }}
+          </td>
+        </tr>
+      </table>
+      {% if user.is_authenticated and experiment.user_id == user.id %}
+      <p class="text-end mb-1">
+        <a href="{{request.path}}/delete/" class="btn btn-danger btn-sm">Delete this experiment?</a>
+      </p>
       {% endif %}
-    </td></tr>
-    <tr><td>
-      <strong>Data licence:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {{ experiment.data_licence }}
-    </td></tr>
+    </div>
+  </div>
+</div>
 
-		<tr><td style="text-align: center;">
-			<h4>Additional Information:</h4>
-		</td></tr>
-		<tr><td>
-      <strong>Uploaded by:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {{ experiment.user.last_name }}, {{ experiment.user.first_name }}
-    </td></tr>
-    <tr><td>
-      <strong>Citation doi:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {{ experiment.doi }}
-    </td></tr>
-    <tr><td>
-      <strong>Additional information:</strong>
-    </td></tr>
-    <tr><td class="form_item">
-      {{ experiment.additional_info }}
-    </td></tr>
-  </table>
-
-  {% if user.is_authenticated and experiment.user == user %}
-    <p>
-      <strong><a href="{{request.path}}/delete/">Delete this experiment?</a></strong>
-    </p>
-  {% endif %}
 
 {% endblock %}
