@@ -293,15 +293,9 @@ main p {
 
 footer {
   color: white;
-  border: 2px solid;
-  padding: 0px;
   background-color: #06083c;
 }
 
-.footer_text {
-  color: white;
-  margin-left: 1%;
-}
 .card-header:first-child {
   background-color: #e9ecef !important;
 }
