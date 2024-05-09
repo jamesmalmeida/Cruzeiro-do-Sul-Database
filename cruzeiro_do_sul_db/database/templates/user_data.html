@@ -11,8 +11,8 @@
 			</div>
 		</div>  
         {% if user.is_authenticated %}
-            {% if experiments %}
             <p class="text-end  m-2"><a href="{% url 'add-experiment' %}" class="btn btn-primary btn-sm">Upload New Experiment</a></p>
+            {% if experiments %}
             <div class="card-body p-2 m-1">
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover table-sm" id="dataTable" width="100%"
