@@ -2086,7 +2086,10 @@ class Experiment(models.Model):
     scanParameters_Region2 = models.TextField(null=False)
     scanParameters_Region3 = models.TextField(null=False)
     scanParameters_End = models.TextField(null=False)
-    tabela = models.TextField(null=False)
+    energy = models.TextField(null=False)
+    itrans = models.TextField(null=False)
+    i0 = models.TextField(null=False)
+    # reference = models.TextField(null=False)
 
 
 

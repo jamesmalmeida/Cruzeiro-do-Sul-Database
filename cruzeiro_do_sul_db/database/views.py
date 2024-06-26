@@ -548,10 +548,12 @@ def handle_uploaded_file(uploaded_file): # Para poder ler o arquivo na função 
 # element_s = dicio["Element"]["symbol"], element_e = dicio["Element"]["edge"]
 
 def handle_uploaded_file_xdi(user_id, PostedDataForm, xdi_file):
+    path = default_storage.save('XDIs/' + xdi_file.name, ContentFile(xdi_file.read()))
+    xdi_filePath = path
 
-    lines = xdi_file.read().decode('utf-8')
-    dicio, tabela = parse_xdi_content(lines)
-    
+    caminho_arquivo = path
+    dicio, valores_tabela, energy, i0, itrans, irefer = parse_xdi_content(caminho_arquivo)
+
     try:
         experiment_title = PostedDataForm['experiment_title']
     except KeyError:
@@ -704,9 +706,23 @@ def handle_uploaded_file_xdi(user_id, PostedDataForm, xdi_file):
         scanParameters_End = dicio["ScanParameters"]["End"]
     except KeyError:
         scanParameters_End = "Not Informed"
+    try:
+        energy = energy
+    except KeyError:
+        energy = "Not Informed"
+    try:
+        i0 = i0
+    except KeyError:
+        i0 = "Not Informed"
+    try:
+        itrans = itrans
+    except KeyError:
+        itrans = "Not Informed"
+    # try:
+    #     irefer = irefer
+    # except KeyError:
+    #     irefer = "Not Informed"
 
-    path = default_storage.save('XDIs/' + xdi_file.name, ContentFile(xdi_file.read()))
-    xdi_filePath = path
     
     Experiment.objects.create(
         user_id                       = user_id,
@@ -742,7 +758,11 @@ def handle_uploaded_file_xdi(user_id, PostedDataForm, xdi_file):
         scanParameters_Region2        = scanParameters_Region1,
         scanParameters_Region3        = scanParameters_Region1,
         scanParameters_End            = scanParameters_End,
-        tabela                        = tabela
+        energy = energy,
+        i0 = i0,
+        itrans = itrans,
+        # reference = irefer
+
         )
 
 def AddExperiment(request):
@@ -754,7 +774,7 @@ def AddExperiment(request):
         form = UploadXDIForm()
     return render(request, 'upload_xdi.html', {'form': form})
 
-def parse_xdi_content(lines):
+def parse_xdi_content(caminho_arquivo):
     secoes = [
     "Element.symbol",
     "Element.edge",
@@ -788,8 +808,9 @@ def parse_xdi_content(lines):
     "ScanParameters.End"
     ]
     regex = '|'.join(map(re.escape, secoes))
-
-    matches = re.findall(f'({regex}):\\s*(.*)', lines)
+    with open(caminho_arquivo, 'r') as texto:
+        linhas = texto.read()
+        matches = re.findall(f'({regex}):\\s*(.*)', linhas)
 
     valores = {}
     for match in matches:
@@ -798,18 +819,10 @@ def parse_xdi_content(lines):
         if secao_primaria not in valores:
             valores[secao_primaria] = {}
         valores[secao_primaria][secao_secundaria] = valor
-
-    # for secao in secoes:
-    #     secao_primaria, secao_secundaria = secao.split('.')
-    #     if secao_primaria not in valores:
-    #         valores[secao_primaria] = {secao_secundaria: None}
-    #     elif secao_secundaria not in valores[secao_primaria]:
-    #         valores[secao_primaria][secao_secundaria] = "Not informed"
-
-    match = re.search(r'#---+', lines, re.MULTILINE)
+    match = re.search(r'#---+', linhas, re.MULTILINE)
     if match:
         tabela_inicio = match.end()
-        tabela_linhas = lines[tabela_inicio:].strip().split('\n')
+        tabela_linhas = linhas[tabela_inicio:].strip().split('\n')
 
         valores_tabela = []
         for linha in tabela_linhas:
@@ -818,7 +831,29 @@ def parse_xdi_content(lines):
     else:
         # Se não encontrar o início da tabela, definir valores_tabela como None
         valores_tabela = None
-    return valores, valores_tabela
+
+    energy = []
+    i0 = []
+    itrans = []
+    irefer = []
+
+    # Abrindo o arquivo e lendo seu conteúdo
+    with open(caminho_arquivo, 'r') as arquivo:
+        # Iterando sobre as linhas do arquivo
+        for linha in arquivo:
+            # Ignorando as linhas que começam com #
+            if linha.startswith('#'):
+                continue
+            # Dividindo a linha em valores individuais
+            val_lin = re.findall(r'\S+', linha)
+            # Verificando se a linha contém os valores esperados
+            if len(val_lin) >= 4:
+                # Extraindo os valores de cada coluna e armazenando nas listas correspondentes
+                energy.append(float(val_lin[0]))
+                i0.append(float(val_lin[1]))
+                itrans.append(float(val_lin[2]))
+                irefer.append(float(val_lin[3]))
+    return valores, valores_tabela, energy, i0 ,itrans, irefer
 
 def spectra_comparison(request):
     if request.method == 'POST':
