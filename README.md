@@ -23,29 +23,25 @@
   > python3 -m pip install pandas lmfit plotly chardet keyboard
   ```
   
-  2. Clone the repository:
-    - You can download the source code and extract it in a file-system's folder;
-    - Or you can clone the repository to a file-system's folder with git or Github-Desktop.
-  2. 
-    - cd ~/../Cruzeiro-do-Sul-Database/cruzeiro_do_sul_db/
-  - Make the migrations to the database. Commands:
-    - python manage.py makemigrations database
-    - python manage.py migrate database
-    - python manage.py makemigrations
-    - python manage.py migrate   
-  - Install dependencies. Commands:
-    - pip install pandas
-    - pip install lmfit
-    - pip install plotly
-    - pip install keyboard
-  - Make the migrations to the database. Commands:
-    - python manage.py makemigrations database
-    - python manage.py migrate database
-    - python manage.py makemigrations
-    - python manage.py migrate
-  - Create a superuser (optional). Command:
-    - python manage.py createsuperuser
-  - Run the server. Command:
-    - python manage.py runserver
-  - Access http://127.0.0.1:8000/ in a browser.
-  - To make website visible in the local network, read the following page: https://stackoverflow.com/questions/22144189/making-django-server-accessible-in-lan
+  2. Clone the repository.
+  3. Configure the project:
+  ```
+  > cd Cruzeiro-do-Sul-Database/cruzeiro_do_sul_db/
+  > python3 manage.py makemigrations database
+  > python3 manage.py migrate database
+  > python3 manage.py makemigrations
+  > python3 manage.py migrate   
+ ```
+  4. Create a superuser (optional):
+  ```
+  python3 manage.py createsuperuser
+  ```
+  5. Run the server:
+  ```
+  > python3 manage.py runserver
+  ```
+  6. Access the website at address `http://127.0.0.1:8000/`.
+  7. Alternatively, to make website visible at the local network, run the command:
+  ```
+  > python3 manage.py runserver 0.0.0.0:8000
+  ```
