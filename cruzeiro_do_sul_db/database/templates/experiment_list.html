@@ -17,14 +17,14 @@
 					<thead>
 						<tr>
 							<th>Experiment title</th>
-							<th>Stoichiometry (IUPAC)</th>
+							<th>Sample Formula</th>
 							<th>Experiment type</th>
 						</tr>
 					</thead>
 					<tfoot>
 						<tr>
 							<th>Experiment title</th>
-							<th>Stoichiometry (IUPAC)</th>
+							<th>Sample Formula</th>
 							<th>Experiment type</th>
 						</tr>
 					</tfoot>
@@ -32,7 +32,7 @@
 						{% for experiment in experiments %}
 						<tr>
 							<td><a href="{{experiment.get_absolute_url}}">{{experiment.experiment_title}}</a></td>
-							<td>{{experiment.sample_stoichiometry_iupac}}</td>
+							<td>{{experiment.sample_formula}}</td>
 							<td>
 								{% if experiment.experiment_type == '1' %}
 								XAS
@@ -58,4 +58,5 @@
 		</div>
 	</div>
 </div>
+{{ block.super }}
 {% endblock %}
