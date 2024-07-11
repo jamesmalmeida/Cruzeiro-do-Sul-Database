@@ -8,14 +8,25 @@
   The idealizers of the database and the website were PhDs Santiago José Alejandro Figueroa (QUATI - LNLS) and James Moraes de Almeida (ILUM) and the engineer Igor Ferreira Torquato (QUATI - LNLS).
 
 # Requirements:
-  - Python (preferable Python3.10) with Django.
-  - More about Django's environment configuration can be found in: https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/development_environment
+  - Python : version 3.10 or higher
+  - Django : version 4.2 or higher
+  - Pandas, lmfit, plotly, chardet and keyborard  
+  
+# Steps to configure and run the application:
 
-# Steps to configure:
-  - Clone the repository:
+  1. Create an python3 vitual environment, activate it and install the dependencies:
+  
+  ```
+  > python3 -m venv csvenv
+  > source csvenv/bin/activate
+  > python3 -m pip install django~=4.2
+  > python3 -m pip install pandas lmfit plotly chardet keyboard
+  ```
+  
+  2. Clone the repository:
     - You can download the source code and extract it in a file-system's folder;
     - Or you can clone the repository to a file-system's folder with git or Github-Desktop.
-  - In a terminal, go to the folder location where you placed the files containing manage.py file. Command:
+  2. 
     - cd ~/../Cruzeiro-do-Sul-Database/cruzeiro_do_sul_db/
   - Make the migrations to the database. Commands:
     - python manage.py makemigrations database
