@@ -73,23 +73,26 @@ def index(request):
     return render(request, 'index.html', context=context)
 
 def experiment_list(request):
-    list = Experiment.objects.all()
-    page = request.GET.get('page', 1)
+    list = Experiment.objects.all().order_by("experiment_title")
+    page = request.GET.get('page',1)
+   
     # Number of paginations:
-    paginator = Paginator(list, 20)
+    paginator = Paginator(list, len(list))
+    
     try:
         experiments = paginator.page(page)
     except PageNotAnInteger:
         experiments = paginator.page(1)
     except EmptyPage:
-        experiments.paginator.page(paginator.num_pages)
+        #experiments.paginator.page(paginator.num_pages)
+        experiments = paginator.page(1)
     return render(request, 'experiment_list.html', {'experiments': experiments})
 
 def user_data_list(request):
     list = Experiment.objects.filter(user__id__exact=request.user.id)
     page = request.GET.get('page', 1)
     # Number of paginations:
-    paginator = Paginator(list, 20)
+    paginator = Paginator(list, len(list))
     try:
         experiments = paginator.page(page)
     except PageNotAnInteger:
@@ -120,14 +123,14 @@ def search_result(request):
     page = request.GET.get('page', 1)
     
     list = Experiment.objects.filter(
-        Q(element__symbol__icontains=absorbing_element) &
-        Q(element__edge__icontains=edge) &
+        Q(element_symbol__icontains=absorbing_element) &
+        Q(element_edge__icontains=edge) &
         Q(experiment_type__icontains=data_type) &
-        Q(spectrum_measurement_mode__icontains=measurement) &
-        Q(sample_stoichiometry_iupac__icontains=composition) | reduce(operator.and_, (Q(sample_stoichiometry_iupac__icontains=x) for x in composition))
+        Q(sample_formula__icontains=absorbing_element) |
+        reduce(operator.and_, (Q(sample_formula__icontains=x) for x in composition))
     )
     # Number of paginations:
-    paginator = Paginator(list, 20)
+    paginator = Paginator(list, len(list))
     try:
         experiments = paginator.page(page)
     except PageNotAnInteger:
