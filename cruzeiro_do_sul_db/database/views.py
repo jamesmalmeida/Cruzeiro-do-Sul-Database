@@ -77,7 +77,8 @@ def experiment_list(request):
     page = request.GET.get('page',1)
    
     # Number of paginations:
-    paginator = Paginator(list, len(list))
+    paginator = Paginator(list, len(list)) if len(list) > 0 else  Paginator(list,1)
+
     
     try:
         experiments = paginator.page(page)
@@ -92,7 +93,8 @@ def user_data_list(request):
     list = Experiment.objects.filter(user__id__exact=request.user.id)
     page = request.GET.get('page', 1)
     # Number of paginations:
-    paginator = Paginator(list, len(list))
+    paginator = Paginator(list, len(list)) if len(list) > 0 else  Paginator(list,1)
+
     try:
         experiments = paginator.page(page)
     except PageNotAnInteger:
@@ -130,7 +132,8 @@ def search_result(request):
         reduce(operator.and_, (Q(sample_formula__icontains=x) for x in composition))
     )
     # Number of paginations:
-    paginator = Paginator(list, len(list))
+    paginator = Paginator(list, len(list)) if len(list) > 0 else  Paginator(list,1)
+    
     try:
         experiments = paginator.page(page)
     except PageNotAnInteger:
