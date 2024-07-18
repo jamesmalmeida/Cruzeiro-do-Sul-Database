@@ -130,7 +130,10 @@ def search_result(request):
         reduce(operator.and_, (Q(sample_formula__icontains=x) for x in composition))
     )
     # Number of paginations:
-    paginator = Paginator(list, len(list))
+    if len(list) > 0:
+        paginator = Paginator(list, len(list))
+    else: 
+        paginator = Paginator(list,1)
     try:
         experiments = paginator.page(page)
     except PageNotAnInteger:
