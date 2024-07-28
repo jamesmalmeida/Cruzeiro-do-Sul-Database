@@ -25,4 +25,4 @@ urlpatterns = [
     path('database/', include('database.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', RedirectView.as_view(url='/database/')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
