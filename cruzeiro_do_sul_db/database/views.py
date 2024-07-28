@@ -174,7 +174,7 @@ def experiment_detail(request, pk):
     informed_dic = {}
     not_informed_dic = {}
     
-    add_experiment_detail('Experiment type',                  experiment.experiment_type                , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Experiment type',                  experiment.TYPES[int(experiment.experiment_type)-1][1]      , informed_dic,  not_informed_dic   )
     add_experiment_detail('Element symbol',                   experiment.element_symbol                 , informed_dic,  not_informed_dic   )    
     add_experiment_detail('Element edge',                     experiment.element_edge                   , informed_dic,  not_informed_dic   )
     add_experiment_detail('Mono name',                        experiment.mono_name                      , informed_dic,  not_informed_dic   )

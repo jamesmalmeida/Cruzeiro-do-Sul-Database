@@ -11,34 +11,7 @@
       </div>
     </div>
     <div class="table-responsive m-2">
-      <table class="table table-bordered table-striped table-hover table-sm" cellspacing="0">
-        <tr>
-          <td colspan="4">
-            <strong>Experiment type</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if experiment.experiment_type == '1' %}
-            XAS
-            {% elif experiment.experiment_type == '2' %}
-            XANES
-            {% elif experiment.experiment_type == '3' %}
-            EXAFS
-            {% elif experiment.experiment_type == '4' %}
-            Powder diffraction
-            {% elif experiment.experiment_type == '5' %}
-            XAS + Powder diffraction
-            {% elif experiment.experiment_type == '6' %}
-            XANES + Powder diffraction
-            {% elif experiment.experiment_type == '7' %}
-            EXAFS + Powder diffraction
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-        
+      <table class="table table-bordered table-striped table-hover table-sm" cellspacing="0">       
         {% for key, value in informed_fields.items %}
 		<tr>
           <td colspan="4">
@@ -51,6 +24,7 @@
           </td>
         </tr>
        {% endfor %} 
+       
        <tr>
           <td colspan="4">
             <strong>Data file</strong>

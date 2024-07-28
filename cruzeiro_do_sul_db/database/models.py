@@ -2048,8 +2048,14 @@ class Experiment(models.Model):
     TYPES = (
         ('1','XAS'),
         ('2','XANES'),
-        ('3','EXAFS')
+        ('3','EXAFS'),
+        ('4','Powder diffraction' ),
+        ('5','XAS + Powder diffraction' ),
+        ('6','XANES + Powder diffraction' ),
+        ('7','EXAFS + Powder diffraction' ),
     )
+            
+           
     # Experiment type:
     experiment_type = models.CharField(max_length=1,null=False,blank=False,choices=TYPES,help_text='Choose the experiment type.')
     # Title of the experiment:
