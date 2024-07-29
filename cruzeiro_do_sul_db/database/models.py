@@ -2048,8 +2048,14 @@ class Experiment(models.Model):
     TYPES = (
         ('1','XAS'),
         ('2','XANES'),
-        ('3','EXAFS')
+        ('3','EXAFS'),
+        ('4','Powder diffraction' ),
+        ('5','XAS + Powder diffraction' ),
+        ('6','XANES + Powder diffraction' ),
+        ('7','EXAFS + Powder diffraction' ),
     )
+            
+           
     # Experiment type:
     experiment_type = models.CharField(max_length=1,null=False,blank=False,choices=TYPES,help_text='Choose the experiment type.')
     # Title of the experiment:
@@ -2057,7 +2063,7 @@ class Experiment(models.Model):
   
     # Upload XDI File:
     # File upload field for xdi arquives:
-    xdi_file = models.FileField('XDI',null=True,blank=True,upload_to='uploads/xdi/',help_text='Select the XAS Data Interchange Format (.xdi) of the sample.')
+    xdi_file = models.FileField('XDI',null=True,blank=True,upload_to='XDIs/',help_text='Select the XAS Data Interchange Format (.xdi) of the sample.')
 
     element_symbol = models.TextField(null=False)
     element_edge = models.TextField(null=False)
@@ -2090,16 +2096,10 @@ class Experiment(models.Model):
     itrans = models.TextField(null=False)
     i0 = models.TextField(null=False)
     # reference = models.TextField(null=False)
-
-
-
-
-
+    
     # Foreign key relating to the user:
-    user = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE,help_text='Choose the user who uploaded the date.')
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE,help_text='Choose the user who uploaded the date.')
     # Additional information:
-
-
 
     # Aditional information about the spectrum:
     additional_info = models.CharField('Additional information',max_length=300,null=True,blank=True,help_text='Enter additional information if needed')

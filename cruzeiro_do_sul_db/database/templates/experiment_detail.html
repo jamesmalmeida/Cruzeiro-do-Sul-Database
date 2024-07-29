@@ -11,497 +11,61 @@
       </div>
     </div>
     <div class="table-responsive m-2">
-      <table class="table table-bordered table-striped table-hover table-sm" cellspacing="0">
-        <tr>
+      <table class="table table-bordered table-striped table-hover table-sm" cellspacing="0">       
+        {% for key, value in informed_fields.items %}
+		<tr>
           <td colspan="4">
-            <strong>Experiment type</strong>
+            <strong>{{key}}</strong>
           </td>
         </tr>
         <tr>
           <td colspan="4">
-            {% if experiment.experiment_type == '1' %}
-            XAS
-            {% elif experiment.experiment_type == '2' %}
-            XANES
-            {% elif experiment.experiment_type == '3' %}
-            EXAFS
-            {% elif experiment.experiment_type == '4' %}
-            Powder diffraction
-            {% elif experiment.experiment_type == '5' %}
-            XAS + Powder diffraction
-            {% elif experiment.experiment_type == '6' %}
-            XANES + Powder diffraction
-            {% elif experiment.experiment_type == '7' %}
-            EXAFS + Powder diffraction
-            {% else %}
-            None
-            {% endif %}
+          {{value}}
           </td>
         </tr>
-        <tr>
+       {% endfor %} 
+       
+       <tr>
           <td colspan="4">
-            <strong>Element Symbol</strong>
+            <strong>Data file</strong>
           </td>
         </tr>
         <tr>
-          <td colspan="4">
-            {% if valores.Element.symbol %}
-            {{ valores.Element.symbol }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Element Edge</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Element.edge %}
-            {{ valores.Element.edge }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Mono name</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Mono.name %}
-            {{ valores.Mono.name }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Mono D-spacing</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Mono.d_spacing %}
-            {{ valores.Mono.d_spacing }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Sample formula</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Sample.formula %}
-            {{ valores.Sample.formula }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Sample name</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Sample.name %}
-            {{ valores.Sample.name }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Sample preparation</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Sample.prep %}
-            {{ valores.Sample.prep }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Sample temperature</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Sample.temperature %}
-            {{ valores.Sample.temperature }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Sample Reference</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Sample.reference %}
-            {{ valores.Sample.reference }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Facility name</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Facility.Name %}
-            {{ valores.Facility.Name }}
-            {% elif valores.Facility.name %}
-            {{ valores.Facility.name }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Beamline name</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Beamline.Name %}
-            {{ valores.Beamline.Name }}
-            {% elif valores.Beamline.name %}
-            {{ valores.Beamline.name }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Beamline X-ray source</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Beamline.xray_source %}
-            {{ valores.Beamline.xray_source }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Beamline storage ring current</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Beamline.Storage_Ring_Current %}
-            {{ valores.Beamline.Storage_Ring_Current }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Beamline I0</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Beamline.I0 %}
-            {{ valores.Beamline.I0 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Beamline I1</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Beamline.I1 %}
-            {{ valores.Beamline.I1 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Detector I0</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Detector.I0 %}
-            {{ valores.Detector.I0 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Detector I1</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Detector.I1 %}
-            {{ valores.Detector.I1 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Detector I2</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Detector.I2 %}
-            {{ valores.Detector.I2 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan start time</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Scan.start_time %}
-            {{ valores.Scan.start_time }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan end time</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.Scan.end_time %}
-            {{ valores.Scan.end_time }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan parameters start</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.ScanParameters.Start %}
-            {{ valores.ScanParameters.Start }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan parameters scan type</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.ScanParameters.ScanType %}
-            {{ valores.ScanParameters.ScanType }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan parameters E0</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.ScanParameters.E0 %}
-            {{ valores.ScanParameters.E0 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan parameters legend</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.ScanParameters.Legend %}
-            {{ valores.ScanParameters.Legend }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan parameters region1</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.ScanParameters.Region1 %}
-            {{ valores.ScanParameters.Region1 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan parameters region2</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.ScanParameters.Region2 %}
-            {{ valores.ScanParameters.Region2 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan parameters region3</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.ScanParameters.Region3 %}
-            {{ valores.ScanParameters.Region3 }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="4">
-            <strong>Scan parameters end</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {% if valores.ScanParameters.End %}
-            {{ valores.ScanParameters.End }}
-            {% else %}
-            None
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td>energy</td>
-          <td>itrans</v>
-          <td>i0</td>
-          <td>irefer</td>
-        </tr>
-        
-          {% for linha in valores_tabela|slice:":30" %}
-          <tr>
-            {% for valor in linha %}
-            <td>{{ valor }}</td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        <tr>
-          <td colspan="4">
-            <strong>XDI file</strong>
-          </td>
-        </tr>
         <tr>
           <td colspan="4">
             {% if experiment.xdi_file %}
-            <a href="{{request.path}}/file=xdi_file">{{ experiment.xdi_file }}</a>
+            <a href="{{ MEDIA_URL }}{{ experiment.xdi_file }}">{{ experiment.xdi_file }}</a>
             {% else %}
             None
             {% endif %}
           </td>
         </tr>
+      </table>
+        
+ 	 <button type="button" class="collapsible">Energy, I0 and I-trans (click to show data)</button>
+      <div class="content">
+      <table class="table table-bordered table-striped table-hover table-sm" cellspacing="0">
         <tr>
-          <td colspan="4">
-            <strong>Data licence</strong>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            {{ experiment.data_licence }}
-          </td>
-        </tr>
-        </table>
-
+        <td colspan="1">
+          	<strong>Energy</strong>
+        </td>
+        <td colspan="1">
+          	<strong>I Trans</strong>
+        </td>
+       	<td colspan="1">          	
+          <strong>I0</strong>
+      	</td>
+       </tr>
+       {% for x,y,z in energy_itrans_i0_table %}
+       <tr>
+          <td colspan="1">{{x}}</td>
+          <td colspan="1">{{y}}</td>
+          <td colspan="1">{{z}}</td>
+       </tr>
+       {% endfor %} 
+       </table>
+       
+       </div>
         <table class="table table-bordered table-striped table-hover table-sm" id="dataTable">
         <tr>
           <td>
@@ -539,6 +103,18 @@
           </td>
         </tr>
       </table>
+      
+      <button type="button" class="collapsible">Not informed fields (click to show data)</button>
+      <div class="content">
+	      	<tr> 
+		      	<p>
+			        {% for key, value in not_informed_fields.items %}
+			         {{key}}, 
+			        {% endfor %} 
+		        </p>
+	        </tr>
+      </div>
+      
       {% if user.is_authenticated and experiment.user_id == user.id %}
       <p class="text-end mb-1">
         <a href="{{request.path}}/delete/" class="btn btn-danger btn-sm">Delete this experiment?</a>

@@ -31,6 +31,7 @@ from numpy import diff
 from scipy.interpolate import interp1d
 from django.http import HttpResponse
 import mimetypes
+import shlex
 
 from django.core.files.storage import FileSystemStorage
 from datetime import datetime
@@ -155,67 +156,67 @@ def login(request):
 def signup(request):
     return render(request, 'signup.html')
 
+
+def add_experiment_detail(field_name, field, informed_fields,   not_informed_fields):
+    """
+    Helper funcion to separate informed and not informed fields for more conside rendering
+    field_name: name of the field to be shown in the page
+    field: attribute to 
+    """
+    if (field == 'Not Informed') or (field == 'none' ):
+        not_informed_fields[field_name]=field
+    else:
+        informed_fields[field_name]=field
+
 def experiment_detail(request, pk):
     experiment = Experiment.objects.get(pk=int(pk))
-    caminho_arquivo = os.path.join(settings.MEDIA_ROOT, experiment.xdi_file.name)
-    secoes = [
-        "Element.symbol",
-        "Element.edge",
-        "Mono.d_spacing",
-        "Mono.name",
-        "Sample.formula",
-        "Sample.name",
-        "Sample.prep",
-        "Sample.temperature",
-        "Sample.reference",
-        "Detector.I0",
-        "Detector.I1",
-        "Detector.I2",
-        "Facility.Name",
-        "Beamline.Name",
-        "Beamline.name",
-        "Facility.name",
-        "Beamline.xray_source",
-        "Beamline.Storage_Ring_Current",
-        "Beamline.I0",
-        "Beamline.I1",
-        "Scan.start_time",
-        "Scan.end_time",
-        "ScanParameters.Start",
-        "ScanParameters.ScanType",
-        "ScanParameters.E0",
-        "ScanParameters.Legend",
-        "ScanParameters.Region1",
-        "ScanParameters.Region2",
-        "ScanParameters.Region3",
-        "ScanParameters.End"
-    ]
-    regex = '|'.join(map(re.escape, secoes))
-    with open(caminho_arquivo, 'r') as texto:
-        linhas = texto.read()
-        matches = re.findall(f'({regex}):\\s*(.*)', linhas)
+    
+    informed_dic = {}
+    not_informed_dic = {}
+    
+    add_experiment_detail('Experiment type',                  experiment.TYPES[int(experiment.experiment_type)-1][1]      , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Element symbol',                   experiment.element_symbol                 , informed_dic,  not_informed_dic   )    
+    add_experiment_detail('Element edge',                     experiment.element_edge                   , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Mono name',                        experiment.mono_name                      , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Mono D-spacing',                   experiment.mono_d_spacing                 , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Sample formula',                   experiment.sample_formula                 , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Sample name',                      experiment.sample_name                    , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Sample preparation',               experiment.sample_prep                    , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Sample temperature',               experiment.sample_temperature             , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Sample reference',                 experiment.sample_reference               , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Facility name',                    experiment.facility_Name                  , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Beamline name',                    experiment.facility_Name                  , informed_dic,  not_informed_dic   )     
+    add_experiment_detail('Beamline X-ray source',            experiment.beamline_xray_source           , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Beamline storage ring current',    experiment.beamline_Storage_Ring_Current  , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Beamline I0',                      experiment.beamline_I0                    , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Beamline I1',                      experiment.beamline_I1                    , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Detector I0',                      experiment.detector_I0                    , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Detector I1',                      experiment.detector_I1                    , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Detector I2',                      experiment.detector_I2                    , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan start time',                  experiment.scan_start_time                , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan end time',                    experiment.scan_end_time                  , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan parameters start',            experiment.scanParameters_Start           , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan parameters scan type',        experiment.scanParameters_ScanType        , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan parameters E0',               experiment.scanParameters_E0              , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan parameters legend',           experiment.scanParameters_Legend          , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan parameters region1',          experiment.scanParameters_Region1         , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan parameters region2',          experiment.scanParameters_Region2         , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan parameters region3',          experiment.scanParameters_Region3         , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Scan parameters end',              experiment.scanParameters_End             , informed_dic,  not_informed_dic   )
+    add_experiment_detail('Data licence',                     "Not Informed"                            , informed_dic,  not_informed_dic   )
+                                                                                          
+       
+    energy_itrans_i0_table = list(zip( experiment.energy.split(","),
+                                       experiment.itrans.split(","),
+                                       experiment.i0.split(",")  
+                                       ) )
 
-    valores = {}
-    for match in matches:
-        secao, valor = match[0], match[1]
-        secao_primaria, secao_secundaria = secao.split('.')
-        if secao_primaria not in valores:
-            valores[secao_primaria] = {}
-        valores[secao_primaria][secao_secundaria] = valor
-    match = re.search(r'#---+', linhas, re.MULTILINE)
-    if match:
-        tabela_inicio = match.end()
-        tabela_linhas = linhas[tabela_inicio:].strip().split('\n')
-
-        valores_tabela = []
-        for linha in tabela_linhas:
-            if re.match(r'(\s+\d+\.\d+\s+){2,4}', linha):
-                valores_tabela.append([float(valor) for valor in linha.split()])
-    else:
-        # Se não encontrar o início da tabela, definir valores_tabela como None
-        valores_tabela = None
-
-    return render(request, 'experiment_detail.html', {'experiment': experiment, 'valores': valores, 'valores_tabela': valores_tabela})
+    return render(request, 'experiment_detail.html',{
+        'experiment': experiment,
+        'energy_itrans_i0_table': energy_itrans_i0_table,
+        'informed_fields': informed_dic,
+        'not_informed_fields': not_informed_dic
+        })
 
 def file_response(request, pk, string):
     experiment = Experiment.objects.get(pk=int(pk))
