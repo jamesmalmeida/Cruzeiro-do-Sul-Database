@@ -1,5 +1,5 @@
 # Cruzeiro do Sul Database
-  QUATI Beamline [1] Data Library for storing XAS & XRD experimental information and make it accesible to the users.
+  QUATI Beamline [1] Data Library for storing XAS spectra and make it accesible to the users.
   
   This project was developed initially in 2023 by Anailson Santos Silva as a research project during his participation in the 30th Summer Scholarship Program (PBV30) at the Brazilian Synchrotron Light Laboratory (LNLS) part of the National Center for Research in Energy and Materials (CNPEM) located in Campinas, São Paulo - Brazil.
   
