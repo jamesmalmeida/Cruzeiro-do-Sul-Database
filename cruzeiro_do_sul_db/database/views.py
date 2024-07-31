@@ -17,6 +17,8 @@ from functools import reduce
 import operator
 import plotly.offline as opy
 import plotly.graph_objs as go
+import plotly.express as px
+
 import tempfile
 import os
 import re
@@ -168,6 +170,20 @@ def add_experiment_detail(field_name, field, informed_fields,   not_informed_fie
     else:
         informed_fields[field_name]=field
 
+def make_energy_itrans_plot(list_of_tuples):
+   
+    df = pd.DataFrame(list_of_tuples, columns =['Energy', 'I0', 'I-trans'])
+    df['Energy']=df['Energy'].astype('float64')
+    df['I0']=df['I0'].astype('float64')
+    df['I-trans']= df['I-trans'].astype('float64')
+     
+    df['ratio']=np.log(df['I0'].div(df['I-trans'])) 
+    
+    fig = px.line(df, x="Energy", y=['ratio'], title='')
+    plt_div = opy.plot(fig, output_type='div')
+    
+    return plt_div
+
 def experiment_detail(request, pk):
     experiment = Experiment.objects.get(pk=int(pk))
     
@@ -203,19 +219,22 @@ def experiment_detail(request, pk):
     add_experiment_detail('Scan parameters region2',          experiment.scanParameters_Region2         , informed_dic,  not_informed_dic   )
     add_experiment_detail('Scan parameters region3',          experiment.scanParameters_Region3         , informed_dic,  not_informed_dic   )
     add_experiment_detail('Scan parameters end',              experiment.scanParameters_End             , informed_dic,  not_informed_dic   )
-    add_experiment_detail('Data licence',                     "Not Informed"                            , informed_dic,  not_informed_dic   )
-                                                                                          
+    add_experiment_detail('Data licence',                     "Not Informed"                            , informed_dic,  not_informed_dic   )                                                                              
        
+    #list of strings 
     energy_itrans_i0_table = list(zip( experiment.energy.split(","),
                                        experiment.itrans.split(","),
                                        experiment.i0.split(",")  
                                        ) )
+    
+    my_graph=make_energy_itrans_plot(energy_itrans_i0_table)
 
     return render(request, 'experiment_detail.html',{
         'experiment': experiment,
         'energy_itrans_i0_table': energy_itrans_i0_table,
         'informed_fields': informed_dic,
-        'not_informed_fields': not_informed_dic
+        'not_informed_fields': not_informed_dic,
+        'graph':my_graph
         })
 
 def file_response(request, pk, string):
