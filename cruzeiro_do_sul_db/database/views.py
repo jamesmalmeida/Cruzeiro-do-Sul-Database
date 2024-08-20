@@ -131,8 +131,9 @@ def search_result(request):
         Q(element_symbol__icontains=absorbing_element) &
         Q(element_edge__icontains=edge) &
         Q(experiment_type__icontains=data_type) &
-        Q(sample_formula__icontains=absorbing_element) |
-        reduce(operator.and_, (Q(sample_formula__icontains=x) for x in composition))
+        Q(sample_formula__icontains=absorbing_element)
+        |
+        reduce(operator.and_, (Q(element_symbol__icontains=x) for x in composition)   )
     )
     # Number of paginations:
     paginator = Paginator(list, len(list)) if len(list) > 0 else  Paginator(list,1)
@@ -172,14 +173,17 @@ def add_experiment_detail(field_name, field, informed_fields,   not_informed_fie
 
 def make_energy_itrans_plot(list_of_tuples):
    
-    df = pd.DataFrame(list_of_tuples, columns =['Energy', 'I0', 'I-trans'])
-    df['Energy']=df['Energy'].astype('float64')
-    df['I0']=df['I0'].astype('float64')
-    df['I-trans']= df['I-trans'].astype('float64')
-     
-    df['ratio']=np.log(df['I0'].div(df['I-trans'])) 
+    df = pd.DataFrame(list_of_tuples, columns =['energy', 'itrans', 'i0'])
+    df['energy']=df['energy'].astype('float64')       
+    df['itrans']= df['itrans'].astype('float64')   
+    df['ratio']=np.log(df['i0'].div(df['itrans'])) 
     
-    fig = px.line(df, x="Energy", y=['ratio'], title='')
+    fig = px.line(df, x="energy", y='ratio', title='',
+                  labels={
+                     "energy": "Energy [eV]",
+                     "ratio": "I0 / I-trans"
+                 },
+                  )
     plt_div = opy.plot(fig, output_type='div')
     
     return plt_div
@@ -221,20 +225,29 @@ def experiment_detail(request, pk):
     add_experiment_detail('Scan parameters end',              experiment.scanParameters_End             , informed_dic,  not_informed_dic   )
     add_experiment_detail('Data licence',                     "Not Informed"                            , informed_dic,  not_informed_dic   )                                                                              
        
-    #list of strings 
-    energy_itrans_i0_table = list(zip( experiment.energy.split(","),
-                                       experiment.itrans.split(","),
-                                       experiment.i0.split(",")  
-                                       ) )
     
-    my_graph=make_energy_itrans_plot(energy_itrans_i0_table)
+    if experiment.i0 != None and "Not Informed" in experiment.i0:
+        table = list( zip( 
+            experiment.energy.split(","),
+            experiment.itrans.split(","),
+            experiment.i0.split(",")  
+            ) 
+        )
+    else:
+        table = list( zip( 
+            experiment.energy.split(","),
+            experiment.itrans.split(","),
+        ) )
+    
+    
+    graph=make_plot(table)
 
     return render(request, 'experiment_detail.html',{
         'experiment': experiment,
         'energy_itrans_i0_table': energy_itrans_i0_table,
         'informed_fields': informed_dic,
         'not_informed_fields': not_informed_dic,
-        'graph':my_graph
+        'graph':graph
         })
 
 def file_response(request, pk, string):
