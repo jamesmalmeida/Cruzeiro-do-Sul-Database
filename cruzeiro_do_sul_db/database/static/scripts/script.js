@@ -22,7 +22,7 @@ function AddElement(string) {
   x = document.getElementById("absorbing_element")
   y = document.getElementById("composition");
   if (x) {
-    x.value = string;
+    x.value += string + ' ';
   }
   if (y) {
     y.value += string + ' ';

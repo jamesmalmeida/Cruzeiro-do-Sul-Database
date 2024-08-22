@@ -107,7 +107,7 @@ def user_data_list(request):
     return render(request, 'user_data.html', {'experiments': experiments})
 
 def search_result(request):
-    absorbing_element = str(request.GET.get("absorbing_element"))
+    absorbing_elements = request.GET.get("absorbing_element").split()
     composition = request.GET.get("composition").split()
 
     if request.GET.get("edge") == 'Any':
@@ -127,14 +127,18 @@ def search_result(request):
 
     page = request.GET.get('page', 1)
     
-    list = Experiment.objects.filter(
-        Q(element_symbol__icontains=absorbing_element) &
-        Q(element_edge__icontains=edge) &
-        Q(experiment_type__icontains=data_type) &
-        Q(sample_formula__icontains=absorbing_element)
-        |
-        reduce(operator.and_, (Q(element_symbol__icontains=x) for x in composition)   )
-    )
+    list = []
+    
+    if ( len(absorbing_elements) > 0 ) and (len(composition)>0 ) :
+        for absorbing_element in absorbing_elements :
+            list += Experiment.objects.filter(
+                Q(element_symbol__icontains=absorbing_element) &
+                Q(element_edge__icontains=edge) &
+                Q(experiment_type__icontains=data_type) &
+                Q(sample_formula__icontains=absorbing_element)
+                |
+                reduce(operator.and_, (Q(element_symbol__icontains=x) for x in composition)   )
+            )
     # Number of paginations:
     paginator = Paginator(list, len(list)) if len(list) > 0 else  Paginator(list,1)
     
@@ -171,20 +175,41 @@ def add_experiment_detail(field_name, field, informed_fields,   not_informed_fie
     else:
         informed_fields[field_name]=field
 
-def make_energy_itrans_plot(list_of_tuples):
-   
-    df = pd.DataFrame(list_of_tuples, columns =['energy', 'itrans', 'i0'])
-    df['energy']=df['energy'].astype('float64')       
-    df['itrans']= df['itrans'].astype('float64')   
-    df['ratio']=np.log(df['i0'].div(df['itrans'])) 
+def make_plot(list_of_tuples):
     
-    fig = px.line(df, x="energy", y='ratio', title='',
-                  labels={
-                     "energy": "Energy [eV]",
-                     "ratio": "I0 / I-trans"
-                 },
-                  )
-    plt_div = opy.plot(fig, output_type='div')
+    if len(list_of_tuples) ==0:
+        return None
+    
+    plt_div = None
+    
+    if len(list_of_tuples[0]) == 3:
+        df = pd.DataFrame(list_of_tuples, columns =['energy', 'itrans', 'i0'])
+        df['energy'] =df['energy'].astype('float64')       
+        df['itrans'] = df['itrans'].astype('float64')
+        df['i0']     = df['i0'].astype('float64')
+        df['ratio']=np.log(df['i0'].div(df['itrans'])) 
+        
+        fig =   px.line(df, x="energy", y='ratio', title='',
+                    labels={
+                         "energy": "Energy [eV]",
+                         "ratio": "I0 / I-trans"
+                    },
+                )
+        
+        plt_div = opy.plot(fig, output_type='div')
+        
+    if len(list_of_tuples[0]) == 2:
+        df = pd.DataFrame(list_of_tuples, columns =['energy', 'itrans'])
+        df['energy']=df['energy'].astype('float64')       
+        df['itrans']= df['itrans'].astype('float64')   
+        
+        fig = px.line(df, x="energy", y='itrans', title='',
+                      labels={
+                         "energy": "Energy [eV]",
+                         "itrans": "I-trans"
+                     },
+                      )
+        plt_div = opy.plot(fig, output_type='div')
     
     return plt_div
 
@@ -244,7 +269,7 @@ def experiment_detail(request, pk):
 
     return render(request, 'experiment_detail.html',{
         'experiment': experiment,
-        'energy_itrans_i0_table': energy_itrans_i0_table,
+        'energy_itrans_i0_table': table,
         'informed_fields': informed_dic,
         'not_informed_fields': not_informed_dic,
         'graph':graph

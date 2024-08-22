@@ -59,11 +59,11 @@
           <strong>I0</strong>
       	</td>
        </tr>
-       {% for x,y,z in energy_itrans_i0_table %}
+       {% for point in energy_itrans_i0_table %}
        <tr>
-          <td colspan="1">{{x}}</td>
-          <td colspan="1">{{y}}</td>
-          <td colspan="1">{{z}}</td>
+       	{% for x in point %}
+       	<td colspan="1">{{x}}</td>
+       	{% endfor %} 
        </tr>
        {% endfor %} 
        </table>
