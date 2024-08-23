@@ -11,7 +11,8 @@
       </div>
     </div>
     <div class="table-responsive m-2">
-      <table class="table table-bordered table-striped table-hover table-sm" cellspacing="0">       
+      <table class="table table-bordered table-striped table-hover table-sm" cellspacing="0"> 
+      <!-- this loop process the informed fields    -->
         {% for key, value in informed_fields.items %}
 		<tr>
           <td colspan="4">
@@ -24,7 +25,7 @@
           </td>
         </tr>
        {% endfor %} 
-       
+       <!-- end of the loop over the informed fields -->
        <tr>
           <td colspan="4">
             <strong>Data file</strong>
@@ -41,6 +42,8 @@
           </td>
         </tr>
       </table>
+      
+     {{ graph|safe }}
         
  	 <button type="button" class="collapsible">Energy, I0 and I-trans (click to show data)</button>
       <div class="content">
@@ -56,11 +59,11 @@
           <strong>I0</strong>
       	</td>
        </tr>
-       {% for x,y,z in energy_itrans_i0_table %}
+       {% for point in energy_itrans_i0_table %}
        <tr>
-          <td colspan="1">{{x}}</td>
-          <td colspan="1">{{y}}</td>
-          <td colspan="1">{{z}}</td>
+       	{% for x in point %}
+       	<td colspan="1">{{x}}</td>
+       	{% endfor %} 
        </tr>
        {% endfor %} 
        </table>
