@@ -1,0 +1,52 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Cruzeiro do Sul Database
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: James
+    family-names: Moraes de Almeida
+    email: james.almeida@ilum.cnpem.br
+    affiliation: Centro Nacional de Pesquisa em Energia e Materiais
+    orcid: 'https://orcid.org/0000-0002-3126-7619'
+  - given-names: Antonio
+    family-names: Augusto Alves Junior
+    affiliation: Centro Nacional de Pesquisa em Energia e Materiais
+  - given-names: Anailson
+    family-names: Santos Silva
+    affiliation: Universidade Federal de Sergipe
+  - given-names: Eric
+    family-names: Augusto da Silva
+    affiliation: Centro Nacional de Pesquisa em Energia e Materiais
+  - given-names: Gustavo
+    family-names: Uchôa Barros
+    affiliation: Centro Nacional de Pesquisa em Energia e Materiais
+  - given-names: Pedro
+    family-names: Henrique Sophia
+    affiliation: >-
+      Centro Nacional de Pesquisa em Energia e Materiais ￼ ￼
+      ￼ edit ￼ delete
+  - given-names: Raphaella
+    family-names: Tamyres Siqueira Gonçalves
+    affiliation: Centro Nacional de Pesquisa em Energia e Materiais
+  - given-names: Santiago
+    family-names: José Alejandro Figueroa
+    email: santiago.figueroa@lnls.br
+    affiliation: Centro Nacional de Pesquisa em Energia e Materiais
+    orcid: 'https://orcid.org/0000-0003-2694-3050'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.14609145
+url: 'https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Database'
+abstract: >-
+  Database for XAFS experiments collected at the Quati
+  Beamline of the Brazilian Center for Research in Energy
+  and Materials
+license: MIT
+commit: ca6a2cc
+version: v1.0
+date-released: '2025-01-07'
