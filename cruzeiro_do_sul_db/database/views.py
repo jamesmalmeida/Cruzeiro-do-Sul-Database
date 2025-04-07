@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.conf import settings
 from .forms import UserCreationForm, UserChangeForm, AddExperiment, UploadFileForm, UploadXDIForm
 from .forms import RegisterForm
+from cruzeiro_do_sul_db.settings import MEDIA_ROOT
 
 from .models import Experiment, Beamline, Facility, User, Element, Normalization, Comparison, XDIFile
 from .normalization import read_file
@@ -12,7 +13,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import TemplateView, ListView
-from django.db.models import Q 
+from django.db.models import Q
 from functools import reduce
 import operator
 import plotly.offline as opy
@@ -78,11 +79,11 @@ def index(request):
 def experiment_list(request):
     list = Experiment.objects.all().order_by("experiment_title")
     page = request.GET.get('page',1)
-   
+
     # Number of paginations:
     paginator = Paginator(list, len(list)) if len(list) > 0 else  Paginator(list,1)
 
-    
+
     try:
         experiments = paginator.page(page)
     except PageNotAnInteger:
@@ -119,16 +120,16 @@ def search_result(request):
         data_type = ''
     else:
         data_type = str(request.GET.get("data_type"))
-    
+
     if request.GET.get("measurement") == 'Any':
         measurement = ''
     else:
         measurement = str(request.GET.get("measurement"))
 
     page = request.GET.get('page', 1)
-    
+
     list = []
-    
+
     if ( len(absorbing_elements) > 0 ) and (len(composition)>0 ) :
         for absorbing_element in absorbing_elements :
             list += Experiment.objects.filter(
@@ -141,7 +142,7 @@ def search_result(request):
             )
     # Number of paginations:
     paginator = Paginator(list, len(list)) if len(list) > 0 else  Paginator(list,1)
-    
+
     try:
         experiments = paginator.page(page)
     except PageNotAnInteger:
@@ -149,7 +150,7 @@ def search_result(request):
     except EmptyPage:
         experiments.paginator.page(paginator.num_pages)
     return render(request, 'experiment_list.html', {'experiments': experiments})
-    
+
 
 def search_data(request):
     return render(request, 'search_data.html')
@@ -168,7 +169,7 @@ def add_experiment_detail(field_name, field, informed_fields,   not_informed_fie
     """
     Helper funcion to separate informed and not informed fields for more conside rendering
     field_name: name of the field to be shown in the page
-    field: attribute to 
+    field: attribute to
     """
     if (field == 'Not Informed') or (field == 'none' ):
         not_informed_fields[field_name]=field
@@ -176,33 +177,33 @@ def add_experiment_detail(field_name, field, informed_fields,   not_informed_fie
         informed_fields[field_name]=field
 
 def make_plot(list_of_tuples):
-    
+
     if len(list_of_tuples) ==0:
         return None
-    
+
     plt_div = None
-    
+
     if len(list_of_tuples[0]) == 3:
         df = pd.DataFrame(list_of_tuples, columns =['energy', 'itrans', 'i0'])
-        df['energy'] =df['energy'].astype('float64')       
+        df['energy'] =df['energy'].astype('float64')
         df['itrans'] = df['itrans'].astype('float64')
         df['i0']     = df['i0'].astype('float64')
-        df['ratio']=np.log(df['i0'].div(df['itrans'])) 
-        
+        df['ratio']=np.log(df['i0'].div(df['itrans']))
+
         fig =   px.line(df, x="energy", y='ratio', title='',
                     labels={
                          "energy": "Energy [eV]",
                          "ratio": "I0 / I-trans"
                     },
                 )
-        
+
         plt_div = opy.plot(fig, output_type='div')
-        
+
     if len(list_of_tuples[0]) == 2:
         df = pd.DataFrame(list_of_tuples, columns =['energy', 'itrans'])
-        df['energy']=df['energy'].astype('float64')       
-        df['itrans']= df['itrans'].astype('float64')   
-        
+        df['energy']=df['energy'].astype('float64')
+        df['itrans']= df['itrans'].astype('float64')
+
         fig = px.line(df, x="energy", y='itrans', title='',
                       labels={
                          "energy": "Energy [eV]",
@@ -210,17 +211,17 @@ def make_plot(list_of_tuples):
                      },
                       )
         plt_div = opy.plot(fig, output_type='div')
-    
+
     return plt_div
 
 def experiment_detail(request, pk):
     experiment = Experiment.objects.get(pk=int(pk))
-    
+
     informed_dic = {}
     not_informed_dic = {}
-    
+
     add_experiment_detail('Experiment type',                  experiment.TYPES[int(experiment.experiment_type)-1][1]      , informed_dic,  not_informed_dic   )
-    add_experiment_detail('Element symbol',                   experiment.element_symbol                 , informed_dic,  not_informed_dic   )    
+    add_experiment_detail('Element symbol',                   experiment.element_symbol                 , informed_dic,  not_informed_dic   )
     add_experiment_detail('Element edge',                     experiment.element_edge                   , informed_dic,  not_informed_dic   )
     add_experiment_detail('Mono name',                        experiment.mono_name                      , informed_dic,  not_informed_dic   )
     add_experiment_detail('Mono D-spacing',                   experiment.mono_d_spacing                 , informed_dic,  not_informed_dic   )
@@ -230,7 +231,7 @@ def experiment_detail(request, pk):
     add_experiment_detail('Sample temperature',               experiment.sample_temperature             , informed_dic,  not_informed_dic   )
     add_experiment_detail('Sample reference',                 experiment.sample_reference               , informed_dic,  not_informed_dic   )
     add_experiment_detail('Facility name',                    experiment.facility_Name                  , informed_dic,  not_informed_dic   )
-    add_experiment_detail('Beamline name',                    experiment.facility_Name                  , informed_dic,  not_informed_dic   )     
+    add_experiment_detail('Beamline name',                    experiment.facility_Name                  , informed_dic,  not_informed_dic   )
     add_experiment_detail('Beamline X-ray source',            experiment.beamline_xray_source           , informed_dic,  not_informed_dic   )
     add_experiment_detail('Beamline storage ring current',    experiment.beamline_Storage_Ring_Current  , informed_dic,  not_informed_dic   )
     add_experiment_detail('Beamline I0',                      experiment.beamline_I0                    , informed_dic,  not_informed_dic   )
@@ -248,23 +249,23 @@ def experiment_detail(request, pk):
     add_experiment_detail('Scan parameters region2',          experiment.scanParameters_Region2         , informed_dic,  not_informed_dic   )
     add_experiment_detail('Scan parameters region3',          experiment.scanParameters_Region3         , informed_dic,  not_informed_dic   )
     add_experiment_detail('Scan parameters end',              experiment.scanParameters_End             , informed_dic,  not_informed_dic   )
-    add_experiment_detail('Data licence',                     "Not Informed"                            , informed_dic,  not_informed_dic   )                                                                              
-       
-    
+    add_experiment_detail('Data licence',                     "Not Informed"                            , informed_dic,  not_informed_dic   )
+
+
     if experiment.i0 != None and "Not Informed" in experiment.i0:
-        table = list( zip( 
+        table = list( zip(
             experiment.energy.split(","),
             experiment.itrans.split(","),
-            experiment.i0.split(",")  
-            ) 
+            experiment.i0.split(",")
+            )
         )
     else:
-        table = list( zip( 
+        table = list( zip(
             experiment.energy.split(","),
             experiment.itrans.split(","),
         ) )
-    
-    
+
+
     graph=make_plot(table)
 
     return render(request, 'experiment_detail.html',{
@@ -306,17 +307,17 @@ def file_response(request, pk, string):
 def sign_up(request):
     if request.method == 'GET':
         form = RegisterForm()
-        return render(request, 'registration/signup.html', {'form': form})    
-   
+        return render(request, 'registration/signup.html', {'form': form})
+
     if request.method == 'POST':
-        form = RegisterForm(request.POST) 
+        form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
             return redirect('login')
         else:
             #return render(request, 'usuario/register.html', {'form': form})
-            return render(request, 'registration/signup.html', form)  
+            return render(request, 'registration/signup.html', form)
 
 class SignUpView(CreateView):
     #form_class = UserCreationForm
@@ -363,27 +364,27 @@ class AddFacility(CreateView):
     fields = '__all__'
     template_name = "add_facility.html"
     success_url = reverse_lazy('add-beamline')
-    
+
 class AddNormalization(CreateView):
     model = Normalization
     fields = '__all__'
     template_name = "normalization_data.html"
     success_url = reverse_lazy('plotly_chart')
-    
+
 def download_file(caminho_arquivo):
-    
+
     with open(caminho_arquivo, 'rb') as file:
         file_content = file.read()
-    
+
     content_type, _ = mimetypes.guess_type(caminho_arquivo)
     if content_type is None:
         content_type = 'text/plain'
-    
+
     response = HttpResponse(file_content, content_type=content_type)
     response['Content-Disposition'] = 'attachment; filename=dado_normalizado.txt'
-    
+
     return response
-       
+
 def normalize_file(request):
     # Essa é a função que está sendo utilizada na aba de normalização
     if request.method == 'POST':
@@ -415,7 +416,7 @@ def normalize_file(request):
                     df = pd.read_csv(data_io, sep=" ", header=0)
 
                 # Exclue as colunas vazias
-                df = df.dropna(axis=1)        
+                df = df.dropna(axis=1)
 
                 # Definição do intervalo da faixa inicial (restrição)
 
@@ -512,40 +513,40 @@ def normalize_file(request):
                 # Normalização dos dados de absorção de raio x pela diferença do edge jump
 
                 edge_jump = abs(ponto_borda_final - ponto_borda_inicial)
-                
+
                 absorcao_normalizada = []
 
                 normalizado = absorcao/edge_jump
-                
+
                 absorcao_normalizada.append(normalizado)
-                
+
                 pasta_destino = "./normalization"
                 os.makedirs(pasta_destino, exist_ok=True)
-                
+
                 file_name, ext = os.path.splitext(str(file))
 
                 nome_arquivo = f"{file_name}_normalizado.txt"
-                
+
                 caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
-                
+
                 with open(caminho_arquivo, "w") as arquivo:
                     # Escreve o cabeçalho das colunas
-                    arquivo.write("Energia\tAbsorção\n")            
+                    arquivo.write("Energia\tAbsorção\n")
                     for i in range(0,len(xwide)):
                         arquivo.write(f"{xwide.iloc[i]}\t{normalizado[i]}\n")
-                        
+
                 df = pd.read_csv(caminho_arquivo, delimiter='\t', encoding='latin1')  # Leia o arquivo em um DataFrame pandas
-        
+
                 data_reference = go.Scatter(x=df.iloc[:,0], y=df.iloc[:,1], mode='lines',name=nome_arquivo.replace(".txt", ""), line=dict(color=request.POST.get('line_color', '#0000FF')))
                 fig = go.Figure(data=go.Scatter(x=df.iloc[:,0], y=df.iloc[:,1], mode='lines', ))
-            
+
                 title = request.POST.get('title', 'Gráfico Plotly')
                 bg_color = request.POST.get('bg_color', 'white')
                 grid_color = request.POST.get('grid_color', 'lightgray')
                 line_color = request.POST.get('line_color', 'blue')
                 xaxis_title = request.POST.get('xaxis_title', 'Eixo X')
                 yaxis_title = request.POST.get('yaxis_title', 'Eixo Y')
-                
+
                 fig.update_layout(
                     title=title,
                     plot_bgcolor=bg_color,
@@ -554,14 +555,14 @@ def normalize_file(request):
                     xaxis=dict(gridcolor=grid_color),
                     yaxis=dict(gridcolor=grid_color)
                 )
-                
+
                 fig.update_traces(line=dict(color=line_color))
-            
+
                 plot_div = fig.to_html(full_html=False)
-                             
+
                 #return download_file(caminho_arquivo)
                 # Se habilitada faz o download, mas não gera o gráfico
-                                      
+
             #return render(request, 'plotly_chart.html', {'plot_div': plot_div})
             return render(request, 'plotly_chart.html', {
                 'plot_div': plot_div,
@@ -572,7 +573,7 @@ def normalize_file(request):
                 'xaxis_title': xaxis_title,
                 'yaxis_title': yaxis_title
             })
-            
+
 
             '''
 
@@ -595,10 +596,10 @@ def normalize_file(request):
             '''
             if os.path.exists(caminho_arquivo):
                 return download_file(caminho_arquivo) # ao rodar o código não passa por esse if
-            
+
         else:
             return render(request, 'error.html', {'error_message': 'Formato de arquivo inválido. Por favor, envie um arquivo .txt ou .csv.'})
-            
+
     return render(request, 'normalization_data.html')
 
 
@@ -615,7 +616,7 @@ def handle_uploaded_file_xdi(user_id, PostedDataForm, xdi_file):
     path = default_storage.save('XDIs/' + xdi_file.name, ContentFile(xdi_file.read()))
     xdi_filePath = path
 
-    caminho_arquivo = path
+    caminho_arquivo = str(MEDIA_ROOT) + '/' + path
     dicio, valores_tabela, energy, i0, itrans, irefer = parse_xdi_content(caminho_arquivo)
 
     try:
@@ -787,7 +788,7 @@ def handle_uploaded_file_xdi(user_id, PostedDataForm, xdi_file):
     # except KeyError:
     #     irefer = "Not Informed"
 
-    
+
     Experiment.objects.create(
         user_id                       = user_id,
         xdi_file                      = xdi_filePath,
@@ -927,7 +928,7 @@ def spectra_comparison(request):
             print("file",file)
             if not (file.name.endswith('.xdi')): # Verificando o tipo de arquivo
                 raise TypeError('File must be .xdi')
-            
+
             abs_element = 'Fe'#str(request.POST.get('abs_element')) #Por que está dando errado?
             edge = str(request.POST.get('edge'))
 
@@ -983,7 +984,7 @@ def spectra_comparison(request):
                 trace = go.Scatter(x=domain, y=spectra[funcs_keys_with_max_fitness[func]] * coeffs_with_max_fitness[func], mode='lines', line=dict(width=0.5, dash='dot'))
                 fig.add_trace(trace)
                 trace_names.append(funcs_keys_with_max_fitness[func])
-   
+
             for i, name in enumerate(trace_names):
                 fig.data[i].name = name
 
