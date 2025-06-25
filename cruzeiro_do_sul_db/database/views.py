@@ -215,6 +215,23 @@ def make_plot(list_of_tuples):
 
     return plt_div
 
+def read_xdi_aux(file_name):
+    energy = []
+    itrans = []
+    i0 = []
+    with open(file_name, 'r', encoding='utf-8') as file:
+        for line in file:
+            line = line.strip().split()
+            if line[0] != '#':
+                if len(line) == 2:
+                    energy.append(line[0])
+                    itrans.append(line[1])
+                elif len(line) > 2:
+                    energy.append(line[0])
+                    i0.append(line[1])
+                    itrans.append(line[2])
+    return energy, itrans, i0
+
 def experiment_detail(request, pk):
     experiment = Experiment.objects.get(pk=int(pk))
 
@@ -252,20 +269,33 @@ def experiment_detail(request, pk):
     add_experiment_detail('Scan parameters end',              experiment.scanParameters_End             , informed_dic,  not_informed_dic   )
     add_experiment_detail('Data licence',                     "Not Informed"                            , informed_dic,  not_informed_dic   )
 
+    energy, itrans, i0 = read_xdi_aux(str(MEDIA_ROOT) + '/' + str(experiment.xdi_file))
+
+    # if experiment.i0 != None and "Not Informed" in experiment.i0:
+    #     table = list( zip(
+    #         experiment.energy.split(","),
+    #         experiment.itrans.split(","),
+    #         experiment.i0.split(",")
+    #         )
+    #     )
+    # else:
+    #     table = list( zip(
+    #         experiment.energy.split(","),
+    #         experiment.itrans.split(","),
+    #     ) )
 
     if experiment.i0 != None and "Not Informed" in experiment.i0:
         table = list( zip(
-            experiment.energy.split(","),
-            experiment.itrans.split(","),
-            experiment.i0.split(",")
+            energy,
+            itrans,
+            i0,
             )
         )
     else:
         table = list( zip(
-            experiment.energy.split(","),
-            experiment.itrans.split(","),
+            energy,
+            itrans,
         ) )
-
 
     graph=make_plot(table)
 

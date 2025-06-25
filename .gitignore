@@ -407,4 +407,4 @@ cruzeiro_do_sul_db/uploads/
 cruzeiro_do_sul_db/database/migrations/
 
 # Ignore XDI files in media folder
-media/**/*.xdi
+cruzeiro_do_sul_db/**/*.xdi
