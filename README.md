@@ -14,32 +14,37 @@
 
 # Steps to configure and run the application:
 
-  1. Create an python3 vitual environment, activate it and install the dependencies:
+  1. Clone the repository and enter project folder.
+  ```
+  > git clone https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Database.git
+  > cd Cruzeiro-do-Sul-Database/cruzeiro_do_sul_db/
+  ```
 
+  2. Create an python3 vitual environment, activate it and install the dependencies:
   ```
   > python3 -m venv csvenv
   > source csvenv/bin/activate
-  > python3 -m pip install django~=4.2
-  > python3 -m pip install pandas lmfit plotly chardet keyboard
+  > python3 -m pip install -r requirements.txt
   ```
 
-  2. Clone the repository.
   3. Configure the project:
   ```
-  > cd Cruzeiro-do-Sul-Database/cruzeiro_do_sul_db/
   > python3 manage.py makemigrations database
   > python3 manage.py migrate database
   > python3 manage.py makemigrations
   > python3 manage.py migrate   
- ```
+  ```
+
   4. Create a superuser (optional):
   ```
   python3 manage.py createsuperuser
   ```
+
   5. Run the server:
   ```
   > python3 manage.py runserver
   ```
+
   6. Access the website at address `http://127.0.0.1:8000/`.
   7. Alternatively, to make website visible at the local network, run the command:
   ```
