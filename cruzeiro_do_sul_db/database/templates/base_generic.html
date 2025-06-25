@@ -46,11 +46,11 @@
 		  outline: none;
 		  font-size: 15px;
 		}
-		
+
 		.active, .collapsible:hover {
 		  background-color: #555;
 		}
-		
+
 		.content {
 		  padding: 0 18px;
 		  display: none;
@@ -82,8 +82,6 @@
             <div class="navbar-nav">
               <a class="nav-link" href="{% url 'index' %}" >Home</a>
               <a class="nav-link" href="{% url 'experiments' %}" >Experiments</a>
-              <a class="nav-link" href="{% url 'normalization' %}" >Normalization</a>
-              <a class="nav-link" href="{% url 'comparison' %}" >Comparison</a>
               <a class="nav-link" href="{% url 'search-data' %}" >Search Data</a>
               {% if user.is_authenticated %}
                 <a class="nav-link" href="{% url 'user-data' %}" >User Data</a>
@@ -95,14 +93,12 @@
                 </form>
               {% else %}
                 <a class="nav-link" href="{% url 'about' %}" >About</a>
-                <a class="nav-link" href="{% url 'signup' %}" ><span class="badge text-bg-success rounded-pill">Sign up</span></a>
-                <a class="nav-link disabled" aria-disabled="true"> or </a>
                 <a class="nav-link" href="{% url 'login' %}" ><span class="badge text-bg-primary rounded-pill">Log in</span></a>
-              {% endif %}              
+              {% endif %}
             </div>
           </div>
         </div>
-      </nav>      
+      </nav>
     </header>
 
     <div class="container">
@@ -117,7 +113,7 @@
             <span class="page-links">
               <p>
                 {% if page_obj.has_previous %}
-                  <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>  
+                  <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
                 {% endif %}
                 <span class="page-current">
                   Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
@@ -137,7 +133,7 @@
     <footer>
       <p class="p-3 text-center">©Copyright 2023 QUATI Beamline, Sirius - CNPEM. All rights reversed.</p>
     </footer>
-    
+
     <script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
@@ -155,11 +151,11 @@
         $( "select" ).addClass( "form-select" );
         $( "checkbox" ).addClass( "form-check-input" );
       </script>
-      
+
 	  <script>
 			var coll = document.getElementsByClassName("collapsible");
 			var i;
-			
+
 			for (i = 0; i < coll.length; i++) {
 			  coll[i].addEventListener("click", function() {
 			    this.classList.toggle("active");
@@ -172,6 +168,6 @@
 			  });
 			}
 		</script>
-      
+
   </body>
 </html>

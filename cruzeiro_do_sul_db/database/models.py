@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_active", True)
         extra_fields.setdefault("is_superuser", True)
-        
+
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Model representing users data."""
-    # User E-mail: 
+    # User E-mail:
     email = models.EmailField(verbose_name='email address',max_length=250,null=False,blank=False,unique=True,help_text='Enter your e-mail.')
     # User name:
     first_name = models.CharField(verbose_name='first name',max_length=100,null=False,blank=False,help_text='Enter your first name.')
@@ -106,32 +106,32 @@ class Beamline(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.name} ({self.facility.name})'
-    
-class Normalization(models.Model):
-    """ Model representing normalized data."""
-    # Name of the sample:
-    name = models.CharField(max_length=300,null=False,blank=False,help_text='Enter the name of the sample.')
-    # Meta class:
-    class Meta:
-        verbose_name = 'Normalization'
-        verbose_name_plural = 'Normalizations'
 
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.name}'
-    
-class Comparison(models.Model):
-    """ Model representing normalized data."""
-    # Name of the sample:
-    name = models.CharField(max_length=300,null=False,blank=False,help_text='Enter the name of the sample.')
-    # Meta class:
-    class Meta:
-        verbose_name = 'Normalization'
-        verbose_name_plural = 'Normalizations'
+# class Normalization(models.Model):
+#     """ Model representing normalized data."""
+#     # Name of the sample:
+#     name = models.CharField(max_length=300,null=False,blank=False,help_text='Enter the name of the sample.')
+#     # Meta class:
+#     class Meta:
+#         verbose_name = 'Normalization'
+#         verbose_name_plural = 'Normalizations'
+#
+#     def __str__(self):
+#         """String for representing the Model object."""
+#         return f'{self.name}'
 
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.name}'
+# class Comparison(models.Model):
+#     """ Model representing normalized data."""
+#     # Name of the sample:
+#     name = models.CharField(max_length=300,null=False,blank=False,help_text='Enter the name of the sample.')
+#     # Meta class:
+#     class Meta:
+#         verbose_name = 'Normalization'
+#         verbose_name_plural = 'Normalizations'
+#
+#     def __str__(self):
+#         """String for representing the Model object."""
+#         return f'{self.name}'
 
 class Element(models.Model):
     """Model representing elements data."""
@@ -2031,11 +2031,11 @@ class Element(models.Model):
             if tmp[0] == self.symbol and tmp[1] == self.edge:
                 energy = tmp[2]
                 break
-        return f'{self.symbol}: {self.edge} edge ({energy} eV)' 
-    
+        return f'{self.symbol}: {self.edge} edge ({energy} eV)'
+
 class XDIFile(models.Model):
     element_symbol = models.TextField()
-    element_edge = models.TextField() 
+    element_edge = models.TextField()
 
     def __str__(self):
         return f"XDI File ID: {self.id}"
@@ -2043,7 +2043,7 @@ class XDIFile(models.Model):
 
 class Experiment(models.Model):
     """Model representing experiments."""
-    
+
     # Experiment:
     TYPES = (
         ('1','XAS'),
@@ -2054,13 +2054,13 @@ class Experiment(models.Model):
         ('6','XANES + Powder diffraction' ),
         ('7','EXAFS + Powder diffraction' ),
     )
-            
-           
+
+
     # Experiment type:
     experiment_type = models.CharField(max_length=1,null=False,blank=False,choices=TYPES,help_text='Choose the experiment type.')
     # Title of the experiment:
     experiment_title = models.CharField(max_length=150,null=False,blank=False,help_text='Enter a title for the experiment.')
-  
+
     # Upload XDI File:
     # File upload field for xdi arquives:
     xdi_file = models.FileField('XDI',null=True,blank=True,upload_to='XDIs/',help_text='Select the XAS Data Interchange Format (.xdi) of the sample.')
@@ -2096,7 +2096,7 @@ class Experiment(models.Model):
     itrans = models.TextField(null=False)
     i0 = models.TextField(null=False)
     # reference = models.TextField(null=False)
-    
+
     # Foreign key relating to the user:
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE,help_text='Choose the user who uploaded the date.')
     # Additional information:
@@ -2135,4 +2135,3 @@ class Report(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.experiment.experiment_title}, Reporter: {self.reporter.last_name}, {self.reporter.first_name}, Reported user: {self.experiment.user.last_name}, {self.experiment.user.first_name}'
-    

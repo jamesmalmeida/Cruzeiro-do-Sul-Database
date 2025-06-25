@@ -3,3 +3,4 @@ pandas
 lmfit
 chardet
 keyboard
+plotly

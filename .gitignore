@@ -301,7 +301,7 @@ node_modules/
 *.dsw
 *.dsp
 
-# Visual Studio 6 technical files 
+# Visual Studio 6 technical files
 *.ncb
 *.aps
 
@@ -405,3 +405,6 @@ cruzeiro_do_sul_db/uploads/
 
 # Database Migrations Folder
 cruzeiro_do_sul_db/database/migrations/
+
+# Ignore XDI files in media folder
+media/**/*.xdi
